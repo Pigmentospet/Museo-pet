@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Vestíbulo · Museo Pigmentos.pet</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════
+   TOKENS — colores Rena Bot
+════════════════════════════════════ */
+:root {
+  --brand:    #C17B4A;   /* marrón principal Rena Bot */
+  --brand-dk: #9A5E33;   /* marrón oscuro */
+  --brand-lt: #D9A07A;   /* marrón claro */
+  --cream:    #FDF6EE;   /* fondo claro */
+  --cream-dk: #F5E9D8;   /* crema medio */
+  --ink:      #3D2010;   /* texto oscuro */
+  --ink-lt:   #7A4820;   /* texto secundario */
+  --gold:     #C9962A;   /* dorado decorativo */
+  --gold-lt:  #E4B84A;
+  --white:    #FFFFFF;
+
+  --font:     'Nunito', sans-serif;
+  --font-ttl: 'Cormorant Garamond', serif;
+
+  /* Fondo del museo (placeholder hasta que pongas la imagen) */
+  --wall: #F2DFC4;
+  --floor: #7A4E2D;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #5C3820;
+  font-family: var(--font);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ════════════════════════════════════
+   NAV
+════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; height: 50px;
+  background: var(--brand);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; z-index: 300;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+}
+.nav-logo {
+  font-family: var(--font-ttl);
+  font-size: 16px; font-weight: 600;
+  color: var(--cream); letter-spacing: .12em;
+  text-transform: uppercase;
+}
+/* Botón hamburguesa */
+.nav-menu-btn {
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 8px; padding: 7px 10px; cursor: pointer;
+  display: flex; flex-direction: column; gap: 4px;
+  transition: background .15s;
+}
+.nav-menu-btn:hover { background: rgba(255,255,255,.25); }
+.nav-menu-btn span {
+  display: block; width: 18px; height: 2px;
+  background: var(--cream); border-radius: 1px;
+}
+
+/* ════════════════════════════════════
+   SCROLL WRAPPER
+════════════════════════════════════ */
+#sw {
+  position: fixed; top: 50px; left: 0; right: 0; bottom: 0;
+  overflow-x: scroll; overflow-y: hidden;
+  cursor: grab;
+  -webkit-overflow-scrolling: touch;
+  user-select: none;
+}
+#sw:active { cursor: grabbing; }
+#sw::-webkit-scrollbar { display: none; }
+
+/* ════════════════════════════════════
+   ESCENA
+  ┌──────────────────────────────────────────────────────────────────┐
+  │ ZONA R      │ ZONA A             │ ZONA B         │ ZONA C       │
+  │ x:0–1400    │ x:1400–3200        │ x:3200–4800    │ x:4800–5400  │
+  │ Rena        │ Galería · Boutique │ Taller ·       │ Arco salida  │
+  │ (first view)│                    │ Biblioteca ·   │              │
+  │             │                    │ Altar          │              │
+  └──────────────────────────────────────────────────────────────────┘
+
+  FONDO: una imagen panorámica de 5400 × 1080px (Procreate)
+  En móvil se ve una sección del ancho; el scroll es siempre horizontal.
+  background-size: auto 100% → la imagen ocupa el 100% de la altura
+  del viewport y mantiene proporciones. El ancho extra se scrollea.
+
+  ELEMENTOS DECORATIVOS (plantas, pedestales, bustos):
+  → PNG con fondo transparente, exportados por separado.
+  → Se colocan como .deco con left/bottom en px.
+  → NO interfieren con los hotspots (pointer-events:none).
+
+  HOTSPOTS (.hs): divs invisibles sobre cada objeto dibujado.
+  → Ajusta left / bottom / width / height al objeto en tu imagen.
+════════════════════════════════════ */
+#scene {
+  position: relative;
+  width: 5400px;
+  height: 100%;
+
+  /*
+  ╔══════════════════════════════════════════════════════╗
+  ║  CUANDO TENGAS EL PNG LISTO:                         ║
+  ║  background-image: url('assets/vestibulo-bg.png');   ║
+  ║  background-size: auto 100%;                         ║
+  ║  background-position: left center;                   ║
+  ║  background-repeat: no-repeat;                       ║
+  ╚══════════════════════════════════════════════════════╝
+  */
+  background: linear-gradient(180deg,
+    #F7E8D8 0%, #EFCFAA 60%,
+    #7A4E2D 60.5%, #5C3820 100%
+  );
+}
+
+/* ════════════════════════════════════
+   HOTSPOT
+════════════════════════════════════ */
+.hs {
+  position: absolute; z-index: 10;
+  background: transparent; border: none; padding: 0;
+  cursor: pointer; border-radius: 8px;
+  transition: background .18s;
+  -webkit-tap-highlight-color: rgba(193,123,74,.2);
+}
+.hs:hover { background: rgba(193,123,74,.1); }
+.hs:focus { outline: 2px solid rgba(193,123,74,.5); outline-offset: 3px; }
+
+/* Tooltip — solo desktop */
+@media (hover: hover) {
+  .hs[data-tip]::after {
+    content: attr(data-tip);
+    position: absolute; bottom: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink); color: var(--gold-lt);
+    font-family: var(--font); font-size: 10px;
+    font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 4px;
+    white-space: nowrap; pointer-events: none;
+    opacity: 0; transition: opacity .18s;
+  }
+  .hs:hover[data-tip]::after { opacity: 1; }
+}
+
+/* Placeholder guía (borrar cuando pongas imágenes) */
+.ph {
+  position: absolute; inset: 0;
+  border: 1.5px dashed rgba(193,123,74,.45);
+  border-radius: 8px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; padding: 8px; pointer-events: none;
+}
+.ph-icon { font-size: 24px; opacity: .4; }
+.ph-label { font-size: 10px; color: rgba(193,123,74,.75); text-align: center; line-height: 1.3; }
+.ph-note  { font-size: 9px;  color: rgba(193,123,74,.45); text-align: center; }
+
+/* ════════════════════════════════════
+   ELEMENTOS DECORATIVOS
+════════════════════════════════════ */
+.deco {
+  position: absolute; z-index: 8;
+  pointer-events: none;
+}
+.deco img { width: 100%; height: auto; display: block; }
+/* placeholder hasta que pongas el PNG */
+.deco-ph {
+  width: 100%; aspect-ratio: 1/1.8;
+  border: 1px dashed rgba(80,120,40,.3); border-radius: 8px;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 8px;
+  font-size: 9px; color: rgba(80,120,40,.5); letter-spacing: .05em;
+}
+
+/* Referencias de puerta (solo plano — borrar en producción) */
+.door-ref {
+  position: absolute;
+  background: rgba(240,220,190,.3);
+  border: 1px dashed rgba(193,123,74,.3);
+  border-bottom: none; border-radius: 8px 8px 0 0;
+  pointer-events: none;
+}
+
+/* ════════════════════════════════════
+   DOTS DE PROGRESO
+════════════════════════════════════ */
+.dots {
+  position: fixed; bottom: 10px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 5px; align-items: center; z-index: 300;
+}
+.dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(253,246,238,.2);
+  border: 1px solid rgba(253,246,238,.35);
+  transition: all .3s;
+}
+.dot.on { width: 20px; border-radius: 3px; background: rgba(253,246,238,.75); }
+.dot-label {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  font-size: 9px; letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(253,246,238,.45); font-family: var(--font);
+  white-space: nowrap; z-index: 300;
+}
+
+/* ════════════════════════════════════
+   OVERLAY
+════════════════════════════════════ */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(40,18,6,.68); z-index: 400;
+  align-items: flex-end; justify-content: center;
+}
+.overlay.open { display: flex; }
+@media (min-width: 600px) {
+  .overlay { align-items: center; }
+}
+
+/* ════════════════════════════════════
+   MODAL BASE — estilo Rena Bot
+════════════════════════════════════ */
+.modal {
+  background: var(--cream);
+  border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 420px;
+  max-height: 90vh; overflow-y: auto;
+  position: relative;
+  animation: sheetUp .24s ease;
+}
+@media (min-width: 600px) {
+  .modal { border-radius: 20px; max-height: 86vh; width: 90%; }
+}
+@keyframes sheetUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Header del modal — marrón Rena Bot */
+.modal-head {
+  background: var(--brand);
+  border-radius: 20px 20px 0 0;
+  padding: 14px 16px 12px;
+  display: flex; align-items: center; gap: 12px;
+  position: relative;
+}
+.modal-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.4);
+  background: var(--cream-dk); flex-shrink: 0;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+}
+.modal-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.modal-head-info { flex: 1; }
+.modal-head-name {
+  font-family: var(--font); font-size: 15px; font-weight: 800;
+  color: var(--cream); line-height: 1.1;
+}
+.modal-head-sub {
+  font-size: 11px; color: rgba(253,246,238,.75);
+  letter-spacing: .04em;
+}
+.modal-close {
+  position: absolute; top: 12px; right: 12px;
+  background: rgba(255,255,255,.18); border: none;
+  width: 28px; height: 28px; border-radius: 50%;
+  color: var(--cream); font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s; font-family: var(--font);
+}
+.modal-close:hover { background: rgba(255,255,255,.3); }
+
+/* Cuerpo del modal */
+.modal-body { padding: 16px 16px 24px; }
+
+/* ════════════════════════════════════
+   BURBUJA DE DIÁLOGO SVG (solo cuando Rena habla)
+   La cola apunta hacia abajo-izquierda (hacia Rena)
+════════════════════════════════════ */
+.bubble-wrap {
+  position: relative; margin-bottom: 14px;
+}
+.bubble-svg-tail {
+  /* cola de la burbuja — triángulo SVG pequeño */
+  display: block;
+  margin-left: 20px;
+  margin-top: -1px;
+}
+.bubble-box {
+  background: var(--cream-dk);
+  border: 1.5px solid rgba(193,123,74,.2);
+  border-radius: 4px 16px 16px 16px;
+  padding: 13px 15px;
+  font-size: 14px; line-height: 1.65;
+  color: var(--ink);
+  font-family: var(--font);
+}
+.bubble-box b  { font-weight: 800; color: var(--brand-dk); }
+.bubble-box em { font-style: italic; color: var(--brand); }
+
+/* ════════════════════════════════════
+   GRILLA DE SALAS (dentro del modal de Rena)
+════════════════════════════════════ */
+.salas-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--brand-dk); letter-spacing: .12em;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.salas-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 7px;
+}
+.sala-btn {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 10px 11px;
+  background: var(--white);
+  border: 1.5px solid rgba(193,123,74,.22);
+  border-radius: 12px; cursor: pointer;
+  text-align: left; font-family: var(--font);
+  transition: all .15s;
+}
+.sala-btn:hover, .sala-btn:focus {
+  background: var(--cream-dk);
+  border-color: var(--brand-lt);
+}
+.sala-btn:active { transform: scale(.97); }
+.sb-num  { font-size: 9px; color: var(--brand); font-weight: 700; letter-spacing: .1em; }
+.sb-name { font-size: 12px; font-weight: 800; color: var(--ink); line-height: 1.2; }
+.sb-desc { font-size: 10px; color: var(--ink-lt); line-height: 1.3; }
+
+/* ════════════════════════════════════
+   MODAL PUERTA — presentación de sala
+════════════════════════════════════ */
+.door-sala-num {
+  font-size: 9px; font-weight: 700;
+  color: var(--brand); letter-spacing: .15em; text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.door-sala-name {
+  font-family: var(--font-ttl); font-size: 22px; font-weight: 600;
+  color: var(--ink); line-height: 1.1; margin-bottom: 12px;
+}
+.door-divider {
+  height: 1.5px;
+  background: linear-gradient(90deg, var(--brand-lt), transparent);
+  margin-bottom: 14px;
+}
+.door-cta {
+  display: block; width: 100%;
+  padding: 13px;
+  background: var(--brand); color: var(--cream);
+  font-family: var(--font); font-size: 13px;
+  font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+  border: none; border-radius: 12px; cursor: pointer;
+  transition: background .15s, transform .1s;
+  margin-top: 16px;
+}
+.door-cta:hover { background: var(--brand-dk); }
+.door-cta:active { transform: scale(.98); }
+
+/* ════════════════════════════════════
+   MODAL MENÚ (hamburguesa) — voz de Rena
+════════════════════════════════════ */
+.menu-list { display: flex; flex-direction: column; gap: 6px; }
+.menu-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 13px;
+  background: var(--white);
+  border: 1.5px solid rgba(193,123,74,.2);
+  border-radius: 12px; cursor: pointer;
+  font-family: var(--font); width: 100%; text-align: left;
+  transition: all .15s;
+}
+.menu-item:hover { background: var(--cream-dk); border-color: var(--brand-lt); }
+.menu-item:active { transform: scale(.98); }
+.mi-num {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--cream-dk); border: 1.5px solid rgba(193,123,74,.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: var(--brand-dk);
+  flex-shrink: 0;
+}
+.mi-info { flex: 1; }
+.mi-name { font-size: 13px; font-weight: 800; color: var(--ink); }
+.mi-desc { font-size: 11px; color: var(--ink-lt); }
+.mi-arrow { font-size: 14px; color: rgba(193,123,74,.5); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <span class="nav-logo">Museo Pigmentos.pet</span>
+  <button class="nav-menu-btn" onclick="openModal('menu')" aria-label="Menú de salas">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- SCROLL WRAPPER -->
+<div id="sw">
+<div id="scene">
+
+<!--
+  ══════════════════════════════════════════════════════
+  ORDEN DE APARICIÓN (scroll de izquierda a derecha):
+    1. Rena (primer viewport, visible al cargar)
+    2. Galería de los Inmortales — Sala 01
+    3. La Boutique — Sala 02 (protagonista, puerta más grande)
+    4. El Taller de Edith — Sala 03
+    5. Biblioteca de Cuidados — Sala 05
+    6. Altar de los Recuerdos — Sala 04
+    7. Arco de salida
+
+  PARA AÑADIR TUS ILUSTRACIONES:
+  - Descomenta la background-image del #scene
+  - Por cada elemento decorativo:
+      <div class="deco" style="left:Xpx; bottom:38%; width:Wpx;">
+        <img src="assets/nombre.png" alt="">
+      </div>
+  - Por cada hotspot .hs: ajusta left/bottom/width/height
+    para que coincida con el objeto en tu imagen
+
+  MEDIDAS PARA PROCREATE:
+  - Canvas: 5400 × 1080px (proporción ~5:1)
+  - DPI: 150–200
+  - Los objetos importantes deben estar entre y=162px y y=918px
+    (15% y 85% de la altura) para no cortarse en móvil
+  ══════════════════════════════════════════════════════
+-->
+
+
+<!-- ══════════ ZONA R — RENA (primer viewport) ══════════ -->
+<!--
+  RENA: PNG fondo transparente, de cuerpo completo.
+  Es lo primero que ve el visitante al cargar.
+  Archivo sugerido: assets/rena-vestibulo.png
+  El hotspot cubre toda su figura.
+-->
+<button class="hs"
+  style="left:240px; bottom:38%; width:720px; height:65%;"
+  data-tip="¡Habla con Rena!"
+  onclick="openModal('rena')"
+  aria-label="Hablar con Rena">
+  <div class="ph">
+    <!--
+      REEMPLAZA por:
+      <img src="assets/rena-vestibulo.png" alt="Rena"
+        style="width:100%;height:100%;object-fit:contain;object-position:bottom;">
+    -->
+    <div class="ph-icon">🐕</div>
+    <div class="ph-label"><b>RENA</b><br>rena-vestibulo.png<br>(PNG transparente, cuerpo completo)</div>
+    <div class="ph-note">primer elemento visible — presionar para hablar</div>
+  </div>
+</button>
+
+<!--
+  TIMBRE / CAMPANA en el mostrador — hotspot secundario para abrir Rena
+  ILUSTRACIÓN SUGERIDA: campanita o timbre estilo recepción de museo,
+  sobre el mostrador. Archivo: assets/timbre.png
+-->
+<button class="hs"
+  style="left:900px; bottom:38%; width:200px; height:22%;"
+  data-tip="Llamar a Rena"
+  onclick="openModal('rena')"
+  aria-label="Tocar el timbre — hablar con Rena">
+  <div class="ph">
+    <div class="ph-icon">🔔</div>
+    <div class="ph-label">Timbre<br>timbre.png</div>
+  </div>
+</button>
+
+<!-- Decorativo: planta pequeña izquierda -->
+<div class="deco" style="left:40px; bottom:38%; width:160px;">
+  <!--  <img src="assets/planta-01.png" alt="">  -->
+  <div class="deco-ph"><span>planta-01.png</span></div>
+</div>
+
+<!-- Decorativo: pedestal / mostrador de recepción -->
+<div class="deco" style="left:820px; bottom:38%; width:300px;">
+  <!--  <img src="assets/mostrador.png" alt="">  -->
+  <div class="deco-ph"><span>mostrador.png</span></div>
+</div>
+
+
+<!-- ══════════ ZONA A — GALERÍA + BOUTIQUE ══════════ -->
+
+<!-- 1. GALERÍA DE LOS INMORTALES
+  ILUSTRACIÓN: puerta ornamentada con marcos dorados en el dintel.
+  Archivo: assets/puerta-galeria.png -->
+<div class="door-ref" style="left:1480px; width:360px; height:56%; bottom:38%;"></div>
+<button class="hs"
+  style="left:1480px; bottom:38%; width:360px; height:56%;"
+  data-tip="Galería de los Inmortales"
+  onclick="openDoor('galeria')"
+  aria-label="Sala 01 — Galería de los Inmortales">
+  <div class="ph">
+    <div class="ph-icon">🖼</div>
+    <div class="ph-label"><b>Sala 01</b><br>Galería de los Inmortales<br>puerta-galeria.png</div>
+  </div>
+</button>
+
+<!-- Deco entre galería y boutique -->
+<div class="deco" style="left:1920px; bottom:38%; width:160px;">
+  <div class="deco-ph"><span>planta-02.png</span></div>
+</div>
+
+<!-- 2. LA BOUTIQUE — la más grande, protagonista
+  ILUSTRACIÓN: puerta más ancha y alta que todas, vidriera,
+  luz cálida saliendo por debajo. Archivo: assets/puerta-boutique.png -->
+<div class="door-ref" style="left:2120px; width:620px; height:64%; bottom:38%;"></div>
+<button class="hs"
+  style="left:2120px; bottom:38%; width:620px; height:64%;"
+  data-tip="La Boutique — productos y probador mágico"
+  onclick="openDoor('boutique')"
+  aria-label="Sala 02 — La Boutique">
+  <div class="ph">
+    <div class="ph-icon">🛍</div>
+    <div class="ph-label"><b>Sala 02 — LA BOUTIQUE</b><br>puerta-boutique.png<br>(la más ancha y alta — protagonista)</div>
+    <div class="ph-note">dentro: Probador Mágico + Rena Bot</div>
+  </div>
+</button>
+
+
+<!-- ══════════ ZONA B — TALLER + BIBLIOTECA + ALTAR ══════════ -->
+
+<!-- Deco entre boutique y taller -->
+<div class="deco" style="left:2820px; bottom:38%; width:180px;">
+  <div class="deco-ph"><span>planta-03.png</span></div>
+</div>
+
+<!-- 3. EL TALLER DE EDITH
+  ILUSTRACIÓN: puerta entreabierta de madera, cortina de taller,
+  pincel o paleta en el dintel. Archivo: assets/puerta-taller.png -->
+<div class="door-ref" style="left:3060px; width:360px; height:54%; bottom:38%;"></div>
+<button class="hs"
+  style="left:3060px; bottom:38%; width:360px; height:54%;"
+  data-tip="El Taller de Edith"
+  onclick="openDoor('taller')"
+  aria-label="Sala 03 — El Taller de Edith">
+  <div class="ph">
+    <div class="ph-icon">🎨</div>
+    <div class="ph-label"><b>Sala 03</b><br>El Taller de Edith<br>puerta-taller.png</div>
+  </div>
+</button>
+
+<!-- Deco entre taller y biblioteca -->
+<div class="deco" style="left:3500px; bottom:38%; width:160px;">
+  <div class="deco-ph"><span>busto-01.png</span></div>
+</div>
+
+<!-- 4. BIBLIOTECA DE CUIDADOS
+  ILUSTRACIÓN: puerta con arco de libros empotrados a los lados,
+  tonos miel y marrón. Archivo: assets/puerta-biblioteca.png -->
+<div class="door-ref" style="left:3720px; width:360px; height:54%; bottom:38%;"></div>
+<button class="hs"
+  style="left:3720px; bottom:38%; width:360px; height:54%;"
+  data-tip="Biblioteca de Cuidados"
+  onclick="openDoor('biblioteca')"
+  aria-label="Sala 05 — Biblioteca de Cuidados">
+  <div class="ph">
+    <div class="ph-icon">📚</div>
+    <div class="ph-label"><b>Sala 05</b><br>Biblioteca de Cuidados<br>puerta-biblioteca.png</div>
+  </div>
+</button>
+
+<!-- Deco entre biblioteca y altar -->
+<div class="deco" style="left:4150px; bottom:38%; width:170px;">
+  <div class="deco-ph"><span>planta-04.png</span></div>
+</div>
+
+<!-- 5. ALTAR DE LOS RECUERDOS
+  ILUSTRACIÓN: puerta con flores en el dintel (cempasúchil o rosas),
+  tono más íntimo y oscuro. Archivo: assets/puerta-altar.png -->
+<div class="door-ref" style="left:4380px; width:360px; height:54%; bottom:38%;"></div>
+<button class="hs"
+  style="left:4380px; bottom:38%; width:360px; height:54%;"
+  data-tip="Altar de los Recuerdos"
+  onclick="openDoor('altar')"
+  aria-label="Sala 04 — Altar de los Recuerdos">
+  <div class="ph">
+    <div class="ph-icon">🕯</div>
+    <div class="ph-label"><b>Sala 04</b><br>Altar de los Recuerdos<br>puerta-altar.png</div>
+  </div>
+</button>
+
+
+<!-- ══════════ ZONA C — ARCO DE SALIDA ══════════ -->
+
+<!-- Deco zona final -->
+<div class="deco" style="left:4820px; bottom:38%; width:170px;">
+  <div class="deco-ph"><span>planta-05.png</span></div>
+</div>
+
+<!--
+  ARCO DE SALIDA — sensación de que el museo continúa.
+  ILUSTRACIÓN: arco abierto con luz suave saliendo.
+  Archivo: assets/arco-salida.png
+-->
+<button class="hs"
+  style="left:5060px; bottom:0; width:320px; height:100%;"
+  data-tip="Continuar el recorrido →"
+  onclick="openDoor('galeria')"
+  aria-label="Continuar el recorrido">
+  <div class="ph" style="border-style:solid; border-color:rgba(193,123,74,.2);">
+    <div style="font-size:28px;opacity:.3;">→</div>
+    <div class="ph-label">Arco de salida<br>arco-salida.png</div>
+  </div>
+</button>
+
+
+</div><!-- #scene -->
+</div><!-- #sw -->
+
+<!-- DOTS -->
+<div class="dots">
+  <div class="dot" id="d0"></div>
+  <div class="dot" id="d1"></div>
+  <div class="dot" id="d2"></div>
+  <div class="dot" id="d3"></div>
+</div>
+<div class="dot-label" id="dlabel">Rena te da la bienvenida</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+  MODAL — RENA
+  Solo abre cuando presionas a Rena o el timbre.
+══════════════════════════════════════════════════════ -->
+<div class="overlay" id="modal-rena" role="dialog" aria-modal="true">
+  <div class="modal">
+
+    <!-- Header marrón Rena Bot -->
+    <div class="modal-head">
+      <div class="modal-avatar">
+        <!--
+          REEMPLAZA por: <img src="assets/rena-avatar.png" alt="Rena">
+        -->
+        🐕
+      </div>
+      <div class="modal-head-info">
+        <div class="modal-head-name">Rena</div>
+        <div class="modal-head-sub">edithbojorquez.com</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('rena')" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Burbuja de diálogo con cola SVG -->
+      <div class="bubble-wrap">
+        <!-- Cola de la burbuja apuntando hacia Rena -->
+        <svg class="bubble-svg-tail" width="22" height="11" viewBox="0 0 22 11" aria-hidden="true">
+          <path d="M0,11 L10,0 L22,11 Z"
+            fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"
+            stroke-linejoin="round"/>
+        </svg>
+        <div class="bubble-box">
+          ¡<b>Guau!</b> 🐾 Bienvenido al museo. Soy <b>Rena</b>, la musa de Edith. <em>¡Grrr-enial que hayas venido!</em> ¿A qué sala te llevo, o prefieres explorar solo? <b>¡Woof!</b>
+        </div>
+      </div>
+
+      <p class="salas-label">¿A dónde vamos?</p>
+      <div class="salas-grid">
+        <button class="sala-btn" onclick="irA('galeria')">
+          <span class="sb-num">Sala 01</span>
+          <span class="sb-name">Galería de los Inmortales</span>
+          <span class="sb-desc">Retratos reales de mascotas</span>
+        </button>
+        <button class="sala-btn" onclick="irA('boutique')">
+          <span class="sb-num">Sala 02</span>
+          <span class="sb-name">La Boutique</span>
+          <span class="sb-desc">Productos + probador mágico</span>
+        </button>
+        <button class="sala-btn" onclick="irA('taller')">
+          <span class="sb-num">Sala 03</span>
+          <span class="sb-name">El Taller de Edith</span>
+          <span class="sb-desc">El proceso del retrato</span>
+        </button>
+        <button class="sala-btn" onclick="irA('biblioteca')">
+          <span class="sb-num">Sala 05</span>
+          <span class="sb-name">Biblioteca de Cuidados</span>
+          <span class="sb-desc">Cómo cuidar tu producto</span>
+        </button>
+        <button class="sala-btn" onclick="irA('altar')">
+          <span class="sb-num">Sala 04</span>
+          <span class="sb-name">Altar de los Recuerdos</span>
+          <span class="sb-desc">Para mascotas que ya no están</span>
+        </button>
+        <button class="sala-btn" onclick="closeModal('rena')"
+          style="border-style:dashed; opacity:.6;">
+          <span class="sb-num">→</span>
+          <span class="sb-name">Explorar solo</span>
+          <span class="sb-desc">Cerrar y seguir mirando</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+  MODAL — PUERTA
+  Se rellena dinámicamente. Burbuja con voz de Rena por sala.
+══════════════════════════════════════════════════════ -->
+<div class="overlay" id="modal-door" role="dialog" aria-modal="true">
+  <div class="modal">
+
+    <div class="modal-head">
+      <div class="modal-avatar" id="door-icon">🐕</div>
+      <div class="modal-head-info">
+        <div class="modal-head-name">Rena</div>
+        <div class="modal-head-sub" id="door-num-head"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('door')" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="door-sala-num" id="door-num"></div>
+      <div class="door-sala-name" id="door-name"></div>
+      <div class="door-divider"></div>
+
+      <!-- Burbuja con voz de Rena para esta sala -->
+      <div class="bubble-wrap">
+        <svg class="bubble-svg-tail" width="22" height="11" viewBox="0 0 22 11" aria-hidden="true">
+          <path d="M0,11 L10,0 L22,11 Z"
+            fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"
+            stroke-linejoin="round"/>
+        </svg>
+        <div class="bubble-box" id="door-rena-msg"></div>
+      </div>
+
+      <button class="door-cta" onclick="irADesdeModal()">Entrar a esta sala →</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+  MODAL — MENÚ (hamburguesa)
+  Con voz de Rena en el header y lista de salas.
+══════════════════════════════════════════════════════ -->
+<div class="overlay" id="modal-menu" role="dialog" aria-modal="true">
+  <div class="modal">
+
+    <div class="modal-head">
+      <div class="modal-avatar">🐕</div>
+      <div class="modal-head-info">
+        <div class="modal-head-name">Rena</div>
+        <div class="modal-head-sub">Encuentra tu sala</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('menu')" aria-label="Cerrar">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- Burbuja Rena en el menú -->
+      <div class="bubble-wrap">
+        <svg class="bubble-svg-tail" width="22" height="11" viewBox="0 0 22 11" aria-hidden="true">
+          <path d="M0,11 L10,0 L22,11 Z"
+            fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"
+            stroke-linejoin="round"/>
+        </svg>
+        <div class="bubble-box">
+          <b>¡Arf!</b> 🐾 ¿Ya sabes a dónde quieres ir? <em>¡Grrr-enial, elige y te llevo!</em>
+        </div>
+      </div>
+
+      <div class="menu-list">
+        <button class="menu-item" onclick="irA('galeria')">
+          <div class="mi-num">01</div>
+          <div class="mi-info">
+            <div class="mi-name">Galería de los Inmortales</div>
+            <div class="mi-desc">Retratos reales de mascotas</div>
+          </div>
+          <div class="mi-arrow">→</div>
+        </button>
+        <button class="menu-item" onclick="irA('boutique')">
+          <div class="mi-num">02</div>
+          <div class="mi-info">
+            <div class="mi-name">La Boutique</div>
+            <div class="mi-desc">Productos + Probador Mágico</div>
+          </div>
+          <div class="mi-arrow">→</div>
+        </button>
+        <button class="menu-item" onclick="irA('taller')">
+          <div class="mi-num">03</div>
+          <div class="mi-info">
+            <div class="mi-name">El Taller de Edith</div>
+            <div class="mi-desc">El proceso del retrato</div>
+          </div>
+          <div class="mi-arrow">→</div>
+        </button>
+        <button class="menu-item" onclick="irA('biblioteca')">
+          <div class="mi-num">05</div>
+          <div class="mi-info">
+            <div class="mi-name">Biblioteca de Cuidados</div>
+            <div class="mi-desc">Instrucciones por producto</div>
+          </div>
+          <div class="mi-arrow">→</div>
+        </button>
+        <button class="menu-item" onclick="irA('altar')">
+          <div class="mi-num">04</div>
+          <div class="mi-info">
+            <div class="mi-name">Altar de los Recuerdos</div>
+            <div class="mi-desc">Para mascotas que ya no están</div>
+          </div>
+          <div class="mi-arrow">→</div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ════════════════════════════
+   DATOS DE SALAS + VOZ DE RENA
+════════════════════════════ */
+const SALAS = {
+  galeria: {
+    num: 'Sala 01', name: 'Galería de los Inmortales', icon: '🖼',
+    url: 'galeria.html',
+    rena: '¡<b>Woof woof!</b> 🐾 Esta es mi sala favorita. Aquí están <b>todos los retratos reales</b> que Edith ha hecho. Cada marco tiene nombre, producto y ciudad. Si ya recibiste tu pedido... <em>¡tu mascota puede estar aquí también!</em> <b>¡Grrr-enial!</b>'
+  },
+  boutique: {
+    num: 'Sala 02', name: 'La Boutique', icon: '🛍',
+    url: 'boutique.html',
+    rena: '¡<b>Guau</b>, esta sala me encanta! 🐾 Aquí encuentras <b>todos los productos de Pigmentos.pet</b>: tazas, lienzos, placas, termos y más. También está el <b>Probador Mágico</b> — sube la foto de tu mascota y ve cómo quedaría. <em>¡Y yo te ayudo a elegir el perfecto!</em> 🐕'
+  },
+  taller: {
+    num: 'Sala 03', name: 'El Taller de Edith', icon: '🎨',
+    url: 'taller.html',
+    rena: '<em>Grrr</em>... ¿curiosos? 👀 En esta sala puedes ver <b>cómo Edith hace cada retrato</b>, desde la foto que mandas hasta el producto final. ¿Alguna vez te preguntaste "¿quedará bien"? Aquí tienes la respuesta. <b>¡Spoiler: siempre queda woof-derful!</b> 🎨'
+  },
+  biblioteca: {
+    num: 'Sala 05', name: 'Biblioteca de Cuidados', icon: '📚',
+    url: 'biblioteca.html',
+    rena: '¡<b>Arf!</b> ¿Ya tienes tu producto Pigmentos? 📚 Esta sala te dice <b>exactamente cómo cuidarlo</b> para que dure mucho tiempo. Hay libros por categoría: bebidas, lienzos, accesorios... <em>¡Grrr-antizado que no lo arruinarás!</em> 🐾'
+  },
+  altar: {
+    num: 'Sala 04', name: 'Altar de los Recuerdos', icon: '🕯',
+    url: 'altar.html',
+    rena: '🕯 Esta sala es muy especial. Aquí <b>las mascotas que ya no están siguen presentes</b>. Sus retratos tienen un lugar permanente, con luz y cariño. <em>Se entra despacio y con el corazón abierto.</em> Edith elige quién entra — una vez al año abre convocatoria. 🌸'
+  }
+};
+
+let doorTarget = null;
+
+/* ════════════════════════════
+   SCROLL HORIZONTAL
+════════════════════════════ */
+const sw = document.getElementById('sw');
+
+// Rueda → horizontal
+sw.addEventListener('wheel', e => {
+  e.preventDefault();
+  sw.scrollLeft += e.deltaY * 1.3;
+}, { passive: false });
+
+// Drag con mouse
+let isDrag = false, sX = 0, sL = 0;
+sw.addEventListener('mousedown', e => {
+  isDrag = true; sX = e.pageX; sL = sw.scrollLeft;
+  sw.style.cursor = 'grabbing';
+});
+window.addEventListener('mousemove', e => {
+  if (!isDrag) return;
+  sw.scrollLeft = sL - (e.pageX - sX);
+});
+window.addEventListener('mouseup', () => { isDrag = false; sw.style.cursor = 'grab'; });
+
+// Touch / swipe
+let tX = 0;
+sw.addEventListener('touchstart', e => { tX = e.touches[0].clientX; }, { passive: true });
+sw.addEventListener('touchmove', e => {
+  sw.scrollLeft += (tX - e.touches[0].clientX) * 1.05;
+  tX = e.touches[0].clientX;
+}, { passive: true });
+
+// Posición inicial: Rena visible (x=0)
+window.addEventListener('load', () => {
+  sw.scrollLeft = 0;
+  updateDots();
+});
+
+/* ─ Dots ─ */
+const ZONES = [
+  'Rena · Bienvenida',
+  'Galería · Boutique',
+  'Taller · Biblioteca · Altar',
+  'Continúa el recorrido →'
+];
+function updateDots() {
+  const max = sw.scrollWidth - sw.clientWidth;
+  const pct = max > 0 ? sw.scrollLeft / max : 0;
+  const z = pct < 0.25 ? 0 : pct < 0.50 ? 1 : pct < 0.75 ? 2 : 3;
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === z));
+  document.getElementById('dlabel').textContent = ZONES[z];
+}
+sw.addEventListener('scroll', updateDots, { passive: true });
+
+/* ════════════════════════════
+   MODALES
+════════════════════════════ */
+function openModal(id) {
+  document.getElementById('modal-' + id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById('modal-' + id).classList.remove('open');
+}
+
+// Cerrar al tocar el fondo
+document.querySelectorAll('.overlay').forEach(o => {
+  o.addEventListener('click', e => {
+    if (e.target === o) o.classList.remove('open');
+  });
+});
+// ESC
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape')
+    document.querySelectorAll('.overlay.open').forEach(o => o.classList.remove('open'));
+});
+
+/* ─ Abrir puerta ─ */
+function openDoor(key) {
+  const s = SALAS[key];
+  if (!s) return;
+  doorTarget = s.url;
+  document.getElementById('door-icon').textContent = s.icon;
+  document.getElementById('door-num-head').textContent = s.num;
+  document.getElementById('door-num').textContent = s.num;
+  document.getElementById('door-name').textContent = s.name;
+  document.getElementById('door-rena-msg').innerHTML = s.rena;
+  openModal('door');
+}
+
+function irADesdeModal() {
+  if (doorTarget) window.location.href = doorTarget;
+  else closeModal('door');
+}
+
+/* ─ Navegar desde Rena o menú ─ */
+function irA(key) {
+  closeModal('rena');
+  closeModal('menu');
+  const s = SALAS[key];
+  if (s?.url) setTimeout(() => { window.location.href = s.url; }, 150);
+}
+</script>
+</body>
+</html>
