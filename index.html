@@ -314,7 +314,7 @@ window.addEventListener('mousemove',e=>{if(!isDrag)return;sw.scrollLeft=sL-(e.pa
 window.addEventListener('mouseup',()=>{isDrag=false;sw.style.cursor='grab';});
 let tX=0;
 sw.addEventListener('touchstart',e=>{tX=e.touches[0].clientX;},{passive:true});
-sw.addEventListener('touchmove',e=>{sw.scrollLeft+=(tX-e.touches[0].clientX)*1.05;tX=e.touches[0].clientX;},{passive:true});
+sw.addEventListener('touchmove',e=>{sw.scrollLeft+=(tX-e.touches[0].clientX)*2.5;tX=e.touches[0].clientX;},{passive:true});
 
 /* DOTS */
 const ZONES=['Rena · Bienvenida','Galería · Boutique · Taller','Biblioteca · Altar · Salida'];
