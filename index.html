@@ -6,125 +6,112 @@
 <title>Museo Pigmentos.pet</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --brand:    #C17B4A;
-  --brand-dk: #9A5E33;
-  --brand-lt: #D9A07A;
-  --cream:    #FDF6EE;
-  --cream-dk: #F5E9D8;
-  --ink:      #3D2010;
-  --ink-lt:   #7A4820;
-  --font:     'Nunito', sans-serif;
-  --font-ttl: 'Cormorant Garamond', serif;
+:root{
+  --brand:#C17B4A; --brand-dk:#9A5E33; --brand-lt:#D9A07A;
+  --cream:#FDF6EE; --cream-dk:#F5E9D8; --ink:#3D2010; --ink-lt:#7A4820;
+  --font:'Nunito',sans-serif; --font-ttl:'Cormorant Garamond',serif;
 }
-*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
-html, body { width:100%; height:100%; overflow:hidden; background:#5C3820; font-family:var(--font); -webkit-tap-highlight-color:transparent; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:var(--font);-webkit-tap-highlight-color:transparent;}
 
 /* NAV */
-.nav { position:fixed; top:0; left:0; right:0; height:50px; background:var(--brand); display:flex; align-items:center; justify-content:space-between; padding:0 16px; z-index:300; box-shadow:0 2px 8px rgba(0,0,0,.2); }
-.nav-logo { font-family:var(--font-ttl); font-size:15px; font-weight:600; color:var(--cream); letter-spacing:.12em; text-transform:uppercase; }
-.nav-menu-btn { background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.28); border-radius:8px; padding:8px 10px; cursor:pointer; display:flex; flex-direction:column; gap:4px; }
-.nav-menu-btn span { display:block; width:18px; height:2px; background:var(--cream); border-radius:1px; }
+.nav{position:fixed;top:0;left:0;right:0;height:50px;background:var(--brand);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.nav-logo{font-family:var(--font-ttl);font-size:15px;font-weight:600;color:var(--cream);letter-spacing:.12em;text-transform:uppercase;}
+.nav-menu-btn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:4px;}
+.nav-menu-btn span{display:block;width:18px;height:2px;background:var(--cream);border-radius:1px;}
 
-/* SCROLL */
-#sw { position:fixed; top:50px; left:0; right:0; bottom:0; overflow-x:scroll; overflow-y:hidden; cursor:grab; -webkit-overflow-scrolling:touch; user-select:none; }
-#sw:active { cursor:grabbing; }
-#sw::-webkit-scrollbar { display:none; }
+/* SCROLL WRAPPER */
+#sw{position:fixed;top:50px;left:0;right:0;bottom:0;overflow-x:scroll;overflow-y:hidden;cursor:grab;-webkit-overflow-scrolling:touch;user-select:none;scroll-behavior:auto;}
+#sw:active{cursor:grabbing;}
+#sw::-webkit-scrollbar{display:none;}
 
-/* ESCENA
-   Tu imagen mide 5400×1080px.
-   background-size: auto 100% → se escala para llenar
-   el alto del viewport. El ancho sobrante se scrollea.
-   Los hotspots usan PORCENTAJES sobre 5400×1080
-   para que coincidan en cualquier tamaño de pantalla. */
-#scene {
+/* ESCENA — fondo panorámico */
+#scene{
   position:relative;
   width:5400px;
   height:100%;
-  background-image: url('vestibulo-bg.PNG');
-  background-size: auto 100%;
-  background-position: left top;
-  background-repeat: no-repeat;
-  background-color: #F2DFC4;
+  background-image:url('vestibulo-bg.PNG');
+  background-size:auto 100%;
+  background-position:left top;
+  background-repeat:no-repeat;
+  background-color:#F2DFC4;
 }
 
-/* HOTSPOT — invisible, cubre el objeto dibujado */
-.hs {
+/* IMAGEN POSICIONADA — cada PNG encima del fondo
+   Usa porcentajes sobre 5400×1080 para escalar bien
+   en cualquier pantalla. */
+.img-layer{
+  position:absolute;
+  pointer-events:none; /* el .hs encima captura el click */
+}
+.img-layer img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:bottom;
+  display:block;
+}
+
+/* HOTSPOT — área invisible clickable encima de cada imagen */
+.hs{
   position:absolute;
   background:transparent;
-  border:none; padding:0;
-  cursor:pointer; border-radius:4px;
+  border:none;padding:0;
+  cursor:pointer;
   -webkit-tap-highlight-color:rgba(193,123,74,.15);
-  transition:background .18s;
+  z-index:10;
 }
-.hs:hover { background:rgba(193,123,74,.09); }
-.hs:focus { outline:2px solid rgba(193,123,74,.4); outline-offset:2px; }
-@media (hover:hover) {
-  .hs[data-tip]::after {
-    content:attr(data-tip); position:absolute; bottom:calc(100% + 6px); left:50%; transform:translateX(-50%);
-    background:var(--ink); color:#E4B84A; font-family:var(--font); font-size:10px; font-weight:700;
-    letter-spacing:.1em; text-transform:uppercase; padding:4px 10px; border-radius:4px;
-    white-space:nowrap; pointer-events:none; opacity:0; transition:opacity .18s;
-  }
-  .hs:hover[data-tip]::after { opacity:1; }
-}
+.hs:hover{background:rgba(193,123,74,.08);}
+.hs:focus{outline:2px solid rgba(193,123,74,.4);outline-offset:2px;}
 
 /* DOTS */
-.dots { position:fixed; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:5px; z-index:300; }
-.dot { width:5px; height:5px; border-radius:50%; background:rgba(253,246,238,.2); border:1px solid rgba(253,246,238,.35); transition:all .3s; }
-.dot.on { width:20px; border-radius:3px; background:rgba(253,246,238,.75); }
-.dot-label { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); font-size:9px; letter-spacing:.18em; text-transform:uppercase; color:rgba(253,246,238,.45); white-space:nowrap; z-index:300; }
+.dots{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:300;}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(253,246,238,.2);border:1px solid rgba(253,246,238,.35);transition:all .3s;}
+.dot.on{width:20px;border-radius:3px;background:rgba(253,246,238,.75);}
+.dot-label{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(253,246,238,.45);white-space:nowrap;z-index:300;}
 
 /* OVERLAY */
-.overlay { display:none; position:fixed; inset:0; background:rgba(40,18,6,.7); z-index:400; align-items:flex-end; justify-content:center; }
-.overlay.open { display:flex; }
-@media (min-width:600px) { .overlay { align-items:center; } }
+.overlay{display:none;position:fixed;inset:0;background:rgba(40,18,6,.7);z-index:400;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+@media(min-width:600px){.overlay{align-items:center;}}
 
 /* MODAL */
-.modal { background:var(--cream); border-radius:20px 20px 0 0; width:100%; max-width:420px; max-height:90vh; overflow-y:auto; animation:sUp .22s ease; }
-@media (min-width:600px) { .modal { border-radius:20px; width:90%; } }
-@keyframes sUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
-.modal-head { background:var(--brand); border-radius:20px 20px 0 0; padding:14px 16px 12px; display:flex; align-items:center; gap:12px; position:relative; }
-.modal-avatar { width:50px; height:50px; border-radius:50%; border:2px solid rgba(255,255,255,.35); background:var(--cream-dk); flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:24px; }
-.modal-avatar img { width:100%; height:100%; object-fit:cover; }
-.modal-head-name { font-size:15px; font-weight:800; color:var(--cream); line-height:1.1; }
-.modal-head-sub  { font-size:11px; color:rgba(253,246,238,.72); }
-.modal-close { position:absolute; top:12px; right:12px; background:rgba(255,255,255,.18); border:none; width:28px; height:28px; border-radius:50%; color:var(--cream); font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.modal-close:hover { background:rgba(255,255,255,.3); }
-.modal-body { padding:16px 16px 24px; }
-
-/* Burbuja */
-.bubble-wrap { margin-bottom:14px; }
-.bubble-tail  { display:block; margin-left:18px; margin-top:-1px; }
-.bubble-box { background:var(--cream-dk); border:1.5px solid rgba(193,123,74,.2); border-radius:4px 16px 16px 16px; padding:12px 14px; font-size:14px; line-height:1.65; color:var(--ink); }
-.bubble-box b  { font-weight:800; color:var(--brand-dk); }
-.bubble-box em { font-style:italic; color:var(--brand); }
-
-/* Grilla salas */
-.salas-label { font-size:10px; font-weight:700; color:var(--brand-dk); letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
-.salas-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
-.sala-btn { display:flex; flex-direction:column; gap:2px; padding:10px 11px; background:white; border:1.5px solid rgba(193,123,74,.22); border-radius:12px; cursor:pointer; text-align:left; font-family:var(--font); transition:all .15s; }
-.sala-btn:hover { background:var(--cream-dk); border-color:var(--brand-lt); }
-.sala-btn:active { transform:scale(.97); }
-.sb-num  { font-size:9px; color:var(--brand); font-weight:700; letter-spacing:.1em; }
-.sb-name { font-size:12px; font-weight:800; color:var(--ink); line-height:1.2; }
-.sb-desc { font-size:10px; color:var(--ink-lt); line-height:1.3; }
-
-/* Modal puerta */
-.door-num  { font-size:9px; font-weight:700; color:var(--brand); letter-spacing:.15em; text-transform:uppercase; margin-bottom:2px; }
-.door-name { font-family:var(--font-ttl); font-size:22px; font-weight:600; color:var(--ink); margin-bottom:12px; line-height:1.1; }
-.door-line { height:1.5px; background:linear-gradient(90deg,var(--brand-lt),transparent); margin-bottom:14px; }
-.door-cta { display:block; width:100%; padding:13px; background:var(--brand); color:var(--cream); font-family:var(--font); font-size:13px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; border:none; border-radius:12px; cursor:pointer; margin-top:16px; transition:background .15s; }
-.door-cta:hover { background:var(--brand-dk); }
-
-/* Menú */
-.menu-list { display:flex; flex-direction:column; gap:6px; }
-.menu-item { display:flex; align-items:center; gap:12px; padding:12px 13px; background:white; border:1.5px solid rgba(193,123,74,.2); border-radius:12px; cursor:pointer; font-family:var(--font); width:100%; text-align:left; transition:all .15s; }
-.menu-item:hover { background:var(--cream-dk); border-color:var(--brand-lt); }
-.mi-num { width:30px; height:30px; border-radius:50%; background:var(--cream-dk); border:1.5px solid rgba(193,123,74,.25); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:var(--brand-dk); flex-shrink:0; }
-.mi-name  { font-size:13px; font-weight:800; color:var(--ink); }
-.mi-desc  { font-size:11px; color:var(--ink-lt); }
-.mi-arrow { font-size:14px; color:rgba(193,123,74,.5); margin-left:auto; }
+.modal{background:var(--cream);border-radius:20px 20px 0 0;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;animation:sUp .22s ease;}
+@media(min-width:600px){.modal{border-radius:20px;width:90%;}}
+@keyframes sUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{background:var(--brand);border-radius:20px 20px 0 0;padding:14px 16px 12px;display:flex;align-items:center;gap:12px;position:relative;}
+.modal-avatar{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:var(--cream-dk);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.modal-avatar img{width:100%;height:100%;object-fit:cover;}
+.modal-head-name{font-size:15px;font-weight:800;color:var(--cream);line-height:1.1;}
+.modal-head-sub{font-size:11px;color:rgba(253,246,238,.72);}
+.modal-close{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.18);border:none;width:28px;height:28px;border-radius:50%;color:var(--cream);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:rgba(255,255,255,.3);}
+.modal-body{padding:16px 16px 24px;}
+.bubble-wrap{margin-bottom:14px;}
+.bubble-tail{display:block;margin-left:18px;margin-top:-1px;}
+.bubble-box{background:var(--cream-dk);border:1.5px solid rgba(193,123,74,.2);border-radius:4px 16px 16px 16px;padding:12px 14px;font-size:14px;line-height:1.65;color:var(--ink);}
+.bubble-box b{font-weight:800;color:var(--brand-dk);}
+.bubble-box em{font-style:italic;color:var(--brand);}
+.salas-label{font-size:10px;font-weight:700;color:var(--brand-dk);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
+.salas-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.sala-btn{display:flex;flex-direction:column;gap:2px;padding:10px 11px;background:white;border:1.5px solid rgba(193,123,74,.22);border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:all .15s;}
+.sala-btn:hover{background:var(--cream-dk);border-color:var(--brand-lt);}
+.sala-btn:active{transform:scale(.97);}
+.sb-num{font-size:9px;color:var(--brand);font-weight:700;letter-spacing:.1em;}
+.sb-name{font-size:12px;font-weight:800;color:var(--ink);line-height:1.2;}
+.sb-desc{font-size:10px;color:var(--ink-lt);line-height:1.3;}
+.door-num{font-size:9px;font-weight:700;color:var(--brand);letter-spacing:.15em;text-transform:uppercase;margin-bottom:2px;}
+.door-name{font-family:var(--font-ttl);font-size:22px;font-weight:600;color:var(--ink);margin-bottom:12px;line-height:1.1;}
+.door-line{height:1.5px;background:linear-gradient(90deg,var(--brand-lt),transparent);margin-bottom:14px;}
+.door-cta{display:block;width:100%;padding:13px;background:var(--brand);color:var(--cream);font-family:var(--font);font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;margin-top:16px;transition:background .15s;}
+.door-cta:hover{background:var(--brand-dk);}
+.menu-list{display:flex;flex-direction:column;gap:6px;}
+.menu-item{display:flex;align-items:center;gap:12px;padding:12px 13px;background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:12px;cursor:pointer;font-family:var(--font);width:100%;text-align:left;transition:all .15s;}
+.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt);}
+.mi-num{width:30px;height:30px;border-radius:50%;background:var(--cream-dk);border:1.5px solid rgba(193,123,74,.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--brand-dk);flex-shrink:0;}
+.mi-name{font-size:13px;font-weight:800;color:var(--ink);}
+.mi-desc{font-size:11px;color:var(--ink-lt);}
+.mi-arrow{font-size:14px;color:rgba(193,123,74,.5);margin-left:auto;}
 </style>
 </head>
 <body>
@@ -139,80 +126,100 @@ html, body { width:100%; height:100%; overflow:hidden; background:#5C3820; font-
 <div id="sw"><div id="scene">
 
   <!--
-  ════════════════════════════════════════════════════
-  HOTSPOTS — áreas invisibles sobre tu ilustración.
-  Valores en % calculados sobre 5400 × 1080 px.
+  ═══════════════════════════════════════════════════════
+  CÓMO FUNCIONA:
+  1. El fondo (vestibulo-bg.PNG) se muestra via CSS background
+  2. Cada PNG separado va como .img-layer (visible, sin clicks)
+  3. Encima de cada .img-layer hay un .hs invisible (clickable)
 
-  Si un hotspot no queda justo sobre el objeto:
-    1. Abre el index.html con el navegador
-    2. Activa las líneas de depuración (debug=true abajo)
-    3. Ajusta el % y vuelve a subir.
-  ════════════════════════════════════════════════════
+  TODOS LOS VALORES SON % SOBRE 5400×1080px
+  Si algo no coincide: ajusta el % y sube de nuevo.
+
+  FÓRMULA:
+    left   = (x_px / 5400) * 100 %
+    top    = (y_px / 1080) * 100 %
+    width  = (w_px / 5400) * 100 %
+    height = (h_px / 1080) * 100 %
+  ═══════════════════════════════════════════════════════
   -->
 
-  <!-- RENA sentada — izquierda del mostrador -->
-  <!-- Medida en imagen: x≈340 y≈600 w≈270 h≈440 -->
-  <button class="hs"
-    style="left:6.3%; top:55.6%; width:5%; height:40.7%;"
-    data-tip="¡Habla con Rena!"
-    onclick="openModal('rena')" aria-label="Hablar con Rena">
-  </button>
+  <!-- ══ MOSTRADOR ══ -->
+  <div class="img-layer" style="left:2.8%;top:52%;width:11%;height:45%;">
+    <img src="mostrador.PNG" alt="">
+  </div>
 
-  <!-- LAPTOP sobre el mostrador (clic alternativo para Rena) -->
-  <!-- Medida en imagen: x≈305 y≈460 w≈220 h≈190 -->
-  <button class="hs"
-    style="left:5.6%; top:42.6%; width:4.1%; height:17.6%;"
-    data-tip="Llamar a Rena 🔔"
-    onclick="openModal('rena')" aria-label="Llamar a Rena">
-  </button>
+  <!-- ══ RENA — imagen visible ══ -->
+  <div class="img-layer" style="left:3.5%;top:35%;width:8%;height:62%;">
+    <img src="rena-vestibulo.PNG" alt="Rena">
+  </div>
+  <!-- hotspot clickable sobre Rena -->
+  <button class="hs" style="left:3.5%;top:35%;width:8%;height:62%;"
+    onclick="openModal('rena')" aria-label="Hablar con Rena"></button>
 
-  <!-- PUERTA GALERÍA 01 -->
-  <!-- Medida en imagen: x≈790 y≈20 w≈710 h≈920 -->
-  <button class="hs"
-    style="left:14.6%; top:1.9%; width:13.1%; height:85.2%;"
-    data-tip="Galería de los Inmortales"
-    onclick="openDoor('galeria')" aria-label="Sala 01">
-  </button>
+  <!-- ══ TIMBRE ══ -->
+  <div class="img-layer" style="left:8.5%;top:42%;width:3.5%;height:18%;">
+    <img src="timbre.PNG" alt="">
+  </div>
+  <!-- hotspot clickable sobre el timbre -->
+  <button class="hs" style="left:8.5%;top:42%;width:3.5%;height:18%;"
+    onclick="openModal('rena')" aria-label="Llamar a Rena"></button>
 
-  <!-- PUERTA BOUTIQUE 02 -->
-  <!-- Medida en imagen: x≈1565 y≈20 w≈710 h≈920 -->
-  <button class="hs"
-    style="left:29%; top:1.9%; width:13.1%; height:85.2%;"
-    data-tip="La Boutique"
-    onclick="openDoor('boutique')" aria-label="Sala 02">
-  </button>
+  <!-- ══ PLANTA 01 ══ -->
+  <div class="img-layer" style="left:12%;top:30%;width:5%;height:67%;">
+    <img src="planta-01.PNG" alt="">
+  </div>
 
-  <!-- PUERTA TALLER 03 -->
-  <!-- Medida en imagen: x≈2340 y≈20 w≈710 h≈920 -->
-  <button class="hs"
-    style="left:43.3%; top:1.9%; width:13.1%; height:85.2%;"
-    data-tip="El Taller de Edith"
-    onclick="openDoor('taller')" aria-label="Sala 03">
-  </button>
+  <!-- ══ PUERTA GALERÍA 01 ══ -->
+  <div class="img-layer" style="left:14.6%;top:2%;width:13%;height:85%;">
+    <img src="puerta-galeria.PNG" alt="Galería">
+  </div>
+  <button class="hs" style="left:14.6%;top:2%;width:13%;height:85%;"
+    onclick="openDoor('galeria')" aria-label="Sala 01 Galería"></button>
 
-  <!-- PUERTA BIBLIOTECA 05 -->
-  <!-- Medida en imagen: x≈3115 y≈20 w≈710 h≈920 -->
-  <button class="hs"
-    style="left:57.7%; top:1.9%; width:13.1%; height:85.2%;"
-    data-tip="Biblioteca de Cuidados"
-    onclick="openDoor('biblioteca')" aria-label="Sala 05">
-  </button>
+  <!-- ══ PUERTA BOUTIQUE 02 ══ -->
+  <div class="img-layer" style="left:29%;top:2%;width:13%;height:85%;">
+    <img src="puerta-boutique.PNG" alt="Boutique">
+  </div>
+  <button class="hs" style="left:29%;top:2%;width:13%;height:85%;"
+    onclick="openDoor('boutique')" aria-label="Sala 02 Boutique"></button>
 
-  <!-- PUERTA ALTAR 04 -->
-  <!-- Medida en imagen: x≈3890 y≈20 w≈710 h≈920 -->
-  <button class="hs"
-    style="left:72%; top:1.9%; width:13.1%; height:85.2%;"
-    data-tip="Altar de los Recuerdos"
-    onclick="openDoor('altar')" aria-label="Sala 04">
-  </button>
+  <!-- ══ PLANTA 02 ══ -->
+  <div class="img-layer" style="left:42%;top:30%;width:5%;height:67%;">
+    <img src="planta-02.PNG" alt="">
+  </div>
 
-  <!-- ARCO DE SALIDA -->
-  <!-- Medida en imagen: x≈4680 y≈0 w≈720 h≈1080 -->
-  <button class="hs"
-    style="left:86.7%; top:0; width:13.3%; height:100%;"
-    data-tip="Continuar recorrido →"
-    onclick="openDoor('galeria')" aria-label="Continuar">
-  </button>
+  <!-- ══ PUERTA TALLER 03 ══ -->
+  <div class="img-layer" style="left:43.3%;top:2%;width:13%;height:85%;">
+    <img src="puerta-taller.PNG" alt="Taller">
+  </div>
+  <button class="hs" style="left:43.3%;top:2%;width:13%;height:85%;"
+    onclick="openDoor('taller')" aria-label="Sala 03 Taller"></button>
+
+  <!-- ══ PUERTA BIBLIOTECA 05 ══ -->
+  <div class="img-layer" style="left:57.7%;top:2%;width:13%;height:85%;">
+    <img src="puerta-biblioteca.PNG" alt="Biblioteca">
+  </div>
+  <button class="hs" style="left:57.7%;top:2%;width:13%;height:85%;"
+    onclick="openDoor('biblioteca')" aria-label="Sala 05 Biblioteca"></button>
+
+  <!-- ══ PLANTA 03 ══ -->
+  <div class="img-layer" style="left:71%;top:30%;width:5%;height:67%;">
+    <img src="planta-03.PNG" alt="">
+  </div>
+
+  <!-- ══ PUERTA ALTAR 04 ══ -->
+  <div class="img-layer" style="left:72%;top:2%;width:13%;height:85%;">
+    <img src="puerta-altar.PNG" alt="Altar">
+  </div>
+  <button class="hs" style="left:72%;top:2%;width:13%;height:85%;"
+    onclick="openDoor('altar')" aria-label="Sala 04 Altar"></button>
+
+  <!-- ══ ARCO DE SALIDA ══ -->
+  <div class="img-layer" style="left:86.7%;top:0;width:13.3%;height:100%;">
+    <img src="arco-salida.PNG" alt="Salida">
+  </div>
+  <button class="hs" style="left:86.7%;top:0;width:13.3%;height:100%;"
+    onclick="openDoor('galeria')" aria-label="Continuar recorrido"></button>
 
 </div></div>
 
@@ -228,13 +235,13 @@ html, body { width:100%; height:100%; overflow:hidden; background:#5C3820; font-
 <div class="overlay" id="modal-rena" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-avatar"><img src="rena-avatar.PNG" alt="Rena" onerror="this.parentElement.textContent='🐕'"></div>
+      <div class="modal-avatar"><img src="rena-vestibulo.PNG" alt="Rena" onerror="this.parentElement.textContent='🐕'"></div>
       <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">edithbojorquez.com</div></div>
       <button class="modal-close" onclick="closeModal('rena')">✕</button>
     </div>
     <div class="modal-body">
       <div class="bubble-wrap">
-        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10" aria-hidden="true"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
         <div class="bubble-box">¡<b>Guau!</b> 🐾 Bienvenido al museo. Soy <b>Rena</b>, la musa de Edith. <em>¡Grrr-enial que hayas venido!</em> ¿A qué sala te llevo?</div>
       </div>
       <p class="salas-label">¿A dónde vamos?</p>
@@ -263,7 +270,7 @@ html, body { width:100%; height:100%; overflow:hidden; background:#5C3820; font-
       <div class="door-name" id="door-name"></div>
       <div class="door-line"></div>
       <div class="bubble-wrap">
-        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10" aria-hidden="true"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
         <div class="bubble-box" id="door-msg"></div>
       </div>
       <button class="door-cta" onclick="irADesdeModal()">Entrar a esta sala →</button>
@@ -275,13 +282,13 @@ html, body { width:100%; height:100%; overflow:hidden; background:#5C3820; font-
 <div class="overlay" id="modal-menu" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-avatar"><img src="rena-avatar.PNG" alt="Rena" onerror="this.parentElement.textContent='🐕'"></div>
+      <div class="modal-avatar"><img src="rena-vestibulo.PNG" alt="Rena" onerror="this.parentElement.textContent='🐕'"></div>
       <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Encuentra tu sala</div></div>
       <button class="modal-close" onclick="closeModal('menu')">✕</button>
     </div>
     <div class="modal-body">
       <div class="bubble-wrap">
-        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10" aria-hidden="true"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
         <div class="bubble-box"><b>¡Arf!</b> 🐾 ¿Ya sabes a dónde quieres ir? <em>¡Grrr-enial, elige y te llevo!</em></div>
       </div>
       <div class="menu-list">
@@ -296,25 +303,31 @@ html, body { width:100%; height:100%; overflow:hidden; background:#5C3820; font-
 </div>
 
 <script>
-const SALAS = {
-  galeria:   { num:'Sala 01', name:'Galería de los Inmortales', icon:'🖼', url:'galeria.html',   msg:'¡<b>Woof woof!</b> 🐾 Esta es mi sala favorita. Aquí están <b>todos los retratos reales</b> que Edith ha hecho. <em>¡Tu mascota puede estar aquí también!</em> <b>¡Grrr-enial!</b>' },
-  boutique:  { num:'Sala 02', name:'La Boutique',               icon:'🛍', url:'boutique.html',  msg:'¡<b>Guau</b>, esta sala me encanta! 🐾 Aquí encuentras <b>todos los productos de Pigmentos.pet</b> y el <b>Probador Mágico</b>. <em>¡Yo te ayudo a elegir el perfecto!</em> 🐕' },
-  taller:    { num:'Sala 03', name:'El Taller de Edith',         icon:'🎨', url:'taller.html',    msg:'<em>Grrr</em>... ¿curiosos? 👀 Aquí puedes ver <b>cómo Edith hace cada retrato</b> desde la foto hasta el producto final. <b>¡Siempre queda woof-derful!</b> 🎨' },
-  biblioteca:{ num:'Sala 05', name:'Biblioteca de Cuidados',     icon:'📚', url:'biblioteca.html',msg:'¡<b>Arf!</b> ¿Ya tienes tu producto? 📚 Esta sala te dice <b>cómo cuidarlo</b> para que dure mucho. <em>¡Grrr-antizado!</em> 🐾' },
-  altar:     { num:'Sala 04', name:'Altar de los Recuerdos',     icon:'🕯', url:'altar.html',     msg:'🕯 Esta sala es muy especial. Aquí <b>las mascotas que ya no están siguen presentes</b>. <em>Se entra despacio y con el corazón abierto.</em> 🌸' }
+const SALAS={
+  galeria:{num:'Sala 01',name:'Galería de los Inmortales',icon:'🖼',url:'galeria.html',msg:'¡<b>Woof woof!</b> 🐾 Esta es mi sala favorita. Aquí están <b>todos los retratos reales</b> que Edith ha hecho. <em>¡Tu mascota puede estar aquí también!</em> <b>¡Grrr-enial!</b>'},
+  boutique:{num:'Sala 02',name:'La Boutique',icon:'🛍',url:'boutique.html',msg:'¡<b>Guau</b>, esta sala me encanta! 🐾 Aquí encuentras <b>todos los productos de Pigmentos.pet</b> y el <b>Probador Mágico</b>. <em>¡Yo te ayudo a elegir el perfecto!</em> 🐕'},
+  taller:{num:'Sala 03',name:'El Taller de Edith',icon:'🎨',url:'taller.html',msg:'<em>Grrr</em>... ¿curiosos? 👀 Aquí puedes ver <b>cómo Edith hace cada retrato</b> desde la foto hasta el producto final. <b>¡Siempre queda woof-derful!</b> 🎨'},
+  biblioteca:{num:'Sala 05',name:'Biblioteca de Cuidados',icon:'📚',url:'biblioteca.html',msg:'¡<b>Arf!</b> ¿Ya tienes tu producto? 📚 Esta sala te dice <b>cómo cuidarlo</b> para que dure mucho. <em>¡Grrr-antizado!</em> 🐾'},
+  altar:{num:'Sala 04',name:'Altar de los Recuerdos',icon:'🕯',url:'altar.html',msg:'🕯 Esta sala es muy especial. Aquí <b>las mascotas que ya no están siguen presentes</b>. <em>Se entra despacio y con el corazón abierto.</em> 🌸'}
 };
-let doorTarget = null;
+let doorTarget=null;
 
-/* SCROLL */
-const sw = document.getElementById('sw');
-sw.addEventListener('wheel', e=>{ e.preventDefault(); sw.scrollLeft += e.deltaY*1.3; }, {passive:false});
+/* SCROLL — velocidad aumentada para móvil */
+const sw=document.getElementById('sw');
+sw.addEventListener('wheel',e=>{e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
+
 let isDrag=false,sX=0,sL=0;
 sw.addEventListener('mousedown',e=>{isDrag=true;sX=e.pageX;sL=sw.scrollLeft;sw.style.cursor='grabbing';});
 window.addEventListener('mousemove',e=>{if(!isDrag)return;sw.scrollLeft=sL-(e.pageX-sX);});
 window.addEventListener('mouseup',()=>{isDrag=false;sw.style.cursor='grab';});
-let tX=0;
-sw.addEventListener('touchstart',e=>{tX=e.touches[0].clientX;},{passive:true});
-sw.addEventListener('touchmove',e=>{sw.scrollLeft+=(tX-e.touches[0].clientX)*2.5;tX=e.touches[0].clientX;},{passive:true});
+
+/* Touch — multiplicador 3x para swipe ágil */
+let tX=0,tL=0;
+sw.addEventListener('touchstart',e=>{tX=e.touches[0].clientX;tL=sw.scrollLeft;},{passive:true});
+sw.addEventListener('touchmove',e=>{
+  const dx=(tX-e.touches[0].clientX)*3;
+  sw.scrollLeft=tL+dx;
+},{passive:true});
 
 /* DOTS */
 const ZONES=['Rena · Bienvenida','Galería · Boutique · Taller','Biblioteca · Altar · Salida'];
@@ -335,7 +348,7 @@ document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',e=>
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));});
 
 function openDoor(key){
-  const s=SALAS[key]; if(!s)return;
+  const s=SALAS[key];if(!s)return;
   doorTarget=s.url;
   document.getElementById('door-icon').textContent=s.icon;
   document.getElementById('door-num-sub').textContent=s.num;
