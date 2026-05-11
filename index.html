@@ -22,56 +22,48 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
 .nav-menu-btn span{display:block;width:18px;height:2px;background:var(--cream);border-radius:1px;}
 
 /* SCROLL WRAPPER */
-#sw{
-  position:fixed;
-  top:var(--nav);left:0;right:0;bottom:0;
-  overflow-x:scroll;overflow-y:hidden;
-  cursor:grab;
-  -webkit-overflow-scrolling:touch;
-  user-select:none;
-}
+#sw{position:fixed;top:var(--nav);left:0;right:0;bottom:0;overflow-x:scroll;overflow-y:hidden;cursor:grab;-webkit-overflow-scrolling:touch;user-select:none;}
 #sw:active{cursor:grabbing;}
 #sw::-webkit-scrollbar{display:none;}
 
 /* ESCENA
-   La imagen mide 5400×1080 → ratio = 5.
-   El alto del scene = alto del #sw = 100vh - 50px.
-   El ancho del scene = alto × 5 → la imagen llena perfectamente.
-   Se calcula en JS y se aplica como estilo inline.
+   Todos los PNGs son 5400×1080 → ratio 5:1
+   JS calcula: ancho = alto_disponible × 5
+   Así la imagen llena exactamente la pantalla.
 */
 #scene{
   position:relative;
-  /* width y height se setean por JS */
+  /* width y height los pone el JS */
   height:100%;
-  background-image:url('vestibulo-bg.PNG');
-  background-size:100% 100%; /* cubre exactamente el scene */
-  background-position:left top;
-  background-repeat:no-repeat;
-  background-color:#F2DFC4;
+  overflow:hidden;
 }
 
-/* CAPA DE IMAGEN — PNG encima del fondo, no clickable */
-.img-layer{
+/* FONDO Y CAPAS DE IMAGEN
+   Todos los PNGs son del mismo tamaño (5400×1080).
+   Se apilan en position:absolute, inset:0, width:100%, height:100%.
+   El orden en el HTML define cuál va encima.
+*/
+#scene img.layer{
   position:absolute;
-  pointer-events:none;
-}
-.img-layer img{
-  width:100%;height:100%;
-  object-fit:contain;
-  object-position:bottom;
+  top:0; left:0;
+  width:100%;
+  height:100%;
   display:block;
+  /* object-fit:fill para que coincida exactamente con el scene */
+  object-fit:fill;
 }
 
-/* HOTSPOT — invisible, clickable */
+/* HOTSPOT — invisible, encima de todo */
 .hs{
   position:absolute;
   background:transparent;
   border:none;padding:0;
   cursor:pointer;
-  z-index:10;
+  z-index:20;
   -webkit-tap-highlight-color:rgba(193,123,74,.15);
 }
 .hs:hover{background:rgba(193,123,74,.08);}
+.hs:focus{outline:2px solid rgba(193,123,74,.4);}
 
 /* DOTS */
 .dots{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:300;}
@@ -135,95 +127,85 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
 <div id="sw"><div id="scene">
 
   <!--
-  ═══════════════════════════════════════════════════════════
-  TODOS LOS VALORES SON PORCENTAJES SOBRE 5400 × 1080 px.
-  El JS calcula el ancho real del scene (alto × 5) y
-  los % se aplican sobre ese ancho → coinciden siempre.
+  ═══════════════════════════════════════════════════════
+  CAPAS DE IMAGEN — todos los PNG son 5400×1080.
+  Se apilan en orden, cada uno cubre el 100% del scene.
+  El JS ajusta el scene para que llene la pantalla exacto.
 
-  ESTRUCTURA por elemento:
-    .img-layer  → muestra el PNG (visible, sin click)
-    .hs encima  → área invisible clickable
-
-  Si algo no coincide: ajusta el left/top/width/height
-  y vuelve a subir el index.html.
-  ═══════════════════════════════════════════════════════════
+  HOTSPOTS (.hs) — invisibles encima de las imágenes.
+  Valores en % sobre 5400×1080:
+    left   = (x_px / 5400) × 100
+    top    = (y_px / 1080) × 100
+    width  = (w_px / 5400) × 100
+    height = (h_px / 1080) × 100
+  ═══════════════════════════════════════════════════════
   -->
 
-  <!-- MOSTRADOR -->
-  <div class="img-layer" style="left:2.8%;top:52%;width:11%;height:46%;">
-    <img src="mostrador.PNG" alt="">
-  </div>
+  <!-- CAPA 1: fondo del vestíbulo -->
+  <img class="layer" src="vestibulo-bg.PNG" alt="" style="z-index:1;">
 
-  <!-- RENA -->
-  <div class="img-layer" style="left:3.5%;top:33%;width:8%;height:65%;">
-    <img src="rena-vestibulo.PNG" alt="Rena">
-  </div>
-  <button class="hs" style="left:3.5%;top:33%;width:8%;height:65%;"
+  <!-- CAPA 2: mostrador -->
+  <img class="layer" src="mostrador.PNG" alt="" style="z-index:2;">
+
+  <!-- CAPA 3: Rena -->
+  <img class="layer" src="rena-vestibulo.PNG" alt="Rena" style="z-index:3;">
+
+  <!-- CAPA 4: timbre -->
+  <img class="layer" src="timbre.PNG" alt="" style="z-index:4;">
+
+  <!-- CAPA 5: planta 01 -->
+  <img class="layer" src="planta-01.PNG" alt="" style="z-index:5;">
+
+  <!-- CAPA 6: puertas -->
+  <img class="layer" src="puerta-galeria.PNG"   alt="" style="z-index:6;">
+  <img class="layer" src="puerta-boutique.PNG"  alt="" style="z-index:6;">
+  <img class="layer" src="puerta-taller.PNG"    alt="" style="z-index:6;">
+  <img class="layer" src="puerta-biblioteca.PNG" alt="" style="z-index:6;">
+  <img class="layer" src="puerta-altar.PNG"     alt="" style="z-index:6;">
+
+  <!-- CAPA 7: plantas 02 y 03 -->
+  <img class="layer" src="planta-02.PNG" alt="" style="z-index:7;">
+  <img class="layer" src="planta-03.PNG" alt="" style="z-index:7;">
+
+  <!-- CAPA 8: arco de salida -->
+  <img class="layer" src="arco-salida.PNG" alt="" style="z-index:8;">
+
+  <!--
+  HOTSPOTS — áreas clickables, encima de todo (z-index:20)
+  Ajusta los % si algo no coincide exactamente con tu dibujo.
+  -->
+
+  <!-- Rena: x=340 y=356 w=270 h=680 sobre 5400×1080 -->
+  <button class="hs" style="left:6.3%;top:33%;width:5%;height:63%;"
     onclick="openModal('rena')" aria-label="Hablar con Rena"></button>
 
-  <!-- TIMBRE -->
-  <div class="img-layer" style="left:9%;top:40%;width:3.5%;height:20%;">
-    <img src="timbre.PNG" alt="">
-  </div>
-  <button class="hs" style="left:9%;top:40%;width:3.5%;height:20%;"
+  <!-- Timbre / laptop: x=460 y=430 w=230 h=200 -->
+  <button class="hs" style="left:8.5%;top:40%;width:4.3%;height:18.5%;"
     onclick="openModal('rena')" aria-label="Llamar a Rena"></button>
 
-  <!-- PLANTA 01 -->
-  <div class="img-layer" style="left:12.2%;top:28%;width:4.5%;height:70%;">
-    <img src="planta-01.PNG" alt="">
-  </div>
-
-  <!-- PUERTA GALERÍA 01 -->
-  <div class="img-layer" style="left:14.6%;top:1.8%;width:13%;height:86%;">
-    <img src="puerta-galeria.PNG" alt="Galería">
-  </div>
-  <button class="hs" style="left:14.6%;top:1.8%;width:13%;height:86%;"
+  <!-- Puerta Galería 01: x=790 y=22 w=710 h=920 -->
+  <button class="hs" style="left:14.6%;top:2%;width:13.1%;height:85.2%;"
     onclick="openDoor('galeria')" aria-label="Sala 01 Galería"></button>
 
-  <!-- PUERTA BOUTIQUE 02 -->
-  <div class="img-layer" style="left:29%;top:1.8%;width:13%;height:86%;">
-    <img src="puerta-boutique.PNG" alt="Boutique">
-  </div>
-  <button class="hs" style="left:29%;top:1.8%;width:13%;height:86%;"
+  <!-- Puerta Boutique 02: x=1565 y=22 w=710 h=920 -->
+  <button class="hs" style="left:29%;top:2%;width:13.1%;height:85.2%;"
     onclick="openDoor('boutique')" aria-label="Sala 02 Boutique"></button>
 
-  <!-- PLANTA 02 -->
-  <div class="img-layer" style="left:42.2%;top:28%;width:4.5%;height:70%;">
-    <img src="planta-02.PNG" alt="">
-  </div>
-
-  <!-- PUERTA TALLER 03 -->
-  <div class="img-layer" style="left:43.3%;top:1.8%;width:13%;height:86%;">
-    <img src="puerta-taller.PNG" alt="Taller">
-  </div>
-  <button class="hs" style="left:43.3%;top:1.8%;width:13%;height:86%;"
+  <!-- Puerta Taller 03: x=2340 y=22 w=710 h=920 -->
+  <button class="hs" style="left:43.3%;top:2%;width:13.1%;height:85.2%;"
     onclick="openDoor('taller')" aria-label="Sala 03 Taller"></button>
 
-  <!-- PUERTA BIBLIOTECA 05 -->
-  <div class="img-layer" style="left:57.7%;top:1.8%;width:13%;height:86%;">
-    <img src="puerta-biblioteca.PNG" alt="Biblioteca">
-  </div>
-  <button class="hs" style="left:57.7%;top:1.8%;width:13%;height:86%;"
+  <!-- Puerta Biblioteca 05: x=3115 y=22 w=710 h=920 -->
+  <button class="hs" style="left:57.7%;top:2%;width:13.1%;height:85.2%;"
     onclick="openDoor('biblioteca')" aria-label="Sala 05 Biblioteca"></button>
 
-  <!-- PLANTA 03 -->
-  <div class="img-layer" style="left:71.2%;top:28%;width:4.5%;height:70%;">
-    <img src="planta-03.PNG" alt="">
-  </div>
-
-  <!-- PUERTA ALTAR 04 -->
-  <div class="img-layer" style="left:72%;top:1.8%;width:13%;height:86%;">
-    <img src="puerta-altar.PNG" alt="Altar">
-  </div>
-  <button class="hs" style="left:72%;top:1.8%;width:13%;height:86%;"
+  <!-- Puerta Altar 04: x=3890 y=22 w=710 h=920 -->
+  <button class="hs" style="left:72%;top:2%;width:13.1%;height:85.2%;"
     onclick="openDoor('altar')" aria-label="Sala 04 Altar"></button>
 
-  <!-- ARCO DE SALIDA -->
-  <div class="img-layer" style="left:86.7%;top:0;width:13.3%;height:100%;">
-    <img src="arco-salida.PNG" alt="Salida">
-  </div>
+  <!-- Arco salida: x=4680 y=0 w=720 h=1080 -->
   <button class="hs" style="left:86.7%;top:0;width:13.3%;height:100%;"
-    onclick="openDoor('galeria')" aria-label="Continuar"></button>
+    onclick="openDoor('galeria')" aria-label="Continuar recorrido"></button>
 
 </div></div>
 
@@ -307,20 +289,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
 </div>
 
 <script>
-/* ═══════════════════════════════════════════
-   AJUSTE DE TAMAÑO — el más importante.
-   La imagen mide 5400 × 1080 → ratio = 5.
-   El scene debe medir: alto_disponible × 5
-   Así el background-size:100% 100% coincide
-   perfectamente con los hotspots en %.
-═══════════════════════════════════════════ */
+/* AJUSTE DE TAMAÑO
+   Todos los PNGs son 5400×1080 → ratio 5:1
+   scene.width = alto_disponible × 5
+   Así la imagen llena exactamente la pantalla. */
 function setSceneSize(){
-  const nav = 50;
-  const h = window.innerHeight - nav;
-  const w = h * 5; // ratio de tu imagen 5400/1080
-  const scene = document.getElementById('scene');
-  scene.style.width  = w + 'px';
-  scene.style.height = h + 'px';
+  const h = window.innerHeight - 50; // menos el nav
+  const w = h * 5;                   // ratio 5400/1080
+  const s = document.getElementById('scene');
+  s.style.width  = w + 'px';
+  s.style.height = h + 'px';
 }
 setSceneSize();
 window.addEventListener('resize', setSceneSize);
@@ -344,7 +322,6 @@ sw.addEventListener('mousedown',e=>{isDrag=true;sX=e.pageX;sL=sw.scrollLeft;sw.s
 window.addEventListener('mousemove',e=>{if(!isDrag)return;sw.scrollLeft=sL-(e.pageX-sX);});
 window.addEventListener('mouseup',()=>{isDrag=false;sw.style.cursor='grab';});
 
-/* Touch swipe — multiplicador alto para que sea ágil */
 let tX=0,tL=0;
 sw.addEventListener('touchstart',e=>{tX=e.touches[0].clientX;tL=sw.scrollLeft;},{passive:true});
 sw.addEventListener('touchmove',e=>{
