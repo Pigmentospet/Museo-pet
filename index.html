@@ -10,59 +10,68 @@
   --brand:#C17B4A; --brand-dk:#9A5E33; --brand-lt:#D9A07A;
   --cream:#FDF6EE; --cream-dk:#F5E9D8; --ink:#3D2010; --ink-lt:#7A4820;
   --font:'Nunito',sans-serif; --font-ttl:'Cormorant Garamond',serif;
+  --nav:50px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:var(--font);-webkit-tap-highlight-color:transparent;}
 
 /* NAV */
-.nav{position:fixed;top:0;left:0;right:0;height:50px;background:var(--brand);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav);background:var(--brand);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.2);}
 .nav-logo{font-family:var(--font-ttl);font-size:15px;font-weight:600;color:var(--cream);letter-spacing:.12em;text-transform:uppercase;}
 .nav-menu-btn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:4px;}
 .nav-menu-btn span{display:block;width:18px;height:2px;background:var(--cream);border-radius:1px;}
 
 /* SCROLL WRAPPER */
-#sw{position:fixed;top:50px;left:0;right:0;bottom:0;overflow-x:scroll;overflow-y:hidden;cursor:grab;-webkit-overflow-scrolling:touch;user-select:none;scroll-behavior:auto;}
+#sw{
+  position:fixed;
+  top:var(--nav);left:0;right:0;bottom:0;
+  overflow-x:scroll;overflow-y:hidden;
+  cursor:grab;
+  -webkit-overflow-scrolling:touch;
+  user-select:none;
+}
 #sw:active{cursor:grabbing;}
 #sw::-webkit-scrollbar{display:none;}
 
-/* ESCENA — fondo panorámico */
+/* ESCENA
+   La imagen mide 5400×1080 → ratio = 5.
+   El alto del scene = alto del #sw = 100vh - 50px.
+   El ancho del scene = alto × 5 → la imagen llena perfectamente.
+   Se calcula en JS y se aplica como estilo inline.
+*/
 #scene{
   position:relative;
-  width:5400px;
+  /* width y height se setean por JS */
   height:100%;
   background-image:url('vestibulo-bg.PNG');
-  background-size:auto 100%;
+  background-size:100% 100%; /* cubre exactamente el scene */
   background-position:left top;
   background-repeat:no-repeat;
   background-color:#F2DFC4;
 }
 
-/* IMAGEN POSICIONADA — cada PNG encima del fondo
-   Usa porcentajes sobre 5400×1080 para escalar bien
-   en cualquier pantalla. */
+/* CAPA DE IMAGEN — PNG encima del fondo, no clickable */
 .img-layer{
   position:absolute;
-  pointer-events:none; /* el .hs encima captura el click */
+  pointer-events:none;
 }
 .img-layer img{
-  width:100%;
-  height:100%;
+  width:100%;height:100%;
   object-fit:contain;
   object-position:bottom;
   display:block;
 }
 
-/* HOTSPOT — área invisible clickable encima de cada imagen */
+/* HOTSPOT — invisible, clickable */
 .hs{
   position:absolute;
   background:transparent;
   border:none;padding:0;
   cursor:pointer;
-  -webkit-tap-highlight-color:rgba(193,123,74,.15);
   z-index:10;
+  -webkit-tap-highlight-color:rgba(193,123,74,.15);
 }
 .hs:hover{background:rgba(193,123,74,.08);}
-.hs:focus{outline:2px solid rgba(193,123,74,.4);outline-offset:2px;}
 
 /* DOTS */
 .dots{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:300;}
@@ -126,100 +135,95 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
 <div id="sw"><div id="scene">
 
   <!--
-  ═══════════════════════════════════════════════════════
-  CÓMO FUNCIONA:
-  1. El fondo (vestibulo-bg.PNG) se muestra via CSS background
-  2. Cada PNG separado va como .img-layer (visible, sin clicks)
-  3. Encima de cada .img-layer hay un .hs invisible (clickable)
+  ═══════════════════════════════════════════════════════════
+  TODOS LOS VALORES SON PORCENTAJES SOBRE 5400 × 1080 px.
+  El JS calcula el ancho real del scene (alto × 5) y
+  los % se aplican sobre ese ancho → coinciden siempre.
 
-  TODOS LOS VALORES SON % SOBRE 5400×1080px
-  Si algo no coincide: ajusta el % y sube de nuevo.
+  ESTRUCTURA por elemento:
+    .img-layer  → muestra el PNG (visible, sin click)
+    .hs encima  → área invisible clickable
 
-  FÓRMULA:
-    left   = (x_px / 5400) * 100 %
-    top    = (y_px / 1080) * 100 %
-    width  = (w_px / 5400) * 100 %
-    height = (h_px / 1080) * 100 %
-  ═══════════════════════════════════════════════════════
+  Si algo no coincide: ajusta el left/top/width/height
+  y vuelve a subir el index.html.
+  ═══════════════════════════════════════════════════════════
   -->
 
-  <!-- ══ MOSTRADOR ══ -->
-  <div class="img-layer" style="left:2.8%;top:52%;width:11%;height:45%;">
+  <!-- MOSTRADOR -->
+  <div class="img-layer" style="left:2.8%;top:52%;width:11%;height:46%;">
     <img src="mostrador.PNG" alt="">
   </div>
 
-  <!-- ══ RENA — imagen visible ══ -->
-  <div class="img-layer" style="left:3.5%;top:35%;width:8%;height:62%;">
+  <!-- RENA -->
+  <div class="img-layer" style="left:3.5%;top:33%;width:8%;height:65%;">
     <img src="rena-vestibulo.PNG" alt="Rena">
   </div>
-  <!-- hotspot clickable sobre Rena -->
-  <button class="hs" style="left:3.5%;top:35%;width:8%;height:62%;"
+  <button class="hs" style="left:3.5%;top:33%;width:8%;height:65%;"
     onclick="openModal('rena')" aria-label="Hablar con Rena"></button>
 
-  <!-- ══ TIMBRE ══ -->
-  <div class="img-layer" style="left:8.5%;top:42%;width:3.5%;height:18%;">
+  <!-- TIMBRE -->
+  <div class="img-layer" style="left:9%;top:40%;width:3.5%;height:20%;">
     <img src="timbre.PNG" alt="">
   </div>
-  <!-- hotspot clickable sobre el timbre -->
-  <button class="hs" style="left:8.5%;top:42%;width:3.5%;height:18%;"
+  <button class="hs" style="left:9%;top:40%;width:3.5%;height:20%;"
     onclick="openModal('rena')" aria-label="Llamar a Rena"></button>
 
-  <!-- ══ PLANTA 01 ══ -->
-  <div class="img-layer" style="left:12%;top:30%;width:5%;height:67%;">
+  <!-- PLANTA 01 -->
+  <div class="img-layer" style="left:12.2%;top:28%;width:4.5%;height:70%;">
     <img src="planta-01.PNG" alt="">
   </div>
 
-  <!-- ══ PUERTA GALERÍA 01 ══ -->
-  <div class="img-layer" style="left:14.6%;top:2%;width:13%;height:85%;">
+  <!-- PUERTA GALERÍA 01 -->
+  <div class="img-layer" style="left:14.6%;top:1.8%;width:13%;height:86%;">
     <img src="puerta-galeria.PNG" alt="Galería">
   </div>
-  <button class="hs" style="left:14.6%;top:2%;width:13%;height:85%;"
+  <button class="hs" style="left:14.6%;top:1.8%;width:13%;height:86%;"
     onclick="openDoor('galeria')" aria-label="Sala 01 Galería"></button>
 
-  <!-- ══ PUERTA BOUTIQUE 02 ══ -->
-  <div class="img-layer" style="left:29%;top:2%;width:13%;height:85%;">
+  <!-- PUERTA BOUTIQUE 02 -->
+  <div class="img-layer" style="left:29%;top:1.8%;width:13%;height:86%;">
     <img src="puerta-boutique.PNG" alt="Boutique">
   </div>
-  <button class="hs" style="left:29%;top:2%;width:13%;height:85%;"
+  <button class="hs" style="left:29%;top:1.8%;width:13%;height:86%;"
     onclick="openDoor('boutique')" aria-label="Sala 02 Boutique"></button>
 
-  <!-- ══ PLANTA 02 ══ -->
-  <div class="img-layer" style="left:42%;top:30%;width:5%;height:67%;">
+  <!-- PLANTA 02 -->
+  <div class="img-layer" style="left:42.2%;top:28%;width:4.5%;height:70%;">
     <img src="planta-02.PNG" alt="">
   </div>
 
-  <!-- ══ PUERTA TALLER 03 ══ -->
-  <div class="img-layer" style="left:43.3%;top:2%;width:13%;height:85%;">
+  <!-- PUERTA TALLER 03 -->
+  <div class="img-layer" style="left:43.3%;top:1.8%;width:13%;height:86%;">
     <img src="puerta-taller.PNG" alt="Taller">
   </div>
-  <button class="hs" style="left:43.3%;top:2%;width:13%;height:85%;"
+  <button class="hs" style="left:43.3%;top:1.8%;width:13%;height:86%;"
     onclick="openDoor('taller')" aria-label="Sala 03 Taller"></button>
 
-  <!-- ══ PUERTA BIBLIOTECA 05 ══ -->
-  <div class="img-layer" style="left:57.7%;top:2%;width:13%;height:85%;">
+  <!-- PUERTA BIBLIOTECA 05 -->
+  <div class="img-layer" style="left:57.7%;top:1.8%;width:13%;height:86%;">
     <img src="puerta-biblioteca.PNG" alt="Biblioteca">
   </div>
-  <button class="hs" style="left:57.7%;top:2%;width:13%;height:85%;"
+  <button class="hs" style="left:57.7%;top:1.8%;width:13%;height:86%;"
     onclick="openDoor('biblioteca')" aria-label="Sala 05 Biblioteca"></button>
 
-  <!-- ══ PLANTA 03 ══ -->
-  <div class="img-layer" style="left:71%;top:30%;width:5%;height:67%;">
+  <!-- PLANTA 03 -->
+  <div class="img-layer" style="left:71.2%;top:28%;width:4.5%;height:70%;">
     <img src="planta-03.PNG" alt="">
   </div>
 
-  <!-- ══ PUERTA ALTAR 04 ══ -->
-  <div class="img-layer" style="left:72%;top:2%;width:13%;height:85%;">
+  <!-- PUERTA ALTAR 04 -->
+  <div class="img-layer" style="left:72%;top:1.8%;width:13%;height:86%;">
     <img src="puerta-altar.PNG" alt="Altar">
   </div>
-  <button class="hs" style="left:72%;top:2%;width:13%;height:85%;"
+  <button class="hs" style="left:72%;top:1.8%;width:13%;height:86%;"
     onclick="openDoor('altar')" aria-label="Sala 04 Altar"></button>
 
-  <!-- ══ ARCO DE SALIDA ══ -->
+  <!-- ARCO DE SALIDA -->
   <div class="img-layer" style="left:86.7%;top:0;width:13.3%;height:100%;">
     <img src="arco-salida.PNG" alt="Salida">
   </div>
   <button class="hs" style="left:86.7%;top:0;width:13.3%;height:100%;"
-    onclick="openDoor('galeria')" aria-label="Continuar recorrido"></button>
+    onclick="openDoor('galeria')" aria-label="Continuar"></button>
 
 </div></div>
 
@@ -303,16 +307,35 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
 </div>
 
 <script>
+/* ═══════════════════════════════════════════
+   AJUSTE DE TAMAÑO — el más importante.
+   La imagen mide 5400 × 1080 → ratio = 5.
+   El scene debe medir: alto_disponible × 5
+   Así el background-size:100% 100% coincide
+   perfectamente con los hotspots en %.
+═══════════════════════════════════════════ */
+function setSceneSize(){
+  const nav = 50;
+  const h = window.innerHeight - nav;
+  const w = h * 5; // ratio de tu imagen 5400/1080
+  const scene = document.getElementById('scene');
+  scene.style.width  = w + 'px';
+  scene.style.height = h + 'px';
+}
+setSceneSize();
+window.addEventListener('resize', setSceneSize);
+
+/* DATOS DE SALAS */
 const SALAS={
-  galeria:{num:'Sala 01',name:'Galería de los Inmortales',icon:'🖼',url:'galeria.html',msg:'¡<b>Woof woof!</b> 🐾 Esta es mi sala favorita. Aquí están <b>todos los retratos reales</b> que Edith ha hecho. <em>¡Tu mascota puede estar aquí también!</em> <b>¡Grrr-enial!</b>'},
-  boutique:{num:'Sala 02',name:'La Boutique',icon:'🛍',url:'boutique.html',msg:'¡<b>Guau</b>, esta sala me encanta! 🐾 Aquí encuentras <b>todos los productos de Pigmentos.pet</b> y el <b>Probador Mágico</b>. <em>¡Yo te ayudo a elegir el perfecto!</em> 🐕'},
-  taller:{num:'Sala 03',name:'El Taller de Edith',icon:'🎨',url:'taller.html',msg:'<em>Grrr</em>... ¿curiosos? 👀 Aquí puedes ver <b>cómo Edith hace cada retrato</b> desde la foto hasta el producto final. <b>¡Siempre queda woof-derful!</b> 🎨'},
-  biblioteca:{num:'Sala 05',name:'Biblioteca de Cuidados',icon:'📚',url:'biblioteca.html',msg:'¡<b>Arf!</b> ¿Ya tienes tu producto? 📚 Esta sala te dice <b>cómo cuidarlo</b> para que dure mucho. <em>¡Grrr-antizado!</em> 🐾'},
-  altar:{num:'Sala 04',name:'Altar de los Recuerdos',icon:'🕯',url:'altar.html',msg:'🕯 Esta sala es muy especial. Aquí <b>las mascotas que ya no están siguen presentes</b>. <em>Se entra despacio y con el corazón abierto.</em> 🌸'}
+  galeria:   {num:'Sala 01',name:'Galería de los Inmortales',icon:'🖼',url:'galeria.html',   msg:'¡<b>Woof woof!</b> 🐾 Esta es mi sala favorita. Aquí están <b>todos los retratos reales</b> que Edith ha hecho. <em>¡Tu mascota puede estar aquí también!</em> <b>¡Grrr-enial!</b>'},
+  boutique:  {num:'Sala 02',name:'La Boutique',              icon:'🛍',url:'boutique.html',  msg:'¡<b>Guau</b>, esta sala me encanta! 🐾 Aquí encuentras <b>todos los productos</b> y el <b>Probador Mágico</b>. <em>¡Yo te ayudo a elegir el perfecto!</em> 🐕'},
+  taller:    {num:'Sala 03',name:'El Taller de Edith',        icon:'🎨',url:'taller.html',    msg:'<em>Grrr</em>... ¿curiosos? 👀 Aquí puedes ver <b>cómo Edith hace cada retrato</b>. <b>¡Siempre queda woof-derful!</b> 🎨'},
+  biblioteca:{num:'Sala 05',name:'Biblioteca de Cuidados',    icon:'📚',url:'biblioteca.html',msg:'¡<b>Arf!</b> ¿Ya tienes tu producto? 📚 Esta sala te dice <b>cómo cuidarlo</b>. <em>¡Grrr-antizado!</em> 🐾'},
+  altar:     {num:'Sala 04',name:'Altar de los Recuerdos',    icon:'🕯',url:'altar.html',     msg:'🕯 Esta sala es muy especial. <b>Las mascotas que ya no están siguen presentes</b>. <em>Se entra despacio y con el corazón abierto.</em> 🌸'}
 };
 let doorTarget=null;
 
-/* SCROLL — velocidad aumentada para móvil */
+/* SCROLL */
 const sw=document.getElementById('sw');
 sw.addEventListener('wheel',e=>{e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
 
@@ -321,12 +344,11 @@ sw.addEventListener('mousedown',e=>{isDrag=true;sX=e.pageX;sL=sw.scrollLeft;sw.s
 window.addEventListener('mousemove',e=>{if(!isDrag)return;sw.scrollLeft=sL-(e.pageX-sX);});
 window.addEventListener('mouseup',()=>{isDrag=false;sw.style.cursor='grab';});
 
-/* Touch — multiplicador 3x para swipe ágil */
+/* Touch swipe — multiplicador alto para que sea ágil */
 let tX=0,tL=0;
 sw.addEventListener('touchstart',e=>{tX=e.touches[0].clientX;tL=sw.scrollLeft;},{passive:true});
 sw.addEventListener('touchmove',e=>{
-  const dx=(tX-e.touches[0].clientX)*3;
-  sw.scrollLeft=tL+dx;
+  sw.scrollLeft=tL+(tX-e.touches[0].clientX)*2.5;
 },{passive:true});
 
 /* DOTS */
@@ -344,8 +366,12 @@ window.addEventListener('load',()=>{sw.scrollLeft=0;updateDots();});
 /* MODALES */
 function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));});
+document.querySelectorAll('.overlay').forEach(o=>{
+  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));
+});
 
 function openDoor(key){
   const s=SALAS[key];if(!s)return;
