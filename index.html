@@ -12,7 +12,7 @@
   --font:'Nunito',sans-serif; --font-ttl:'Cormorant Garamond',serif;
   --nav:50px; --footer:60px;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+,::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit-tap-highlight-color:transparent;}
 
 /* NAV — tipografía Nunito igual que el menú hamburguesa */
@@ -178,19 +178,19 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
     onclick="openModal('rena')" aria-label="Llamar a Rena"></button>
 
   <!-- Galería 01 🔧 ajustada: más a la derecha, más delgada -->
-  <button class="hs" style="left:16.5%;top:2%;width:9%;height:85.2%;"
+  <button class="hs" style="left:19%;top:2%;width:8%;height:85.2%;"
     onclick="openDoor('galeria')" aria-label="Galería"></button>
 
   <!-- Boutique 02 🔧 -->
-  <button class="hs" style="left:30.5%;top:2%;width:9%;height:85.2%;"
+  <button class="hs" style="left:33%;top:2%;width:8%;height:85.2%;"
     onclick="openDoor('boutique')" aria-label="Boutique"></button>
 
   <!-- Taller 03 🔧 -->
-  <button class="hs" style="left:44.8%;top:2%;width:9%;height:85.2%;"
+  <button class="hs" style="left:47%;top:2%;width:8%;height:85.2%;"
     onclick="openDoor('taller')" aria-label="Taller"></button>
 
   <!-- Biblioteca 05 🔧 -->
-  <button class="hs" style="left:59.2%;top:2%;width:9%;height:85.2%;"
+  <button class="hs" style="left:61.5%;top:2%;width:8%;height:85.2%;"
     onclick="openDoor('biblioteca')" aria-label="Biblioteca"></button>
 
   <!-- Altar 04 ✅ -->
@@ -320,11 +320,11 @@ window.addEventListener('resize', setSceneSize);
 
 /* SALAS */
 const SALAS={
-  galeria:   {num:'Sala 01',name:'Galería de los Inmortales',icon:'🖼',url:'galeria.html',   msg:'¡<b>Woof woof!</b> 🐾 Esta es mi sala favorita. Aquí están <b>todos los retratos reales</b> que Edith ha hecho. <em>¡Tu mascota puede estar aquí también!</em> <b>¡Grrr-enial!</b>'},
-  boutique:  {num:'Sala 02',name:'La Boutique',              icon:'🛍',url:'boutique.html',  msg:'¡<b>Guau</b>, esta sala me encanta! 🐾 Aquí encuentras <b>todos los productos</b> y el <b>Probador Mágico</b>. <em>¡Yo te ayudo a elegir el perfecto!</em> 🐕'},
-  taller:    {num:'Sala 03',name:'El Taller de Edith',        icon:'🎨',url:'taller.html',    msg:'<em>Grrr</em>... ¿curiosos? 👀 Aquí puedes ver <b>cómo Edith hace cada retrato</b>. <b>¡Siempre queda woof-derful!</b> 🎨'},
+  galeria:   {num:'Sala 01',name:'Galería de los Inmortales',icon:'🖼️',url:'galeria.html',   msg:'¡<b>Woof woof!</b> 🐾 Esta es mi sala favorita. Aquí están <b>todos los retratos reales</b> que Edith ha hecho. <em>¡Tu mascota puede estar aquí también!</em> <b>¡Grrr-enial!</b>'},
+  boutique:  {num:'Sala 02',name:'La Boutique',              icon:'🛍️',url:'boutique.html',  msg:'¡<b>Guau</b>, esta sala me encanta! 🐾 Aquí encuentras <b>todos los productos</b> y el <b>Probador Mágico</b>. <em>¡Yo te ayudo a elegir el perfecto!</em> 🐕'},
+  taller:    {num:'Sala 03',name:'El Taller de Edith',        icon:'🎨',url:'taller.html',    msg:'<em>Grrr</em>... ¿curiosos? 👀 Aquí puedes ver <b>Informacion sobre pedidos y envios</b>. <b>¡Siempre queda woof-derful!</b> 🎨'},
   biblioteca:{num:'Sala 05',name:'Biblioteca de Cuidados',    icon:'📚',url:'biblioteca.html',msg:'¡<b>Arf!</b> ¿Ya tienes tu producto? 📚 Esta sala te dice <b>cómo cuidarlo</b>. <em>¡Grrr-antizado!</em> 🐾'},
-  altar:     {num:'Sala 04',name:'Altar de los Recuerdos',    icon:'🕯',url:'altar.html',     msg:'🕯 Esta sala es muy especial. <b>Las mascotas que ya no están siguen presentes</b>. <em>Se entra despacio y con el corazón abierto.</em> 🌸'}
+  altar:     {num:'Sala 04',name:'Altar de los Recuerdos',    icon:'🕯️',url:'altar.html',     msg:'🕯️ Esta sala es muy especial. <b>Las mascotas que ya no están siguen presentes</b>. <em>Se entra despacio y con el corazón abierto.</em> 🌸'}
 };
 let doorTarget=null;
 
@@ -369,7 +369,7 @@ sw.addEventListener('touchend', ()=>{
   function step(){
     if(Math.abs(vel) < 0.5) return;
     sw.scrollLeft += vel;
-    vel *= 0.92; /* fricción */
+    vel = 0.92; / fricción */
     tRaf = requestAnimationFrame(step);
   }
   tRaf = requestAnimationFrame(step);
