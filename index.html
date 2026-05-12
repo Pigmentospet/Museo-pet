@@ -10,10 +10,10 @@
   --brand:#C17B4A; --brand-dk:#9A5E33; --brand-lt:#D9A07A;
   --cream:#FDF6EE; --cream-dk:#F5E9D8; --ink:#3D2010; --ink-lt:#7A4820;
   --font:'Nunito',sans-serif; --font-ttl:'Cormorant Garamond',serif;
-  --nav:50px;
+  --nav:50px; --footer:60px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:var(--font);-webkit-tap-highlight-color:transparent;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--cream-dk);font-family:var(--font);-webkit-tap-highlight-color:transparent;}
 
 /* NAV */
 .nav{position:fixed;top:0;left:0;right:0;height:var(--nav);background:var(--brand);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.2);}
@@ -21,55 +21,70 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
 .nav-menu-btn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:4px;}
 .nav-menu-btn span{display:block;width:18px;height:2px;background:var(--cream);border-radius:1px;}
 
-/* SCROLL WRAPPER */
-#sw{position:fixed;top:var(--nav);left:0;right:0;bottom:0;overflow-x:scroll;overflow-y:hidden;cursor:grab;-webkit-overflow-scrolling:touch;user-select:none;}
+/* FOOTER */
+.footer{
+  position:fixed;bottom:0;left:0;right:0;height:var(--footer);
+  background:var(--brand);
+  display:flex;align-items:center;justify-content:center;gap:24px;
+  z-index:300;border-top:1px solid rgba(255,255,255,.15);
+}
+.footer a{
+  color:var(--cream);font-size:11px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;text-decoration:none;
+  display:flex;align-items:center;gap:6px;opacity:.85;
+  transition:opacity .15s;
+}
+.footer a:hover{opacity:1;}
+.footer-icon{font-size:18px;}
+.footer-divider{width:1px;height:20px;background:rgba(255,255,255,.2);}
+
+/* SCROLL WRAPPER — entre nav y footer */
+#sw{
+  position:fixed;
+  top:var(--nav);left:0;right:0;
+  bottom:var(--footer);
+  overflow-x:scroll;overflow-y:hidden;
+  cursor:grab;-webkit-overflow-scrolling:touch;user-select:none;
+  background:#5C3820;
+}
 #sw:active{cursor:grabbing;}
 #sw::-webkit-scrollbar{display:none;}
 
 /* ESCENA
-   Todos los PNGs son 5400×1080 → ratio 5:1
-   JS calcula: ancho = alto_disponible × 5
-   Así la imagen llena exactamente la pantalla.
+   La imagen mide 5400×1080 → ratio 5:1
+   Queremos ver ~2 viewports de ancho a la vez (más contexto).
+   JS calcula: sceneH = disponible, sceneW = sceneH × 5
+   Para ver más: reducimos sceneH al 62% del disponible
+   → la imagen se ve más pequeña, más contexto visible.
 */
 #scene{
   position:relative;
-  /* width y height los pone el JS */
-  height:100%;
-  overflow:hidden;
+  /* width y height calculados por JS */
+  /* se centra verticalmente con margin-top en JS */
 }
 
-/* FONDO Y CAPAS DE IMAGEN
-   Todos los PNGs son del mismo tamaño (5400×1080).
-   Se apilan en position:absolute, inset:0, width:100%, height:100%.
-   El orden en el HTML define cuál va encima.
-*/
+/* CAPAS — todos los PNGs son 5400×1080, se apilan */
 #scene img.layer{
   position:absolute;
-  top:0; left:0;
-  width:100%;
-  height:100%;
-  display:block;
-  /* object-fit:fill para que coincida exactamente con el scene */
+  top:0;left:0;
+  width:100%;height:100%;
   object-fit:fill;
+  display:block;
 }
 
-/* HOTSPOT — invisible, encima de todo */
+/* HOTSPOT */
 .hs{
-  position:absolute;
-  background:transparent;
-  border:none;padding:0;
-  cursor:pointer;
-  z-index:20;
+  position:absolute;background:transparent;border:none;padding:0;
+  cursor:pointer;z-index:20;
   -webkit-tap-highlight-color:rgba(193,123,74,.15);
 }
 .hs:hover{background:rgba(193,123,74,.08);}
 .hs:focus{outline:2px solid rgba(193,123,74,.4);}
 
 /* DOTS */
-.dots{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:300;}
-.dot{width:5px;height:5px;border-radius:50%;background:rgba(253,246,238,.2);border:1px solid rgba(253,246,238,.35);transition:all .3s;}
-.dot.on{width:20px;border-radius:3px;background:rgba(253,246,238,.75);}
-.dot-label{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(253,246,238,.45);white-space:nowrap;z-index:300;}
+.dots{position:fixed;bottom:calc(var(--footer) + 8px);left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:300;}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(61,32,16,.2);border:1px solid rgba(61,32,16,.3);transition:all .3s;}
+.dot.on{width:20px;border-radius:3px;background:rgba(61,32,16,.5);}
 
 /* OVERLAY */
 .overlay{display:none;position:fixed;inset:0;background:rgba(40,18,6,.7);z-index:400;align-items:flex-end;justify-content:center;}
@@ -77,7 +92,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
 @media(min-width:600px){.overlay{align-items:center;}}
 
 /* MODAL */
-.modal{background:var(--cream);border-radius:20px 20px 0 0;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;animation:sUp .22s ease;}
+.modal{background:var(--cream);border-radius:20px 20px 0 0;width:100%;max-width:420px;max-height:88vh;overflow-y:auto;animation:sUp .22s ease;}
 @media(min-width:600px){.modal{border-radius:20px;width:90%;}}
 @keyframes sUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 .modal-head{background:var(--brand);border-radius:20px 20px 0 0;padding:14px 16px 12px;display:flex;align-items:center;gap:12px;position:relative;}
@@ -117,6 +132,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
 </head>
 <body>
 
+<!-- NAV -->
 <nav class="nav">
   <span class="nav-logo">Museo Pigmentos.pet</span>
   <button class="nav-menu-btn" onclick="openModal('menu')" aria-label="Menú">
@@ -124,88 +140,48 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
   </button>
 </nav>
 
+<!-- SCROLL WRAPPER -->
 <div id="sw"><div id="scene">
 
-  <!--
-  ═══════════════════════════════════════════════════════
-  CAPAS DE IMAGEN — todos los PNG son 5400×1080.
-  Se apilan en orden, cada uno cubre el 100% del scene.
-  El JS ajusta el scene para que llene la pantalla exacto.
+  <!-- CAPAS — mismo orden que en Procreate -->
+  <img class="layer" src="vestibulo-bg.PNG"      alt=""      style="z-index:1;">
+  <img class="layer" src="mostrador.PNG"          alt=""      style="z-index:2;">
+  <img class="layer" src="rena-vestibulo.PNG"     alt="Rena"  style="z-index:3;">
+  <img class="layer" src="timbre.PNG"             alt=""      style="z-index:4;">
+  <img class="layer" src="planta-01.PNG"          alt=""      style="z-index:5;">
+  <img class="layer" src="puerta-galeria.PNG"     alt=""      style="z-index:6;">
+  <img class="layer" src="puerta-boutique.PNG"    alt=""      style="z-index:6;">
+  <img class="layer" src="puerta-taller.PNG"      alt=""      style="z-index:6;">
+  <img class="layer" src="puerta-biblioteca.PNG"  alt=""      style="z-index:6;">
+  <img class="layer" src="puerta-altar.PNG"       alt=""      style="z-index:6;">
+  <img class="layer" src="planta-02.PNG"          alt=""      style="z-index:7;">
+  <img class="layer" src="planta-03.PNG"          alt=""      style="z-index:7;">
+  <img class="layer" src="arco-salida.PNG"        alt=""      style="z-index:8;">
 
-  HOTSPOTS (.hs) — invisibles encima de las imágenes.
-  Valores en % sobre 5400×1080:
-    left   = (x_px / 5400) × 100
-    top    = (y_px / 1080) × 100
-    width  = (w_px / 5400) × 100
-    height = (h_px / 1080) × 100
-  ═══════════════════════════════════════════════════════
-  -->
-
-  <!-- CAPA 1: fondo del vestíbulo -->
-  <img class="layer" src="vestibulo-bg.PNG" alt="" style="z-index:1;">
-
-  <!-- CAPA 2: mostrador -->
-  <img class="layer" src="mostrador.PNG" alt="" style="z-index:2;">
-
-  <!-- CAPA 3: Rena -->
-  <img class="layer" src="rena-vestibulo.PNG" alt="Rena" style="z-index:3;">
-
-  <!-- CAPA 4: timbre -->
-  <img class="layer" src="timbre.PNG" alt="" style="z-index:4;">
-
-  <!-- CAPA 5: planta 01 -->
-  <img class="layer" src="planta-01.PNG" alt="" style="z-index:5;">
-
-  <!-- CAPA 6: puertas -->
-  <img class="layer" src="puerta-galeria.PNG"   alt="" style="z-index:6;">
-  <img class="layer" src="puerta-boutique.PNG"  alt="" style="z-index:6;">
-  <img class="layer" src="puerta-taller.PNG"    alt="" style="z-index:6;">
-  <img class="layer" src="puerta-biblioteca.PNG" alt="" style="z-index:6;">
-  <img class="layer" src="puerta-altar.PNG"     alt="" style="z-index:6;">
-
-  <!-- CAPA 7: plantas 02 y 03 -->
-  <img class="layer" src="planta-02.PNG" alt="" style="z-index:7;">
-  <img class="layer" src="planta-03.PNG" alt="" style="z-index:7;">
-
-  <!-- CAPA 8: arco de salida -->
-  <img class="layer" src="arco-salida.PNG" alt="" style="z-index:8;">
-
-  <!--
-  HOTSPOTS — áreas clickables, encima de todo (z-index:20)
-  Ajusta los % si algo no coincide exactamente con tu dibujo.
-  -->
-
-  <!-- Rena: x=340 y=356 w=270 h=680 sobre 5400×1080 -->
+  <!-- HOTSPOTS — % sobre 5400×1080 -->
   <button class="hs" style="left:6.3%;top:33%;width:5%;height:63%;"
     onclick="openModal('rena')" aria-label="Hablar con Rena"></button>
 
-  <!-- Timbre / laptop: x=460 y=430 w=230 h=200 -->
   <button class="hs" style="left:8.5%;top:40%;width:4.3%;height:18.5%;"
     onclick="openModal('rena')" aria-label="Llamar a Rena"></button>
 
-  <!-- Puerta Galería 01: x=790 y=22 w=710 h=920 -->
   <button class="hs" style="left:14.6%;top:2%;width:13.1%;height:85.2%;"
-    onclick="openDoor('galeria')" aria-label="Sala 01 Galería"></button>
+    onclick="openDoor('galeria')" aria-label="Galería"></button>
 
-  <!-- Puerta Boutique 02: x=1565 y=22 w=710 h=920 -->
   <button class="hs" style="left:29%;top:2%;width:13.1%;height:85.2%;"
-    onclick="openDoor('boutique')" aria-label="Sala 02 Boutique"></button>
+    onclick="openDoor('boutique')" aria-label="Boutique"></button>
 
-  <!-- Puerta Taller 03: x=2340 y=22 w=710 h=920 -->
   <button class="hs" style="left:43.3%;top:2%;width:13.1%;height:85.2%;"
-    onclick="openDoor('taller')" aria-label="Sala 03 Taller"></button>
+    onclick="openDoor('taller')" aria-label="Taller"></button>
 
-  <!-- Puerta Biblioteca 05: x=3115 y=22 w=710 h=920 -->
   <button class="hs" style="left:57.7%;top:2%;width:13.1%;height:85.2%;"
-    onclick="openDoor('biblioteca')" aria-label="Sala 05 Biblioteca"></button>
+    onclick="openDoor('biblioteca')" aria-label="Biblioteca"></button>
 
-  <!-- Puerta Altar 04: x=3890 y=22 w=710 h=920 -->
   <button class="hs" style="left:72%;top:2%;width:13.1%;height:85.2%;"
-    onclick="openDoor('altar')" aria-label="Sala 04 Altar"></button>
+    onclick="openDoor('altar')" aria-label="Altar"></button>
 
-  <!-- Arco salida: x=4680 y=0 w=720 h=1080 -->
   <button class="hs" style="left:86.7%;top:0;width:13.3%;height:100%;"
-    onclick="openDoor('galeria')" aria-label="Continuar recorrido"></button>
+    onclick="openDoor('galeria')" aria-label="Continuar"></button>
 
 </div></div>
 
@@ -215,7 +191,21 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
   <div class="dot" id="d1"></div>
   <div class="dot" id="d2"></div>
 </div>
-<div class="dot-label" id="dlabel">Rena · Bienvenida</div>
+
+<!-- FOOTER redes sociales -->
+<footer class="footer">
+  <a href="https://instagram.com/pigmentos.pet" target="_blank" rel="noopener">
+    <span class="footer-icon">📸</span> Instagram
+  </a>
+  <div class="footer-divider"></div>
+  <a href="https://www.tiktok.com/@pigmentosedithbojorquez" target="_blank" rel="noopener">
+    <span class="footer-icon">🎵</span> TikTok
+  </a>
+  <div class="footer-divider"></div>
+  <a href="https://wa.me/5216241263124" target="_blank" rel="noopener">
+    <span class="footer-icon">💬</span> WhatsApp
+  </a>
+</footer>
 
 <!-- MODAL RENA -->
 <div class="overlay" id="modal-rena" role="dialog" aria-modal="true">
@@ -289,21 +279,33 @@ html,body{width:100%;height:100%;overflow:hidden;background:#5C3820;font-family:
 </div>
 
 <script>
-/* AJUSTE DE TAMAÑO
-   Todos los PNGs son 5400×1080 → ratio 5:1
-   scene.width = alto_disponible × 5
-   Así la imagen llena exactamente la pantalla. */
+/* TAMAÑO DE ESCENA
+   La imagen mide 5400×1080 → ratio = 5
+   Para ver más contenido de un vistazo, la escena
+   ocupa el 55% del alto disponible.
+   El resto queda como fondo oscuro + footer.
+   Ajusta SCALE (0.4 a 1.0) para más o menos zoom. */
+const RATIO = 5;    // 5400 / 1080
+const SCALE = 0.55; // 55% del alto disponible → más zoom-out
+
 function setSceneSize(){
-  const h = window.innerHeight - 50; // menos el nav
-  const w = h * 5;                   // ratio 5400/1080
-  const s = document.getElementById('scene');
-  s.style.width  = w + 'px';
-  s.style.height = h + 'px';
+  const nav    = 50;
+  const footer = 60;
+  const avail  = window.innerHeight - nav - footer;
+  const h = avail * SCALE;
+  const w = h * RATIO;
+  const sw = document.getElementById('sw');
+  const scene = document.getElementById('scene');
+  scene.style.width  = w + 'px';
+  scene.style.height = h + 'px';
+  // centrar verticalmente dentro del wrapper
+  const offsetTop = (avail - h) / 2;
+  scene.style.marginTop = offsetTop + 'px';
 }
 setSceneSize();
 window.addEventListener('resize', setSceneSize);
 
-/* DATOS DE SALAS */
+/* SALAS */
 const SALAS={
   galeria:   {num:'Sala 01',name:'Galería de los Inmortales',icon:'🖼',url:'galeria.html',   msg:'¡<b>Woof woof!</b> 🐾 Esta es mi sala favorita. Aquí están <b>todos los retratos reales</b> que Edith ha hecho. <em>¡Tu mascota puede estar aquí también!</em> <b>¡Grrr-enial!</b>'},
   boutique:  {num:'Sala 02',name:'La Boutique',              icon:'🛍',url:'boutique.html',  msg:'¡<b>Guau</b>, esta sala me encanta! 🐾 Aquí encuentras <b>todos los productos</b> y el <b>Probador Mágico</b>. <em>¡Yo te ayudo a elegir el perfecto!</em> 🐕'},
@@ -316,17 +318,13 @@ let doorTarget=null;
 /* SCROLL */
 const sw=document.getElementById('sw');
 sw.addEventListener('wheel',e=>{e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
-
 let isDrag=false,sX=0,sL=0;
 sw.addEventListener('mousedown',e=>{isDrag=true;sX=e.pageX;sL=sw.scrollLeft;sw.style.cursor='grabbing';});
 window.addEventListener('mousemove',e=>{if(!isDrag)return;sw.scrollLeft=sL-(e.pageX-sX);});
 window.addEventListener('mouseup',()=>{isDrag=false;sw.style.cursor='grab';});
-
 let tX=0,tL=0;
 sw.addEventListener('touchstart',e=>{tX=e.touches[0].clientX;tL=sw.scrollLeft;},{passive:true});
-sw.addEventListener('touchmove',e=>{
-  sw.scrollLeft=tL+(tX-e.touches[0].clientX)*2.5;
-},{passive:true});
+sw.addEventListener('touchmove',e=>{sw.scrollLeft=tL+(tX-e.touches[0].clientX)*2.5;},{passive:true});
 
 /* DOTS */
 const ZONES=['Rena · Bienvenida','Galería · Boutique · Taller','Biblioteca · Altar · Salida'];
@@ -335,7 +333,6 @@ function updateDots(){
   const pct=max>0?sw.scrollLeft/max:0;
   const z=pct<0.33?0:pct<0.66?1:2;
   document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===z));
-  document.getElementById('dlabel').textContent=ZONES[z];
 }
 sw.addEventListener('scroll',updateDots,{passive:true});
 window.addEventListener('load',()=>{sw.scrollLeft=0;updateDots();});
@@ -349,7 +346,6 @@ document.querySelectorAll('.overlay').forEach(o=>{
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open'));
 });
-
 function openDoor(key){
   const s=SALAS[key];if(!s)return;
   doorTarget=s.url;
