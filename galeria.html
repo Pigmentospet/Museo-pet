@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Galería de los Inmortales · Pigmentos.pet</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── VARIABLES — idénticas al vestíbulo ── */
+:root{
+  --brand:#C17B4A; --brand-dk:#9A5E33; --brand-lt:#D9A07A;
+  --cream:#FDF6EE; --cream-dk:#F5E9D8; --ink:#3D2010; --ink-lt:#7A4820;
+  --font:'Nunito',sans-serif; --font-ttl:'Cormorant Garamond',serif;
+  --nav:50px; --footer:60px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit-tap-highlight-color:transparent;}
+
+/* ── NAV — copia exacta del vestíbulo ── */
+.nav{position:fixed;top:0;left:0;right:0;height:var(--nav);background:var(--brand);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.2);}
+.nav-logo{font-family:var(--font);font-size:13px;font-weight:800;color:var(--cream);letter-spacing:.18em;text-transform:uppercase;}
+.nav-left{display:flex;align-items:center;gap:10px;}
+.nav-back{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--cream);font-family:var(--font);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;}
+.nav-back:hover{background:rgba(255,255,255,.28);}
+.nav-sala{font-family:var(--font);font-size:10px;font-weight:700;color:rgba(253,246,238,.7);letter-spacing:.12em;text-transform:uppercase;}
+.nav-menu-btn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:4px;}
+.nav-menu-btn span{display:block;width:18px;height:2px;background:var(--cream);border-radius:1px;}
+
+/* ── FOOTER — copia exacta del vestíbulo ── */
+.footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:var(--brand);display:flex;align-items:center;justify-content:center;gap:16px;z-index:300;border-top:1px solid rgba(255,255,255,.15);overflow-x:auto;padding:0 12px;}
+.footer::-webkit-scrollbar{display:none;}
+.footer a{color:var(--cream);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;display:flex;align-items:center;gap:5px;opacity:.85;transition:opacity .15s;white-space:nowrap;flex-shrink:0;}
+.footer a:hover{opacity:1;}
+.footer-icon{font-size:16px;}
+.footer-divider{width:1px;height:18px;background:rgba(255,255,255,.25);flex-shrink:0;}
+
+/* ── SCROLL WRAPPER ── */
+#sw{
+  position:fixed;top:var(--nav);left:0;right:0;bottom:var(--footer);
+  overflow-x:scroll;overflow-y:hidden;
+  cursor:grab;
+  -webkit-overflow-scrolling:touch;
+  user-select:none;
+  scroll-behavior:auto;
+  /* Pared beige + zócalo terracota (placeholder hasta tener galeria-bg.PNG) */
+  background:linear-gradient(to bottom, #DEC9A8 72%, #7B4A28 72%);
+}
+#sw:active{cursor:grabbing;}
+#sw::-webkit-scrollbar{display:none;}
+
+/* ── ESCENA ── */
+#scene{position:relative;}
+#scene img.layer{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;display:block;pointer-events:none;}
+
+/* ── HOTSPOT ── */
+.hs{position:absolute;background:transparent;border:none;padding:0;cursor:pointer;z-index:20;-webkit-tap-highlight-color:rgba(193,123,74,.15);}
+.hs:hover{background:rgba(193,123,74,.08);}
+
+/* ── FRAME SLOT — cada cuadro en la pared ── */
+.fs{
+  position:absolute;cursor:pointer;
+  transition:transform .2s ease,filter .2s;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,.4));
+  border:none;background:none;padding:0;
+  -webkit-tap-highlight-color:rgba(193,123,74,.15);
+}
+.fs:hover{transform:scale(1.04) translateY(-4px);filter:drop-shadow(0 8px 18px rgba(0,0,0,.5));z-index:50!important;}
+.fs:active{transform:scale(0.97);}
+
+/* Foto del cliente */
+.fs-photo{position:absolute;top:9%;left:9%;width:82%;height:82%;object-fit:cover;display:block;z-index:2;}
+
+/* Marco PNG encima */
+.fs-ov{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;z-index:3;pointer-events:none;}
+
+/* Placeholder vacío */
+.fs-empty{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;z-index:1;pointer-events:none;
+  background:rgba(180,140,95,.15);
+  border:1.5px dashed rgba(154,94,51,.25);
+}
+.fs-ei{font-size:1.1rem;opacity:.4;}
+.fs-en{font-family:var(--font-ttl);font-style:italic;font-size:0.6rem;color:var(--ink-lt);opacity:.4;}
+
+/* Caption debajo del marco */
+.fs-cap{position:absolute;bottom:-28px;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap;pointer-events:none;z-index:4;}
+.c-name{display:block;font-family:var(--font-ttl);font-weight:600;font-size:0.75rem;color:#f0d8b0;text-shadow:0 1px 3px rgba(0,0,0,.5);line-height:1.1;}
+.c-info{display:block;font-size:0.55rem;font-weight:700;color:rgba(255,210,155,.75);letter-spacing:0.07em;text-transform:uppercase;}
+
+/* CTA panel */
+.cta-panel{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;z-index:15;transition:transform .25s;border:none;background:none;padding:0;}
+.cta-panel:hover{transform:scale(1.06);}
+.cta-badge{background:var(--brand);color:var(--cream);font-family:var(--font);font-size:12px;font-weight:800;padding:12px 18px;border-radius:32px;box-shadow:0 6px 22px rgba(193,123,74,.55);text-align:center;line-height:1.4;letter-spacing:.04em;}
+.cta-paw{font-size:1.6rem;animation:bounce 1.8s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+
+/* ── OVERLAY + MODAL — copia exacta del vestíbulo ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(40,18,6,.7);z-index:400;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+@media(min-width:600px){.overlay{align-items:center;}}
+.modal{background:var(--cream);border-radius:20px 20px 0 0;width:100%;max-width:420px;max-height:88vh;overflow-y:auto;animation:sUp .22s ease;}
+@media(min-width:600px){.modal{border-radius:20px;width:90%;}}
+@keyframes sUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{background:var(--brand);border-radius:20px 20px 0 0;padding:14px 16px 12px;display:flex;align-items:center;gap:12px;position:relative;}
+.modal-avatar{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.35);background:var(--cream-dk);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.modal-avatar img{width:100%;height:100%;object-fit:cover;}
+.modal-head-name{font-size:15px;font-weight:800;color:var(--cream);line-height:1.1;}
+.modal-head-sub{font-size:11px;color:rgba(253,246,238,.72);}
+.modal-close{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.18);border:none;width:28px;height:28px;border-radius:50%;color:var(--cream);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:rgba(255,255,255,.3);}
+.modal-body{padding:16px 16px 24px;}
+.bubble-wrap{margin-bottom:14px;}
+.bubble-tail{display:block;margin-left:18px;margin-top:-1px;}
+.bubble-box{background:var(--cream-dk);border:1.5px solid rgba(193,123,74,.2);border-radius:4px 16px 16px 16px;padding:12px 14px;font-size:14px;line-height:1.65;color:var(--ink);}
+.bubble-box b{font-weight:800;color:var(--brand-dk);}
+.bubble-box em{font-style:italic;color:var(--brand);}
+.salas-label{font-size:10px;font-weight:700;color:var(--brand-dk);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
+.salas-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.sala-btn{display:flex;flex-direction:column;gap:2px;padding:10px 11px;background:white;border:1.5px solid rgba(193,123,74,.22);border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:all .15s;}
+.sala-btn:hover{background:var(--cream-dk);border-color:var(--brand-lt);}
+.sala-btn:active{transform:scale(.97);}
+.sb-num{font-size:9px;color:var(--brand);font-weight:700;letter-spacing:.1em;}
+.sb-name{font-size:12px;font-weight:800;color:var(--ink);line-height:1.2;}
+.sb-desc{font-size:10px;color:var(--ink-lt);line-height:1.3;}
+.menu-list{display:flex;flex-direction:column;gap:6px;}
+.menu-item{display:flex;align-items:center;gap:12px;padding:12px 13px;background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:12px;cursor:pointer;font-family:var(--font);width:100%;text-align:left;transition:all .15s;}
+.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt);}
+.mi-num{width:30px;height:30px;border-radius:50%;background:var(--cream-dk);border:1.5px solid rgba(193,123,74,.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--brand-dk);flex-shrink:0;}
+.mi-name{font-size:13px;font-weight:800;color:var(--ink);}
+.mi-desc{font-size:11px;color:var(--ink-lt);}
+.mi-arrow{font-size:14px;color:rgba(193,123,74,.5);margin-left:auto;}
+
+/* ── Modal retrato ── */
+.portrait-img{width:100%;max-height:240px;object-fit:contain;border-radius:12px;margin-bottom:10px;}
+.portrait-name{font-family:var(--font-ttl);font-size:22px;font-weight:600;color:var(--ink);text-align:center;margin-bottom:2px;}
+.portrait-info{font-size:10px;font-weight:700;color:var(--ink-lt);text-align:center;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.portrait-nota{font-size:13px;color:var(--ink);font-style:italic;text-align:center;margin-bottom:14px;line-height:1.55;}
+.door-cta{display:block;width:100%;padding:13px;background:var(--brand);color:var(--cream);font-family:var(--font);font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;margin-top:4px;transition:background .15s;}
+.door-cta:hover{background:var(--brand-dk);}
+.door-cta.secondary{background:var(--cream-dk);color:var(--brand-dk);margin-top:8px;}
+.door-cta.secondary:hover{background:#e0cdb5;}
+
+/* Scroll hint */
+#scroll-hint{position:fixed;bottom:calc(var(--footer) + 10px);right:14px;background:rgba(154,94,51,.88);color:var(--cream);border-radius:20px;padding:5px 13px;font-size:10px;font-weight:800;letter-spacing:.06em;pointer-events:none;opacity:1;transition:opacity 1s;z-index:290;}
+#scroll-hint.hidden{opacity:0;}
+</style>
+</head>
+<body>
+
+<!-- NAV — idéntica al vestíbulo -->
+<nav class="nav">
+  <div class="nav-left">
+    <button class="nav-back" onclick="location.href='index.html'">← Vestíbulo</button>
+    <div>
+      <div class="nav-logo">Museo Pigmentos.pet</div>
+      <div class="nav-sala">Sala 01 · Galería de los Inmortales</div>
+    </div>
+  </div>
+  <button class="nav-menu-btn" onclick="openModal('menu')" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- SCROLL WRAPPER -->
+<div id="sw"><div id="scene">
+
+  <!-- Fondo ilustrado (cuando esté listo) -->
+  <img class="layer" src="galeria-bg.PNG" alt="" style="z-index:1;" onerror="this.style.display='none'">
+  <!-- <img class="layer" src="rena-galeria.PNG" alt="" style="z-index:3;"> -->
+
+  <!-- ══════════════════════════════════════════════
+       44 SLOTS — 11 columnas: 3 / 5 / 4 / 5 / 3 / 4 / 5 / 3 / 4 / 5 / 3
+  ══════════════════════════════════════════════ -->
+
+      <div class="fs" id="s1" style="left:1.0%;top:2%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(1)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#1</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-1"></span><span class="c-info" id="ci-1"></span></div>
+
+      </div>
+
+      <div class="fs" id="s2" style="left:1.0%;top:34%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(2)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#2</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-2"></span><span class="c-info" id="ci-2"></span></div>
+
+      </div>
+
+      <div class="fs" id="s3" style="left:1.0%;top:67%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(3)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#3</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-3"></span><span class="c-info" id="ci-3"></span></div>
+
+      </div>
+
+      <div class="fs" id="s4" style="left:9.5%;top:2%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(4)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#4</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-4"></span><span class="c-info" id="ci-4"></span></div>
+
+      </div>
+
+      <div class="fs" id="s5" style="left:9.5%;top:21%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(5)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#5</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-5"></span><span class="c-info" id="ci-5"></span></div>
+
+      </div>
+
+      <div class="fs" id="s6" style="left:9.5%;top:40%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(6)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#6</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-6"></span><span class="c-info" id="ci-6"></span></div>
+
+      </div>
+
+      <div class="fs" id="s7" style="left:9.5%;top:59%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(7)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#7</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-7"></span><span class="c-info" id="ci-7"></span></div>
+
+      </div>
+
+      <div class="fs" id="s8" style="left:9.5%;top:78%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(8)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#8</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-8"></span><span class="c-info" id="ci-8"></span></div>
+
+      </div>
+
+      <div class="fs" id="s9" style="left:16.5%;top:2%;width:8.0%;height:22%;z-index:10;" onclick="openPortrait(9)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#9</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-9"></span><span class="c-info" id="ci-9"></span></div>
+
+      </div>
+
+      <div class="fs" id="s10" style="left:16.5%;top:26%;width:8.0%;height:22%;z-index:10;" onclick="openPortrait(10)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#10</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-10"></span><span class="c-info" id="ci-10"></span></div>
+
+      </div>
+
+      <div class="fs" id="s11" style="left:16.5%;top:50%;width:8.0%;height:22%;z-index:10;" onclick="openPortrait(11)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#11</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-11"></span><span class="c-info" id="ci-11"></span></div>
+
+      </div>
+
+      <div class="fs" id="s12" style="left:16.5%;top:74%;width:8.0%;height:22%;z-index:10;" onclick="openPortrait(12)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#12</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-12"></span><span class="c-info" id="ci-12"></span></div>
+
+      </div>
+
+      <div class="fs" id="s13" style="left:25.5%;top:2%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(13)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#13</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-13"></span><span class="c-info" id="ci-13"></span></div>
+
+      </div>
+
+      <div class="fs" id="s14" style="left:25.5%;top:21%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(14)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#14</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-14"></span><span class="c-info" id="ci-14"></span></div>
+
+      </div>
+
+      <div class="fs" id="s15" style="left:25.5%;top:40%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(15)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#15</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-15"></span><span class="c-info" id="ci-15"></span></div>
+
+      </div>
+
+      <div class="fs" id="s16" style="left:25.5%;top:59%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(16)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#16</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-16"></span><span class="c-info" id="ci-16"></span></div>
+
+      </div>
+
+      <div class="fs" id="s17" style="left:25.5%;top:78%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(17)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#17</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-17"></span><span class="c-info" id="ci-17"></span></div>
+
+      </div>
+
+      <div class="fs" id="s18" style="left:32.5%;top:2%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(18)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#18</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-18"></span><span class="c-info" id="ci-18"></span></div>
+
+      </div>
+
+      <div class="fs" id="s19" style="left:32.5%;top:34%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(19)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#19</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-19"></span><span class="c-info" id="ci-19"></span></div>
+
+      </div>
+
+      <div class="fs" id="s20" style="left:32.5%;top:67%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(20)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#20</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-20"></span><span class="c-info" id="ci-20"></span></div>
+
+      </div>
+
+      <div class="fs" id="s21" style="left:41.0%;top:2%;width:6.0%;height:22%;z-index:10;" onclick="openPortrait(21)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#21</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-21"></span><span class="c-info" id="ci-21"></span></div>
+
+      </div>
+
+      <div class="fs" id="s22" style="left:41.0%;top:26%;width:6.0%;height:22%;z-index:10;" onclick="openPortrait(22)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#22</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-22"></span><span class="c-info" id="ci-22"></span></div>
+
+      </div>
+
+      <div class="fs" id="s23" style="left:41.0%;top:50%;width:6.0%;height:22%;z-index:10;" onclick="openPortrait(23)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#23</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-23"></span><span class="c-info" id="ci-23"></span></div>
+
+      </div>
+
+      <div class="fs" id="s24" style="left:41.0%;top:74%;width:6.0%;height:22%;z-index:10;" onclick="openPortrait(24)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#24</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-24"></span><span class="c-info" id="ci-24"></span></div>
+
+      </div>
+
+      <div class="fs" id="s25" style="left:48.0%;top:2%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(25)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#25</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-25"></span><span class="c-info" id="ci-25"></span></div>
+
+      </div>
+
+      <div class="fs" id="s26" style="left:48.0%;top:21%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(26)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#26</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-26"></span><span class="c-info" id="ci-26"></span></div>
+
+      </div>
+
+      <div class="fs" id="s27" style="left:48.0%;top:40%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(27)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#27</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-27"></span><span class="c-info" id="ci-27"></span></div>
+
+      </div>
+
+      <div class="fs" id="s28" style="left:48.0%;top:59%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(28)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#28</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-28"></span><span class="c-info" id="ci-28"></span></div>
+
+      </div>
+
+      <div class="fs" id="s29" style="left:48.0%;top:78%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(29)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#29</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-29"></span><span class="c-info" id="ci-29"></span></div>
+
+      </div>
+
+      <div class="fs" id="s30" style="left:55.0%;top:2%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(30)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#30</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-30"></span><span class="c-info" id="ci-30"></span></div>
+
+      </div>
+
+      <div class="fs" id="s31" style="left:55.0%;top:34%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(31)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#31</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-31"></span><span class="c-info" id="ci-31"></span></div>
+
+      </div>
+
+      <div class="fs" id="s32" style="left:55.0%;top:67%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(32)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#32</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-32"></span><span class="c-info" id="ci-32"></span></div>
+
+      </div>
+
+      <div class="fs" id="s33" style="left:63.5%;top:2%;width:6.0%;height:22%;z-index:10;" onclick="openPortrait(33)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#33</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-33"></span><span class="c-info" id="ci-33"></span></div>
+
+      </div>
+
+      <div class="fs" id="s34" style="left:63.5%;top:26%;width:6.0%;height:22%;z-index:10;" onclick="openPortrait(34)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#34</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-34"></span><span class="c-info" id="ci-34"></span></div>
+
+      </div>
+
+      <div class="fs" id="s35" style="left:63.5%;top:50%;width:6.0%;height:22%;z-index:10;" onclick="openPortrait(35)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#35</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-35"></span><span class="c-info" id="ci-35"></span></div>
+
+      </div>
+
+      <div class="fs" id="s36" style="left:63.5%;top:74%;width:6.0%;height:22%;z-index:10;" onclick="openPortrait(36)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#36</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-36"></span><span class="c-info" id="ci-36"></span></div>
+
+      </div>
+
+      <div class="fs" id="s37" style="left:70.5%;top:2%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(37)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#37</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-37"></span><span class="c-info" id="ci-37"></span></div>
+
+      </div>
+
+      <div class="fs" id="s38" style="left:70.5%;top:21%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(38)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#38</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-38"></span><span class="c-info" id="ci-38"></span></div>
+
+      </div>
+
+      <div class="fs" id="s39" style="left:70.5%;top:40%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(39)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#39</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-39"></span><span class="c-info" id="ci-39"></span></div>
+
+      </div>
+
+      <div class="fs" id="s40" style="left:70.5%;top:59%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(40)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#40</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-40"></span><span class="c-info" id="ci-40"></span></div>
+
+      </div>
+
+      <div class="fs" id="s41" style="left:70.5%;top:78%;width:6.0%;height:17%;z-index:10;" onclick="openPortrait(41)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#41</span></div>
+
+        <img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-41"></span><span class="c-info" id="ci-41"></span></div>
+
+      </div>
+
+      <div class="fs" id="s42" style="left:77.5%;top:2%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(42)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#42</span></div>
+
+        <img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-42"></span><span class="c-info" id="ci-42"></span></div>
+
+      </div>
+
+      <div class="fs" id="s43" style="left:77.5%;top:34%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(43)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#43</span></div>
+
+        <img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-43"></span><span class="c-info" id="ci-43"></span></div>
+
+      </div>
+
+      <div class="fs" id="s44" style="left:77.5%;top:67%;width:7.5%;height:29%;z-index:10;" onclick="openPortrait(44)">
+
+        <div class="fs-empty"><span class="fs-ei">🖼️</span><span class="fs-en">#44</span></div>
+
+        <img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'">
+
+        <div class="fs-cap"><span class="c-name" id="cn-44"></span><span class="c-info" id="ci-44"></span></div>
+
+      </div>
+
+
+  <!-- Hotspot Rena -->
+  <button class="hs" style="left:86%;top:25%;width:5%;height:55%;z-index:20;"
+    onclick="openModal('rena')" aria-label="Hablar con Rena"></button>
+
+  <!-- CTA quiero el mío -->
+  <button class="cta-panel" style="left:87%;top:18%;width:8%;" onclick="openModal('quiero')">
+    <div class="cta-paw">&#128062;</div>
+    <div class="cta-badge">Quiero<br>el mio!</div>
+  </button>
+
+  <!-- Hotspot arco salida -->
+  <button class="hs" style="left:95%;top:0;width:5%;height:100%;z-index:20;"
+    onclick="openModal('menu')" aria-label="Ver todas las salas"></button>
+
+</div></div>
+
+<div id="scroll-hint">&#8592; desliza para explorar &#8594;</div>
+
+<footer class="footer">
+  <a href="https://edithbojorquez.com" target="_blank" rel="noopener"><span class="footer-icon">&#127760;</span> edithbojorquez.com</a>
+  <div class="footer-divider"></div>
+  <a href="https://instagram.com/pigmentos.pet" target="_blank" rel="noopener"><span class="footer-icon">&#128247;</span> Instagram</a>
+  <div class="footer-divider"></div>
+  <a href="https://www.tiktok.com/@pigmentosedithbojorquez" target="_blank" rel="noopener"><span class="footer-icon">&#127925;</span> TikTok</a>
+  <div class="footer-divider"></div>
+  <a href="https://wa.me/5216241263124" target="_blank" rel="noopener"><span class="footer-icon">&#128172;</span> WhatsApp</a>
+</footer>
+
+<!-- MODAL RENA -->
+<div class="overlay" id="modal-rena" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="Rena" onerror="this.parentElement.textContent='&#128021;'"></div>
+      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">edithbojorquez.com</div></div>
+      <button class="modal-close" onclick="closeModal('rena')">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box">&#128054; <b>Woof!</b> Bienvenid@ a la <b>Galeria de los Inmortales</b>. Cada retrato fue ilustrado por Edith con amor puro. <em>Toca cualquier marco para conocer su historia!</em> &#128444;&#65039;</div>
+      </div>
+      <p class="salas-label">A donde vamos?</p>
+      <div class="salas-grid">
+        <button class="sala-btn" onclick="closeModal('rena')" style="border-color:var(--brand);background:var(--cream-dk);"><span class="sb-num">Sala 01 aqui</span><span class="sb-name">Galeria de los Inmortales</span><span class="sb-desc">Retratos reales de mascotas</span></button>
+        <button class="sala-btn" onclick="irA('boutique')"><span class="sb-num">Sala 02</span><span class="sb-name">La Boutique</span><span class="sb-desc">Productos + probador magico</span></button>
+        <button class="sala-btn" onclick="irA('taller')"><span class="sb-num">Sala 03</span><span class="sb-name">El Taller de Edith</span><span class="sb-desc">Proceso, envios e info de valor</span></button>
+        <button class="sala-btn" onclick="irA('biblioteca')"><span class="sb-num">Sala 05</span><span class="sb-name">Biblioteca de Cuidados</span><span class="sb-desc">Como cuidar tu producto</span></button>
+        <button class="sala-btn" onclick="irA('altar')"><span class="sb-num">Sala 04</span><span class="sb-name">Altar de los Recuerdos</span><span class="sb-desc">Para mascotas que ya no estan</span></button>
+        <button class="sala-btn" onclick="irA('vestibulo')" style="border-style:dashed;opacity:.7;"><span class="sb-num">Sala 00</span><span class="sb-name">Volver al Vestibulo</span><span class="sb-desc">Entrada principal</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL RETRATO -->
+<div class="overlay" id="modal-portrait" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="Rena" onerror="this.parentElement.textContent='&#128021;'"></div>
+      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub" id="pm-sub">Galeria de los Inmortales</div></div>
+      <button class="modal-close" onclick="closeModal('portrait')">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <img class="portrait-img" id="pm-img" src="" alt="">
+      <div class="portrait-name" id="pm-name"></div>
+      <div class="portrait-info" id="pm-info"></div>
+      <div class="portrait-nota" id="pm-nota"></div>
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box" id="pm-rena"></div>
+      </div>
+      <button class="door-cta" onclick="closeModal('portrait');openModal('quiero')">Quiero el mio! &#128062;</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL QUIERO -->
+<div class="overlay" id="modal-quiero" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="Rena" onerror="this.parentElement.textContent='&#128021;'"></div>
+      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Unete a la galeria!</div></div>
+      <button class="modal-close" onclick="closeModal('quiero')">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box"><b>Arf!</b> Quieres que tu peludx tenga su retrato aqui? &#128444;&#65039;&#128062;<br><br>Pide tu retrato en <b>La Boutique</b>. Con tu pedido llega un <b>QR especial</b> para subir la foto. <em>Tu mascota sera inmortal para siempre!</em> &#10024;</div>
+      </div>
+      <button class="door-cta" onclick="irA('boutique')">&#128717; Ir a La Boutique</button>
+      <button class="door-cta secondary" onclick="closeModal('quiero')">Seguir explorando</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL MENU -->
+<div class="overlay" id="modal-menu" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="Rena" onerror="this.parentElement.textContent='&#128021;'"></div>
+      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Encuentra tu sala</div></div>
+      <button class="modal-close" onclick="closeModal('menu')">&#10005;</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box"><b>Arf!</b> &#128062; Ya sabes a donde quieres ir? <em>Grrr-enial, elige y te llevo!</em></div>
+      </div>
+      <div class="menu-list">
+        <button class="menu-item" onclick="irA('vestibulo')"><div class="mi-num">00</div><div><div class="mi-name">Vestibulo de Rena</div><div class="mi-desc">Entrada principal del museo</div></div><div class="mi-arrow">&#8594;</div></button>
+        <button class="menu-item" onclick="closeModal('menu')" style="border-color:var(--brand);background:var(--cream-dk);"><div class="mi-num" style="background:var(--brand);color:var(--cream);">01</div><div><div class="mi-name">Galeria de los Inmortales</div><div class="mi-desc">Retratos reales de mascotas (aqui)</div></div><div class="mi-arrow">&#8594;</div></button>
+        <button class="menu-item" onclick="irA('boutique')"><div class="mi-num">02</div><div><div class="mi-name">La Boutique</div><div class="mi-desc">Productos + Probador Magico</div></div><div class="mi-arrow">&#8594;</div></button>
+        <button class="menu-item" onclick="irA('taller')"><div class="mi-num">03</div><div><div class="mi-name">El Taller de Edith</div><div class="mi-desc">Proceso, envios e info de valor</div></div><div class="mi-arrow">&#8594;</div></button>
+        <button class="menu-item" onclick="irA('biblioteca')"><div class="mi-num">05</div><div><div class="mi-name">Biblioteca de Cuidados</div><div class="mi-desc">Instrucciones por producto</div></div><div class="mi-arrow">&#8594;</div></button>
+        <button class="menu-item" onclick="irA('altar')"><div class="mi-num">04</div><div><div class="mi-name">Altar de los Recuerdos</div><div class="mi-desc">Para mascotas que ya no estan</div></div><div class="mi-arrow">&#8594;</div></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const RETRATOS = [
+  // { slot:1, nombre:"Luna", producto:"Lienzo 30x30", ciudad:"Guadalajara, Jal.",
+  //   img:"retrato-luna.PNG", nota:"Edith capturo su mirada perfectamente!" },
+];
+
+const RATIO = 8;
+
+const SALAS = {
+  vestibulo: {url:'index.html'},
+  boutique:  {url:'boutique.html'},
+  taller:    {url:'taller.html'},
+  biblioteca:{url:'biblioteca.html'},
+  altar:     {url:'altar.html'},
+};
+
+function setSceneSize(){
+  const nav=50, footer=60;
+  const h = window.innerHeight - nav - footer;
+  const w = h * RATIO;
+  const scene = document.getElementById('scene');
+  scene.style.width  = w + 'px';
+  scene.style.height = h + 'px';
+}
+setSceneSize();
+window.addEventListener('resize', setSceneSize);
+
+function initRetratos(){
+  RETRATOS.forEach(r => {
+    const slot = document.getElementById('s'+r.slot);
+    if(!slot) return;
+    slot.querySelector('.fs-empty').style.display='none';
+    const img = document.createElement('img');
+    img.src=r.img; img.alt=r.nombre; img.className='fs-photo';
+    slot.insertBefore(img, slot.querySelector('.fs-ov'));
+    const cn=document.getElementById('cn-'+r.slot);
+    const ci=document.getElementById('ci-'+r.slot);
+    if(cn) cn.textContent=r.nombre;
+    if(ci) ci.textContent=r.producto+' - '+r.ciudad;
+  });
+}
+
+const RENAS=[
+  function(n){return '&#128054; <b>Woof!</b> Mira esa carita de <b>'+n+'</b>... absolutamente <em>woof-derful!</em> &#10024;';},
+  function(n){return '<b>Arf!</b> <b>'+n+'</b> ya es inmortal en nuestra galeria para siempre &#128062;';},
+  function(n){return '<b>Guau!</b> Edith capturo la mirada de <b>'+n+'</b> de manera <em>grrr-antizada</em> perfecta &#127912;';},
+  function(n){return '<b>Grrr-enial!</b> <b>'+n+'</b> merece su lugar en estas paredes &#128444;&#65039;&#128062;';},
+  function(n){return 'Ves esa expresion de <b>'+n+'</b>? Eso es amor puro ilustrado &#128149;&#128062;';},
+];
+
+function openPortrait(n){
+  var r=RETRATOS.find(function(x){return x.slot===n;});
+  if(!r){openModal('rena');return;}
+  document.getElementById('pm-img').src=r.img;
+  document.getElementById('pm-img').alt=r.nombre;
+  document.getElementById('pm-name').textContent=r.nombre;
+  document.getElementById('pm-info').textContent=r.producto+' - '+r.ciudad;
+  document.getElementById('pm-nota').textContent=r.nota||'';
+  document.getElementById('pm-rena').innerHTML=RENAS[n%RENAS.length](r.nombre);
+  document.getElementById('pm-sub').textContent=r.nombre+' - Galeria';
+  openModal('portrait');
+}
+
+function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(function(o){
+  o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});
+});
+
+function irA(key){
+  document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});
+  var s=SALAS[key];
+  if(s&&s.url)setTimeout(function(){window.location.href=s.url;},150);
+}
+
+var sw=document.getElementById('sw');
+sw.addEventListener('wheel',function(e){e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
+
+var isDrag=false,sX=0,sL=0;
+sw.addEventListener('mousedown',function(e){isDrag=true;sX=e.pageX;sL=sw.scrollLeft;sw.style.cursor='grabbing';});
+window.addEventListener('mousemove',function(e){if(!isDrag)return;sw.scrollLeft=sL-(e.pageX-sX);});
+window.addEventListener('mouseup',function(){isDrag=false;sw.style.cursor='grab';});
+
+var tStartX=0,tStartL=0,tLastX=0,tVel=0,tTime=0,tRaf=null;
+sw.addEventListener('touchstart',function(e){
+  if(tRaf){cancelAnimationFrame(tRaf);tRaf=null;}
+  tStartX=tLastX=e.touches[0].clientX;tStartL=sw.scrollLeft;tVel=0;tTime=Date.now();
+},{passive:true});
+sw.addEventListener('touchmove',function(e){
+  var x=e.touches[0].clientX;
+  tVel=(tLastX-x)/(Date.now()-tTime+1);tTime=Date.now();tLastX=x;
+  sw.scrollLeft=tStartL+(tStartX-x);
+},{passive:true});
+sw.addEventListener('touchend',function(){
+  var vel=tVel*16;
+  function step(){if(Math.abs(vel)<.5)return;sw.scrollLeft+=vel;vel*=.96;tRaf=requestAnimationFrame(step);}
+  tRaf=requestAnimationFrame(step);
+},{passive:true});
+
+var hint=document.getElementById('scroll-hint');
+var hd=false;
+function hideHint(){if(hd)return;hd=true;hint.classList.add('hidden');}
+sw.addEventListener('scroll',hideHint,{passive:true,once:true});
+setTimeout(hideHint,3500);
+
+window.addEventListener('load',function(){sw.scrollLeft=0;});
+initRetratos();
+</script>
+</body>
+</html>
