@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -12,7 +13,7 @@
   --font:"Nunito",sans-serif;--font-ttl:"Cormorant Garamond",serif;
   --nav:50px;--footer:60px;
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+,::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit-tap-highlight-color:transparent;}
 .nav{position:fixed;top:0;left:0;right:0;height:var(--nav);background:var(--brand);display:flex;align-items:center;justify-content:space-between;padding:0 16px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.2);}
 .nav-left{display:flex;align-items:center;gap:10px;}
@@ -43,7 +44,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 .fs-empty{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:hidden;}
 .fs-empty img{width:100%;height:100%;object-fit:cover;display:block;}
 /* Foto real del cliente */
-.fs-photo{position:absolute;top:9%;left:9%;width:82%;height:82%;object-fit:cover;display:block;z-index:2;}
+.fs-photo{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2;border-radius:2px;}
 /* Marco PNG ilustrado encima */
 .fs-ov{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;z-index:3;pointer-events:none;display:block;}
 .fs-cap{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap;pointer-events:none;z-index:4;}
@@ -165,13 +166,15 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 <button class="fs" id="s42" style="left:60.12999999999999%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(42)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-42"></span><span class="c-info" id="ci-42"></span></div></button>
 
   <!-- CTA separado ~12% del ultimo frame (que termina en ~63.5%) -->
+
   <div class="cta-panel" style="left:65%;top:14%;width:8%;" onclick="openModal('quiero')">
     <div class="cta-paw">&#128062;</div>
     <div class="cta-badge">&#161;Quiero<br>el m&#237;o!</div>
   </div>
 
   <!-- Arco de salida -->
-  <button class="hs" style="left:74%;top:0;width:5%;height:100%;z-index:20;" onclick="openModal('menu')" aria-label="Ver todas las salas"></button>
+
+<button class="hs" style="left:74%;top:0;width:5%;height:100%;z-index:20;" onclick="openModal('menu')" aria-label="Ver todas las salas"></button>
 
 </div></div>
 
@@ -188,6 +191,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 </footer>
 
 <!-- MODAL RENA -->
+
 <div class="overlay" id="modal-rena" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
@@ -214,6 +218,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 </div>
 
 <!-- MODAL RETRATO -->
+
 <div class="overlay" id="modal-portrait" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
@@ -233,6 +238,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 </div>
 
 <!-- MODAL PLACEHOLDER — al tocar un frame vacio -->
+
 <div class="overlay" id="modal-placeholder" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
@@ -252,6 +258,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 </div>
 
 <!-- MODAL QUIERO -->
+
 <div class="overlay" id="modal-quiero" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
@@ -282,6 +289,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 </div>
 
 <!-- MODAL MENU -->
+
 <div class="overlay" id="modal-menu" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
@@ -360,6 +368,9 @@ function initRetratos(){
     var img=document.createElement("img");
     img.src=r.img; img.className="fs-photo";
     slot.insertBefore(img,slot.querySelector(".fs-ov"));
+    /* Ocultar el marco PNG — la foto ocupa todo el slot */
+    var ov=slot.querySelector(".fs-ov");
+    if(ov) ov.style.display="none";
     if(r.ciudad){var ci=document.getElementById("ci-"+r.slot);if(ci)ci.textContent=r.ciudad;}
   });
 
@@ -426,5 +437,6 @@ sw.addEventListener("scroll",hideHint,{passive:true,once:true});
 setTimeout(hideHint,3500);
 window.addEventListener("load",function(){sw.scrollLeft=0;initRetratos();});
 </script>
+
 </body>
 </html>
