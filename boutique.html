@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Boutique — Museo Pigmentos.pet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ─────────────────────────────────────────────────── */
+:root{
+  --brand:    #C17B4A;
+  --brand-dk: #9A5E33;
+  --brand-lt: #D9A07A;
+  --cream:    #FDF6EE;
+  --cream-dk: #F5E9D8;
+  --ink:      #3D2010;
+  --ink-lt:   #7A4820;
+  --nav:      50px;
+  --footer:   60px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Nunito',sans-serif;background:var(--cream);overflow:hidden}
+
+/* ── NAV ────────────────────────────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav);z-index:300;
+  background:var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.2);
+  display:flex;align-items:center;justify-content:space-between;padding:0 12px;gap:10px;
+}
+.nav-left{display:flex;align-items:center;gap:8px}
+.btn-back{
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);
+  border-radius:8px;color:var(--cream);font-family:'Nunito',sans-serif;
+  font-size:12px;font-weight:800;padding:6px 10px;cursor:pointer;white-space:nowrap;
+}
+.nav-brand{font-size:13px;font-weight:800;color:var(--cream);text-transform:uppercase;letter-spacing:.08em;line-height:1.1}
+.nav-sub{font-size:10px;color:rgba(253,246,238,.7);font-weight:700}
+.btn-menu{
+  background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);
+  border-radius:8px;width:36px;height:36px;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex-shrink:0;
+}
+.btn-menu span{display:block;width:16px;height:2px;background:var(--cream);border-radius:2px}
+
+/* ── FOOTER ─────────────────────────────────────────────────── */
+footer{
+  position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;
+  background:var(--brand);
+  display:flex;align-items:center;justify-content:center;gap:0;
+}
+.ft-link{
+  color:var(--cream);font-size:10px;font-weight:800;text-transform:uppercase;
+  letter-spacing:.08em;text-decoration:none;padding:0 14px;
+  display:flex;align-items:center;gap:5px;
+}
+.ft-sep{width:1px;height:18px;background:rgba(255,255,255,.25)}
+
+/* ── SCROLL WRAPPER ─────────────────────────────────────────── */
+#sw{
+  position:fixed;top:var(--nav);left:0;right:0;bottom:var(--footer);
+  overflow-x:scroll;overflow-y:hidden;
+  cursor:grab;-webkit-overflow-scrolling:touch;
+  background:linear-gradient(to bottom, #FFFFFF 50%, #8B5236 50%);
+}
+#sw::-webkit-scrollbar{display:none}
+
+/* ── SCENE ──────────────────────────────────────────────────── */
+#scene{position:relative}
+
+/* ── CAPAS DE IMAGEN ────────────────────────────────────────── */
+.layer{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  object-fit:fill;pointer-events:none;
+}
+
+/* ── CATEGORY ZONES (labels flotantes sobre la escena) ──────── */
+.cat-label{
+  position:absolute;
+  background:var(--brand);color:var(--cream);
+  font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 10px;border-radius:0 0 10px 10px;
+  top:0;pointer-events:none;z-index:15;
+  opacity:.85;
+}
+
+/* ── HOTSPOTS ────────────────────────────────────────────────── */
+.hs{
+  position:absolute;background:transparent;border:none;padding:0;
+  cursor:pointer;z-index:20;
+  -webkit-tap-highlight-color:rgba(193,123,74,.15);
+}
+/* producto card visual (mientras no hay PNGs) */
+.prod-slot{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding-bottom:8%;
+}
+.prod-emoji{font-size:clamp(18px,3.5vw,38px);filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+.prod-tag{
+  background:var(--cream);border:1.5px solid rgba(193,123,74,.3);
+  border-radius:6px;padding:3px 7px;margin-top:4px;
+  font-size:clamp(8px,1.2vw,11px);font-weight:800;color:var(--ink);
+  white-space:nowrap;max-width:110%;overflow:hidden;text-overflow:ellipsis;
+}
+.prod-price{font-size:clamp(7px,1vw,10px);color:var(--brand-dk);font-weight:800;margin-top:1px}
+.hs:hover .prod-tag,.hs:focus .prod-tag{background:var(--cream-dk);border-color:var(--brand)}
+
+/* ── CATEGORY PILL FILTER ───────────────────────────────────── */
+#cat-bar{
+  position:fixed;bottom:calc(var(--footer) + 12px);left:50%;
+  transform:translateX(-50%);
+  display:flex;gap:6px;z-index:250;
+  background:rgba(61,32,16,.72);backdrop-filter:blur(8px);
+  padding:6px 10px;border-radius:40px;
+  max-width:calc(100vw - 24px);overflow-x:auto;
+}
+#cat-bar::-webkit-scrollbar{display:none}
+.cat-pill{
+  background:rgba(253,246,238,.15);border:1px solid rgba(253,246,238,.25);
+  color:var(--cream);font-family:'Nunito',sans-serif;
+  font-size:11px;font-weight:800;padding:5px 12px;border-radius:20px;
+  cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;
+}
+.cat-pill.active{background:var(--cream);color:var(--brand-dk)}
+
+/* ── FAB RENA BOT ────────────────────────────────────────────── */
+#fab{
+  position:fixed;right:16px;bottom:calc(var(--footer)+80px);z-index:260;
+  background:var(--brand);color:var(--cream);border:none;border-radius:28px;
+  padding:10px 16px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;
+  cursor:pointer;box-shadow:0 4px 16px rgba(193,123,74,.5);
+  display:flex;align-items:center;gap:6px;
+  animation:pulseFab 2.5s ease-in-out infinite;
+}
+@keyframes pulseFab{
+  0%,100%{box-shadow:0 4px 16px rgba(193,123,74,.5)}
+  50%{box-shadow:0 4px 28px rgba(193,123,74,.85),0 0 0 6px rgba(193,123,74,.15)}
+}
+
+/* ── SCROLL HINT ─────────────────────────────────────────────── */
+#hint{
+  position:fixed;bottom:calc(var(--footer)+16px);left:16px;z-index:250;
+  background:rgba(61,32,16,.65);color:var(--cream);
+  font-size:11px;font-weight:700;padding:6px 12px;border-radius:20px;
+  pointer-events:none;animation:fadeHint 3s ease forwards 1.5s;opacity:0;
+}
+@keyframes fadeHint{0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0}}
+
+/* ── DOTS ────────────────────────────────────────────────────── */
+#dots{
+  position:fixed;bottom:calc(var(--footer)+14px);
+  left:50%;transform:translateX(-50%);
+  display:flex;gap:8px;z-index:250;pointer-events:none;
+}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(253,246,238,.35);transition:all .25s}
+.dot.on{background:var(--cream);transform:scale(1.15)}
+
+/* ════════════════════════════════════════════════════════════
+   OVERLAY & MODAL
+════════════════════════════════════════════════════════════ */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(40,18,6,.72);z-index:400;
+  align-items:flex-end;justify-content:center;
+}
+.overlay.open{display:flex}
+@media(min-width:600px){.overlay{align-items:center}}
+.modal{
+  background:var(--cream);border-radius:20px 20px 0 0;
+  width:100%;max-width:440px;max-height:90vh;overflow-y:auto;
+  animation:sUp .22s ease;
+}
+@media(min-width:600px){.modal{border-radius:20px;width:90%}}
+@keyframes sUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+.modal-head{
+  background:var(--brand);border-radius:20px 20px 0 0;
+  padding:14px 16px 12px;display:flex;align-items:center;gap:12px;position:relative;
+}
+@media(min-width:600px){.modal-head{border-radius:20px 20px 0 0}}
+.modal-avatar{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.35);object-fit:cover;flex-shrink:0}
+.modal-head-name{font-size:15px;font-weight:800;color:var(--cream)}
+.modal-head-sub{font-size:11px;color:rgba(253,246,238,.72)}
+.modal-close{
+  position:absolute;top:12px;right:12px;
+  background:rgba(255,255,255,.18);border:none;width:28px;height:28px;
+  border-radius:50%;color:var(--cream);font-size:15px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.modal-body{padding:16px 16px 28px}
+
+/* bubble */
+.bubble-wrap{margin-bottom:14px}
+.bubble-tail{display:block;margin-left:10px}
+.bubble-box{
+  background:var(--cream-dk);border:1.5px solid rgba(193,123,74,.2);
+  border-radius:4px 16px 16px 16px;padding:12px 14px;
+  font-size:14px;line-height:1.65;color:var(--ink);
+}
+.bubble-box b{font-weight:800;color:var(--brand-dk)}
+.bubble-box em{font-style:italic;color:var(--brand)}
+
+/* CTA buttons */
+.door-cta{
+  display:block;width:100%;padding:13px;
+  background:var(--brand);color:var(--cream);font-family:'Nunito',sans-serif;
+  font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  border:none;border-radius:12px;cursor:pointer;margin-top:8px;
+}
+.door-cta.sec{background:var(--cream-dk);color:var(--brand-dk)}
+.door-cta.grn{background:#4CAF50}
+
+/* product image preview */
+.prod-preview{
+  width:100%;max-height:160px;object-fit:contain;
+  border-radius:12px;margin-bottom:12px;background:white;
+  border:1.5px solid rgba(193,123,74,.15);
+}
+.prod-preview-emoji{
+  width:100%;height:120px;display:flex;align-items:center;justify-content:center;
+  font-size:64px;border-radius:12px;background:white;
+  border:1.5px solid rgba(193,123,74,.15);margin-bottom:12px;
+}
+.prod-info-name{font-size:18px;font-weight:800;color:var(--ink);font-family:'Cormorant Garamond',serif}
+.prod-info-cat{font-size:11px;color:var(--ink-lt);font-weight:700;margin:2px 0 6px}
+.prod-info-price{font-size:22px;font-weight:800;color:var(--brand);margin-bottom:4px}
+.prod-info-desc{font-size:13px;color:var(--ink-lt);line-height:1.6;margin-bottom:12px}
+
+/* category chip */
+.cat-chip{
+  display:inline-block;background:var(--cream-dk);color:var(--brand-dk);
+  font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;
+  letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;
+}
+
+/* ── PROBADOR MÁGICO ─────────────────────────────────────────── */
+.probador-wrap{padding-top:4px}
+.probador-steps{display:flex;gap:6px;margin-bottom:16px;align-items:center}
+.pstep{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--cream-dk);color:var(--ink-lt);
+  font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.pstep.done{background:var(--brand);color:var(--cream)}
+.pstep-line{flex:1;height:2px;background:var(--cream-dk)}
+.pstep-line.done{background:var(--brand)}
+
+/* producto selector en probador */
+.prob-prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.prob-prod-btn{
+  background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:10px;
+  padding:10px 6px;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;gap:3px;transition:all .15s;
+}
+.prob-prod-btn.sel{border-color:var(--brand);background:var(--cream-dk)}
+.prob-prod-btn span:first-child{font-size:22px}
+.prob-prod-btn span:last-child{font-size:10px;font-weight:800;color:var(--ink);text-align:center;line-height:1.2}
+
+/* dropzone */
+.dropzone{
+  border:2px dashed var(--brand-lt);border-radius:14px;padding:28px 16px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  cursor:pointer;background:white;transition:all .2s;text-align:center;
+}
+.dropzone:hover,.dropzone.drag{background:var(--cream-dk);border-color:var(--brand)}
+.dropzone p{font-size:13px;font-weight:800;color:var(--brand-dk);margin:0}
+.dropzone small{font-size:11px;color:var(--ink-lt)}
+
+/* canvas preview */
+#prob-canvas{
+  display:block;width:100%;max-width:280px;margin:0 auto 8px;
+  border-radius:14px;box-shadow:0 6px 24px rgba(61,32,16,.15);
+}
+.prob-disclaimer{font-size:11px;color:var(--ink-lt);text-align:center;font-style:italic;line-height:1.5;margin-bottom:12px}
+
+/* ── MENU ITEMS ─────────────────────────────────────────────── */
+.menu-item{
+  display:flex;align-items:center;gap:12px;padding:12px 13px;
+  background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:12px;
+  cursor:pointer;font-family:'Nunito',sans-serif;width:100%;text-align:left;
+  transition:all .15s;margin-bottom:8px;
+}
+.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt)}
+.mi-num{width:30px;height:30px;border-radius:50%;background:var(--cream-dk);font-size:11px;font-weight:800;color:var(--brand-dk);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mi-num.active{background:var(--brand);color:var(--cream)}
+.mi-name{font-size:13px;font-weight:800;color:var(--ink)}
+.mi-desc{font-size:11px;color:var(--ink-lt)}
+.mi-arrow{font-size:14px;color:rgba(193,123,74,.5);margin-left:auto}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══════════════════════════════════════════════════════ -->
+<nav>
+  <div class="nav-left">
+    <button class="btn-back" onclick="window.location.href='index.html'">← Vestíbulo</button>
+    <div>
+      <div class="nav-brand">Museo Pigmentos.pet</div>
+      <div class="nav-sub">Sala 02 — La Boutique</div>
+    </div>
+  </div>
+  <button class="btn-menu" onclick="openModal('menu')" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ══ SCROLL WRAPPER ════════════════════════════════════════════ -->
+<div id="sw">
+  <div id="scene">
+
+    <!-- FONDO PANORÁMICO (ilustrado por Edith en Procreate) -->
+    <img src="boutique-bg.PNG" class="layer" style="z-index:1" alt="">
+
+    <!-- CAPAS DECORATIVAS (PNGs con fondo transparente de Procreate) -->
+    <!-- Agregar aquí: estanterías, mostradores, plantas, maniquíes, etc. -->
+    <!-- Ejemplo: <img src="vitrina-beber.PNG" class="layer" style="z-index:2"> -->
+
+    <!-- ══ CATEGORY ZONE LABELS ══════════════════════════════════
+         Ajustar left/width según cómo quede boutique-bg.PNG
+    ════════════════════════════════════════════════════════════ -->
+    <div class="cat-label" style="left:2%;width:11%">🫖 Para Beber</div>
+    <div class="cat-label" style="left:16%;width:10%">👕 Para Vestir</div>
+    <div class="cat-label" style="left:29%;width:10%">🎒 Para Llevar</div>
+    <div class="cat-label" style="left:42%;width:12%">🖼️ Para Decorar</div>
+    <div class="cat-label" style="left:57%;width:12%">📖 Para Recordar</div>
+    <div class="cat-label" style="left:72%;width:13%">✨ Digital & Regalo</div>
+
+    <!-- ══ HOTSPOTS — PARA BEBER (col 0–13%) ═══════════════════ -->
+    <!-- Taza Clásica -->
+    <button class="hs" style="left:1%;top:30%;width:5%;height:55%" onclick="openProducto('taza-clasica')">
+      <div class="prod-slot">
+        <div class="prod-emoji">☕</div>
+        <div class="prod-tag">Taza Clásica</div>
+        <div class="prod-price">$550</div>
+      </div>
+    </button>
+    <!-- Taza Jumbo -->
+    <button class="hs" style="left:7%;top:28%;width:5%;height:58%" onclick="openProducto('taza-jumbo')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🫖</div>
+        <div class="prod-tag">Taza Jumbo</div>
+        <div class="prod-price">$600</div>
+      </div>
+    </button>
+    <!-- Termo 887ml -->
+    <button class="hs" style="left:1%;top:15%;width:4%;height:12%" onclick="openProducto('termo-887')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🍶</div>
+        <div class="prod-tag">Termo 887ml</div>
+        <div class="prod-price">$850</div>
+      </div>
+    </button>
+    <!-- Termo 1.2L -->
+    <button class="hs" style="left:5.5%;top:13%;width:4%;height:14%" onclick="openProducto('termo-12')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🧃</div>
+        <div class="prod-tag">Termo 1.2L</div>
+        <div class="prod-price">$950</div>
+      </div>
+    </button>
+    <!-- Termo Tumbler -->
+    <button class="hs" style="left:10%;top:20%;width:4%;height:45%" onclick="openProducto('termo-tumbler')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🥤</div>
+        <div class="prod-tag">Tumbler</div>
+        <div class="prod-price">$750</div>
+      </div>
+    </button>
+    <!-- Vaso Bambú -->
+    <button class="hs" style="left:7%;top:55%;width:4%;height:30%" onclick="openProducto('vaso-bambu')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🎋</div>
+        <div class="prod-tag">Vaso Bambú</div>
+        <div class="prod-price">$650</div>
+      </div>
+    </button>
+
+    <!-- ══ HOTSPOTS — PARA VESTIR (col 16–27%) ══════════════════ -->
+    <!-- Playera -->
+    <button class="hs" style="left:16%;top:20%;width:8%;height:65%" onclick="openProducto('playera')">
+      <div class="prod-slot">
+        <div class="prod-emoji">👕</div>
+        <div class="prod-tag">Playera</div>
+        <div class="prod-price">$650</div>
+      </div>
+    </button>
+    <!-- Hoodie -->
+    <button class="hs" style="left:21%;top:15%;width:8%;height:70%" onclick="openProducto('hoodie')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🧥</div>
+        <div class="prod-tag">Hoodie</div>
+        <div class="prod-price">$950</div>
+      </div>
+    </button>
+    <!-- Gorra -->
+    <button class="hs" style="left:16.5%;top:5%;width:5%;height:12%" onclick="openProducto('gorra')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🧢</div>
+        <div class="prod-tag">Gorra</div>
+        <div class="prod-price">$650</div>
+      </div>
+    </button>
+
+    <!-- ══ HOTSPOTS — PARA LLEVAR (col 29–40%) ══════════════════ -->
+    <!-- Tote Bag -->
+    <button class="hs" style="left:29%;top:20%;width:7%;height:65%" onclick="openProducto('tote-bag')">
+      <div class="prod-slot">
+        <div class="prod-emoji">👜</div>
+        <div class="prod-tag">Tote Bag</div>
+        <div class="prod-price">$650</div>
+      </div>
+    </button>
+    <!-- Llavero -->
+    <button class="hs" style="left:37%;top:45%;width:4%;height:30%" onclick="openProducto('llavero')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🔑</div>
+        <div class="prod-tag">Llavero</div>
+        <div class="prod-price">$400</div>
+      </div>
+    </button>
+
+    <!-- ══ HOTSPOTS — PARA DECORAR (col 42–56%) ════════════════ -->
+    <!-- Lienzo -->
+    <button class="hs" style="left:42%;top:10%;width:8%;height:60%" onclick="openProducto('lienzo')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🖼️</div>
+        <div class="prod-tag">Lienzo</div>
+        <div class="prod-price">$450–$950</div>
+      </div>
+    </button>
+    <!-- Cuadro Mini -->
+    <button class="hs" style="left:51%;top:45%;width:5%;height:35%" onclick="openProducto('cuadro-mini')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🏠</div>
+        <div class="prod-tag">Cuadro Mini</div>
+        <div class="prod-price">$480</div>
+      </div>
+    </button>
+    <!-- Cuadro Escritorio -->
+    <button class="hs" style="left:42%;top:72%;width:6%;height:20%" onclick="openProducto('cuadro-escritorio')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🖼️</div>
+        <div class="prod-tag">Cuadro Escritorio</div>
+        <div class="prod-price">$560</div>
+      </div>
+    </button>
+    <!-- Portavasos -->
+    <button class="hs" style="left:49%;top:10%;width:5%;height:32%" onclick="openProducto('portavasos')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🫗</div>
+        <div class="prod-tag">Portavasos</div>
+        <div class="prod-price">$390</div>
+      </div>
+    </button>
+    <!-- Blind Box -->
+    <button class="hs" style="left:54%;top:15%;width:5%;height:45%" onclick="openProducto('blind-box')">
+      <div class="prod-slot">
+        <div class="prod-emoji">📦</div>
+        <div class="prod-tag">Blind Box</div>
+        <div class="prod-price">$480</div>
+      </div>
+    </button>
+
+    <!-- ══ HOTSPOTS — PARA RECORDAR (col 57–70%) ═══════════════ -->
+    <!-- Libreta -->
+    <button class="hs" style="left:57%;top:30%;width:5%;height:55%" onclick="openProducto('libreta')">
+      <div class="prod-slot">
+        <div class="prod-emoji">📓</div>
+        <div class="prod-tag">Libreta</div>
+        <div class="prod-price">$450</div>
+      </div>
+    </button>
+    <!-- Acuarela -->
+    <button class="hs" style="left:63%;top:15%;width:5%;height:55%" onclick="openProducto('acuarela')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🎨</div>
+        <div class="prod-tag">Acuarela</div>
+        <div class="prod-price">$350–$500</div>
+      </div>
+    </button>
+    <!-- Postal -->
+    <button class="hs" style="left:57%;top:72%;width:4%;height:18%" onclick="openProducto('postal')">
+      <div class="prod-slot">
+        <div class="prod-emoji">💌</div>
+        <div class="prod-tag">Postal</div>
+        <div class="prod-price">$50</div>
+      </div>
+    </button>
+    <!-- Placa -->
+    <button class="hs" style="left:68%;top:55%;width:4%;height:30%" onclick="openProducto('placa')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🏷️</div>
+        <div class="prod-tag">Placa</div>
+        <div class="prod-price">$130</div>
+      </div>
+    </button>
+    <!-- Placa NFC -->
+    <button class="hs" style="left:63%;top:72%;width:4%;height:18%" onclick="openProducto('placa-nfc')">
+      <div class="prod-slot">
+        <div class="prod-emoji">📡</div>
+        <div class="prod-tag">Placa NFC</div>
+        <div class="prod-price">$250</div>
+      </div>
+    </button>
+
+    <!-- ══ HOTSPOTS — DIGITAL & REGALO (col 72–88%) ═════════════ -->
+    <!-- Kit Digital Caricatura -->
+    <button class="hs" style="left:72%;top:20%;width:6%;height:55%" onclick="openProducto('kit-caricatura')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🎭</div>
+        <div class="prod-tag">Kit Caricatura</div>
+        <div class="prod-price">$530</div>
+      </div>
+    </button>
+    <!-- Kit Digital Detallado -->
+    <button class="hs" style="left:79%;top:18%;width:6%;height:58%" onclick="openProducto('kit-detallado')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🎨</div>
+        <div class="prod-tag">Kit Detallado</div>
+        <div class="prod-price">$640</div>
+      </div>
+    </button>
+    <!-- Tarjeta de Regalo -->
+    <button class="hs" style="left:86%;top:35%;width:6%;height:42%" onclick="openProducto('tarjeta-regalo')">
+      <div class="prod-slot">
+        <div class="prod-emoji">🎁</div>
+        <div class="prod-tag">Tarjeta Regalo</div>
+        <div class="prod-price">$400+</div>
+      </div>
+    </button>
+
+    <!-- Arco de salida (regresa al vestíbulo) -->
+    <button class="hs" style="left:93%;top:0;width:7%;height:100%" onclick="openModal('menu')">
+      <div class="prod-slot"></div>
+    </button>
+
+  </div><!-- /scene -->
+</div><!-- /sw -->
+
+<!-- ══ CATEGORY BAR ══════════════════════════════════════════════ -->
+<div id="cat-bar">
+  <button class="cat-pill active" onclick="scrollToCat(0,this)">Todo</button>
+  <button class="cat-pill" onclick="scrollToCat(0.02,this)">🫖 Para Beber</button>
+  <button class="cat-pill" onclick="scrollToCat(0.16,this)">👕 Para Vestir</button>
+  <button class="cat-pill" onclick="scrollToCat(0.29,this)">🎒 Para Llevar</button>
+  <button class="cat-pill" onclick="scrollToCat(0.42,this)">🖼️ Para Decorar</button>
+  <button class="cat-pill" onclick="scrollToCat(0.57,this)">📖 Para Recordar</button>
+  <button class="cat-pill" onclick="scrollToCat(0.72,this)">✨ Digital</button>
+</div>
+
+<!-- ══ FAB RENA BOT ══════════════════════════════════════════════ -->
+<button id="fab" onclick="openModal('rena-bot')">
+  🐾 ¿Te ayudo?
+</button>
+
+<!-- ══ SCROLL HINT ═══════════════════════════════════════════════ -->
+<div id="hint">← Desliza para explorar →</div>
+
+<!-- ══ DOTS ══════════════════════════════════════════════════════ -->
+<div id="dots">
+  <div class="dot on" id="d0"></div>
+  <div class="dot" id="d1"></div>
+  <div class="dot" id="d2"></div>
+</div>
+
+<!-- ══ FOOTER ════════════════════════════════════════════════════ -->
+<footer>
+  <a class="ft-link" href="https://edithbojorquez.com" target="_blank">🌐 edithbojorquez.com</a>
+  <div class="ft-sep"></div>
+  <a class="ft-link" href="https://instagram.com/pigmentos.pet" target="_blank">📷 Instagram</a>
+  <div class="ft-sep"></div>
+  <a class="ft-link" href="https://tiktok.com/@pigmentosedithbojorquez" target="_blank">🎵 TikTok</a>
+  <div class="ft-sep"></div>
+  <a class="ft-link" href="https://wa.me/526241263124" target="_blank">💬 WhatsApp</a>
+</footer>
+
+<!-- ════════════════════════════════════════════════════════════
+     MODALES
+════════════════════════════════════════════════════════════ -->
+
+<!-- ── MODAL: PRODUCTO ──────────────────────────────────────── -->
+<div class="overlay" id="modal-producto" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="Rena" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div>
+        <div class="modal-head-name">Rena</div>
+        <div class="modal-head-sub" id="prod-modal-cat">La Boutique 🐾</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('producto')">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Preview emoji del producto -->
+      <div class="prod-preview-emoji" id="prod-modal-emoji">🛍️</div>
+
+      <!-- Info -->
+      <div class="cat-chip" id="prod-modal-cat-chip">Categoría</div>
+      <div class="prod-info-name" id="prod-modal-nombre">Producto</div>
+      <div class="prod-info-price" id="prod-modal-precio">$000 MXN</div>
+      <div class="prod-info-desc" id="prod-modal-desc">Descripción del producto.</div>
+
+      <!-- Burbuja Rena -->
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10">
+          <path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/>
+        </svg>
+        <div class="bubble-box" id="prod-modal-rena">¡Guau! 🐾</div>
+      </div>
+
+      <!-- CTAs -->
+      <button class="door-cta grn" id="prod-modal-wa" onclick="irWA()">💬 Cotizar por WhatsApp</button>
+      <button class="door-cta" id="btn-abrir-probador" onclick="abrirProbadorDesdeProducto()">✨ Probar en el Probador Mágico</button>
+      <button class="door-cta sec" onclick="closeModal('producto');openModal('rena-bot')">🐾 Que Rena me ayude</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: PROBADOR MÁGICO ───────────────────────────────── -->
+<div class="overlay" id="modal-probador" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="Rena" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div>
+        <div class="modal-head-name">Probador Mágico ✨</div>
+        <div class="modal-head-sub">Mira cómo quedaría tu retrato 🐾</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('probador')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="probador-wrap">
+
+        <!-- Steps indicator -->
+        <div class="probador-steps">
+          <div class="pstep done" id="pstep-1">1</div>
+          <div class="pstep-line" id="pline-1"></div>
+          <div class="pstep" id="pstep-2">2</div>
+          <div class="pstep-line" id="pline-2"></div>
+          <div class="pstep" id="pstep-3">3</div>
+        </div>
+
+        <!-- STEP 1: Elegir producto -->
+        <div id="prob-step-1">
+          <div class="bubble-wrap" style="margin-bottom:12px">
+            <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10">
+              <path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/>
+            </svg>
+            <div class="bubble-box">¡Arf! Elige el producto que quieres ver con el retrato de tu peludo 🐾</div>
+          </div>
+          <div class="prob-prod-grid" id="prob-prod-grid">
+            <!-- generado por JS -->
+          </div>
+          <button class="door-cta" onclick="prob_irStep2()" id="btn-prob-siguiente">Siguiente →</button>
+        </div>
+
+        <!-- STEP 2: Subir foto -->
+        <div id="prob-step-2" style="display:none">
+          <div class="bubble-wrap" style="margin-bottom:12px">
+            <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10">
+              <path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/>
+            </svg>
+            <div class="bubble-box">¡Woof! Ahora sube una foto de tu mascota — <b>cuanto más clara, mejor</b> quedará el preview 🐾</div>
+          </div>
+          <div class="dropzone" id="prob-dropzone" onclick="document.getElementById('prob-file-input').click()">
+            <span style="font-size:40px">📸</span>
+            <p>Toca para subir foto</p>
+            <small>o arrastra y suelta · JPG, PNG, WEBP</small>
+          </div>
+          <input type="file" id="prob-file-input" accept="image/*" style="display:none" onchange="prob_handleFile(this.files[0])">
+          <button class="door-cta sec" style="margin-top:10px" onclick="prob_irStep1()">← Cambiar producto</button>
+        </div>
+
+        <!-- STEP 3: Preview canvas -->
+        <div id="prob-step-3" style="display:none">
+          <div class="bubble-wrap" style="margin-bottom:12px">
+            <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10">
+              <path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/>
+            </svg>
+            <div class="bubble-box" id="prob-frase">¡Grrr-enial! 🐾</div>
+          </div>
+          <canvas id="prob-canvas" width="320" height="320"></canvas>
+          <div class="prob-disclaimer">* Preview aproximado. El retrato final es ilustrado por Edith a mano 🎨</div>
+          <button class="door-cta grn" onclick="prob_irWA()">💬 ¡Lo quiero! Cotizar por WhatsApp</button>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="door-cta sec" style="flex:1" onclick="prob_irStep2()">📸 Cambiar foto</button>
+            <button class="door-cta sec" style="flex:1" onclick="prob_irStep1()">🔄 Otro producto</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: RENA BOT ──────────────────────────────────────── -->
+<div class="overlay" id="modal-rena-bot" role="dialog" aria-modal="true">
+  <div class="modal" style="max-height:92vh">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="Rena" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div>
+        <div class="modal-head-name">Rena Bot</div>
+        <div class="modal-head-sub">¡Te ayudo a elegir! 🐾</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('rena-bot')">✕</button>
+    </div>
+    <div style="height:520px;max-height:72vh">
+      <iframe id="rena-bot-iframe"
+        style="width:100%;height:100%;border:none;border-radius:0 0 20px 20px"
+        title="Rena Bot" loading="lazy"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: MENÚ ──────────────────────────────────────────── -->
+<div class="overlay" id="modal-menu" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="Rena" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div>
+        <div class="modal-head-name">Rena</div>
+        <div class="modal-head-sub">¿A dónde vamos? 🐾</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('menu')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap" style="margin-bottom:16px">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10">
+          <path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/>
+        </svg>
+        <div class="bubble-box">¡Guau! El museo tiene muchas salas — ¿quieres explorar otra? 🐾</div>
+      </div>
+      <button class="menu-item" onclick="irA('vestibulo')">
+        <div class="mi-num">00</div>
+        <div><div class="mi-name">Vestíbulo de Rena</div><div class="mi-desc">Entrada principal del museo</div></div>
+        <div class="mi-arrow">›</div>
+      </button>
+      <button class="menu-item" onclick="irA('galeria')">
+        <div class="mi-num">01</div>
+        <div><div class="mi-name">Galería de los Inmortales</div><div class="mi-desc">Retratos de mascotas</div></div>
+        <div class="mi-arrow">›</div>
+      </button>
+      <button class="menu-item" onclick="irA('boutique')">
+        <div class="mi-num active">02</div>
+        <div><div class="mi-name">La Boutique</div><div class="mi-desc">Productos personalizados · estás aquí</div></div>
+        <div class="mi-arrow">›</div>
+      </button>
+      <button class="menu-item" onclick="irA('taller')">
+        <div class="mi-num">03</div>
+        <div><div class="mi-name">El Taller de Edith</div><div class="mi-desc">Proceso, tiempos, envíos</div></div>
+        <div class="mi-arrow">›</div>
+      </button>
+      <button class="menu-item" onclick="irA('biblioteca')">
+        <div class="mi-num">04</div>
+        <div><div class="mi-name">Biblioteca de Cuidados</div><div class="mi-desc">Cómo cuidar tus productos</div></div>
+        <div class="mi-arrow">›</div>
+      </button>
+      <button class="menu-item" onclick="irA('altar')">
+        <div class="mi-num">05</div>
+        <div><div class="mi-name">Altar de los Recuerdos</div><div class="mi-desc">Para mascotas que ya partieron</div></div>
+        <div class="mi-arrow">›</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════════════════════ -->
+<script>
+/* ── DATOS DE PRODUCTOS ──────────────────────────────────────── */
+var PRODUCTOS = {
+  /* PARA BEBER */
+  'taza-clasica':   {nombre:'Taza Clásica',       emoji:'☕', cat:'Para Beber',      precio:'$550 MXN',      shape:'mug',     desc:'Taza de cerámica con retrato personalizado de tu mascota. Perfecta para el café de cada mañana.',          wa:'Hola! Me interesa cotizar una Taza Clásica personalizada 🐾',         probador:true},
+  'taza-jumbo':     {nombre:'Taza Jumbo',          emoji:'🫖', cat:'Para Beber',      precio:'$600 MXN',      shape:'mug',     desc:'Más grande, más amor. Taza jumbo con el retrato ilustrado de tu peludo.',                                  wa:'Hola! Me interesa cotizar una Taza Jumbo personalizada 🐾',           probador:true},
+  'termo-887':      {nombre:'Termo Acero 887ml',   emoji:'🍶', cat:'Para Beber',      precio:'$850 MXN',      shape:'tumbler', desc:'Termo de acero inoxidable de 887ml. Mantiene caliente o frío por horas — con tu mascota siempre contigo.', wa:'Hola! Me interesa cotizar un Termo Acero 887ml personalizado 🐾',     probador:true},
+  'termo-12':       {nombre:'Termo Acero 1.2L',    emoji:'🧃', cat:'Para Beber',      precio:'$950 MXN',      shape:'tumbler', desc:'El termo más grande de la colección — 1.2 litros de amor. Ideal para días largos.',                       wa:'Hola! Me interesa cotizar un Termo Acero 1.2L personalizado 🐾',     probador:true},
+  'termo-tumbler':  {nombre:'Termo Tumbler',        emoji:'🥤', cat:'Para Beber',      precio:'$750 MXN',      shape:'tumbler', desc:'Tumbler acrílico con tapa y popote. Perfecto para bebidas frías y el retrato de tu mascota.',             wa:'Hola! Me interesa cotizar un Termo Tumbler personalizado 🐾',        probador:true},
+  'vaso-bambu':     {nombre:'Vaso de Bambú',        emoji:'🎋', cat:'Para Beber',      precio:'$650 MXN',      shape:'tumbler', desc:'Vaso ecológico de bambú con retrato personalizado. Sostenible y adorable.',                               wa:'Hola! Me interesa cotizar un Vaso de Bambú personalizado 🐾',       probador:true},
+  /* PARA VESTIR */
+  'playera':        {nombre:'Playera',              emoji:'👕', cat:'Para Vestir',     precio:'$650 MXN',      shape:'shirt',   desc:'Playera de algodón con el retrato caricatura de tu mascota estampado con calidad premium.',               wa:'Hola! Me interesa cotizar una Playera personalizada 🐾',             probador:true},
+  'hoodie':         {nombre:'Hoodie',               emoji:'🧥', cat:'Para Vestir',     precio:'$950 MXN',      shape:'shirt',   desc:'Sudadera con capucha y el retrato de tu peludo. Comodidad y amor en cada uso.',                          wa:'Hola! Me interesa cotizar un Hoodie personalizado 🐾',              probador:true},
+  'gorra':          {nombre:'Gorra',                emoji:'🧢', cat:'Para Vestir',     precio:'$650 MXN',      shape:'cap',     desc:'Gorra bordada o estampada con el retrato de tu mascota. ¡Llévala a todos lados!',                        wa:'Hola! Me interesa cotizar una Gorra personalizada 🐾',              probador:true},
+  /* PARA LLEVAR */
+  'tote-bag':       {nombre:'Tote Bag',             emoji:'👜', cat:'Para Llevar',     precio:'$650 MXN',      shape:'bag',     desc:'Bolsa de tela reutilizable con el retrato de tu mascota. Práctica, bonita y ecológica.',                 wa:'Hola! Me interesa cotizar una Tote Bag personalizada 🐾',           probador:true},
+  'llavero':        {nombre:'Llavero Acrílico',     emoji:'🔑', cat:'Para Llevar',     precio:'$400 MXN',      shape:'charm',   desc:'Llavero de acrílico con ilustración personalizada de tu mascota. ¡El accesorio más tierno de tu bolsa!', wa:'Hola! Me interesa cotizar un Llavero Acrílico personalizado 🐾',    probador:true},
+  /* PARA DECORAR */
+  'lienzo':         {nombre:'Lienzo Pintado',       emoji:'🖼️', cat:'Para Decorar',    precio:'$450–$950 MXN', shape:'canvas',  desc:'Lienzo pintado a mano por Edith con el retrato de tu mascota. Una obra de arte única para tu hogar.',    wa:'Hola! Me interesa cotizar un Lienzo Pintado personalizado 🐾',      probador:false},
+  'cuadro-mini':    {nombre:'Cuadro Mini',          emoji:'🏠', cat:'Para Decorar',    precio:'$480 MXN',      shape:'canvas',  desc:'Cuadro miniatura de escritorio con el retrato de tu peludo. Ideal para oficina o buró.',                 wa:'Hola! Me interesa cotizar un Cuadro Mini personalizado 🐾',         probador:false},
+  'cuadro-escritorio':{nombre:'Cuadro de Escritorio',emoji:'🖼️',cat:'Para Decorar',   precio:'$560 MXN',      shape:'canvas',  desc:'Cuadro con soporte para escritorio. El retrato de tu mascota siempre a la vista.',                      wa:'Hola! Me interesa cotizar un Cuadro de Escritorio personalizado 🐾',probador:false},
+  'portavasos':     {nombre:'Portavasos',           emoji:'🫗', cat:'Para Decorar',    precio:'$390 MXN',      shape:'charm',   desc:'Portavasos con diseño caricatura de tu mascota. ¡Protege tu mesa con estilo!',                          wa:'Hola! Me interesa cotizar Portavasos personalizados 🐾',            probador:false},
+  'blind-box':      {nombre:'Blind Box Pigmento',   emoji:'📦', cat:'Para Decorar',    precio:'$480 MXN',      shape:'charm',   desc:'Adopta un Pigmento — ¡caja sorpresa con un personaje ilustrado único! Perfecto para regalar.',           wa:'Hola! Me interesa cotizar un Blind Box Pigmento 🐾',                probador:false},
+  /* PARA RECORDAR */
+  'libreta':        {nombre:'Libreta Caricatura',   emoji:'📓', cat:'Para Recordar',   precio:'$450 MXN',      shape:'canvas',  desc:'Libreta con portada personalizada con el retrato caricatura de tu mascota.',                            wa:'Hola! Me interesa cotizar una Libreta personalizada 🐾',            probador:false},
+  'acuarela':       {nombre:'Acuarela Original',    emoji:'🎨', cat:'Para Recordar',   precio:'$350–$500 MXN', shape:'canvas',  desc:'Retrato en acuarela original pintado a mano por Edith. Una pieza de colección única e irrepetible.',    wa:'Hola! Me interesa cotizar una Acuarela Original 🐾',               probador:false},
+  'postal':         {nombre:'Postal Ilustrada',     emoji:'💌', cat:'Para Recordar',   precio:'$50 MXN',       shape:'canvas',  desc:'Postal ilustrada personalizada. El regalo más bonito y accesible para sorprender a alguien especial.',  wa:'Hola! Me interesa cotizar una Postal Ilustrada personalizada 🐾',   probador:false},
+  'placa':          {nombre:'Placa Personalizada',  emoji:'🏷️', cat:'Para Recordar',   precio:'$130 MXN',      shape:'charm',   desc:'Placa de identificación para collar con el nombre de tu mascota y datos de contacto.',                  wa:'Hola! Me interesa cotizar una Placa Personalizada 🐾',             probador:false},
+  'placa-nfc':      {nombre:'Placa NFC',            emoji:'📡', cat:'Para Recordar',   precio:'$250 MXN',      shape:'charm',   desc:'Placa NFC para collar — al acercar un teléfono se abre el perfil digital de tu mascota.',               wa:'Hola! Me interesa cotizar una Placa NFC 🐾',                        probador:false},
+  /* DIGITAL & REGALO */
+  'kit-caricatura': {nombre:'Kit Digital Caricatura',emoji:'🎭',cat:'Digital & Regalo',precio:'$530 MXN',     shape:'canvas',  desc:'Kit digital con retrato caricatura: archivo PNG en alta resolución para usar donde quieras.',           wa:'Hola! Me interesa cotizar un Kit Digital Caricatura 🐾',            probador:false},
+  'kit-detallado':  {nombre:'Kit Digital Detallado',emoji:'🎨', cat:'Digital & Regalo',precio:'$640 MXN',     shape:'canvas',  desc:'Kit digital detallado: ilustración de alta calidad con fondo personalizado y múltiples formatos.',      wa:'Hola! Me interesa cotizar un Kit Digital Detallado 🐾',             probador:false},
+  'tarjeta-regalo': {nombre:'Tarjeta de Regalo',    emoji:'🎁', cat:'Digital & Regalo',precio:'$400/$650/$850/$1,000 MXN',shape:'canvas',desc:'Tarjeta de regalo Pigmentos.pet — ¡el regalo perfecto para quien amas (y a su mascota)!', wa:'Hola! Me interesa una Tarjeta de Regalo de Pigmentos.pet 🐾',       probador:false},
+};
+
+var RENA_FRASES = [
+  '¡Guau! ¿Ya te imaginas a tu peludo en este producto? 🐾',
+  '¡Woof! Esto se ve <em>increíble</em> — ¡te lo <b>grrr-antizo</b>! 🐾',
+  '¡Arf! Cada producto es único, igual que tu mascota 🐾',
+  '¡<b>Grrr-enial</b> elección! Edith lo ilustrará con todo el amor 🐾',
+  '¿Sabías que podrías ser parte de la Galería? ¡Comparte tu foto con <b>#PigmentosPetGaleria</b>! 🐾',
+];
+var PROB_FRASES = [
+  '¡Guau! ¿Qué te parece? El resultado final podría ser aún más <b>woof-derful</b> 🐾',
+  '¡Arf! Este preview es solo una probadita — Edith le pondrá su magia artística 🐾',
+  '¡<b>Grrr-enial</b>! Tu peludo <em>podría</em> lucir espectacular aquí 🐾',
+];
+
+/* ── SALAS NAVIGATION ────────────────────────────────────────── */
+var SALAS={
+  vestibulo:{url:'index.html'},
+  galeria:{url:'galeria.html'},
+  boutique:{url:'boutique.html'},
+  taller:{url:'taller.html'},
+  altar:{url:'altar.html'},
+  biblioteca:{url:'biblioteca.html'}
+};
+
+/* ── SCENE SIZE ──────────────────────────────────────────────── */
+var RATIO = 7;
+var sw    = document.getElementById('sw');
+var scene = document.getElementById('scene');
+
+function setSceneSize(){
+  var h = window.innerHeight - 50 - 60;
+  scene.style.width  = (h * RATIO) + 'px';
+  scene.style.height = h + 'px';
+}
+setSceneSize();
+window.addEventListener('resize', setSceneSize);
+
+/* ── SCROLL ──────────────────────────────────────────────────── */
+sw.addEventListener('wheel', function(e){
+  e.preventDefault();
+  sw.scrollLeft += e.deltaY * 1.3;
+}, {passive:false});
+
+var isDrag=false, sX=0, sL=0;
+sw.addEventListener('mousedown', function(e){isDrag=true;sX=e.pageX;sL=sw.scrollLeft;sw.style.cursor='grabbing';});
+window.addEventListener('mousemove', function(e){if(!isDrag)return;sw.scrollLeft=sL-(e.pageX-sX);});
+window.addEventListener('mouseup', function(){isDrag=false;sw.style.cursor='grab';});
+
+var tSX=0,tSL=0,tLX=0,tV=0,tT=0,tR=null;
+sw.addEventListener('touchstart',function(e){tSX=tLX=e.touches[0].clientX;tSL=sw.scrollLeft;tV=0;tT=Date.now();},{passive:true});
+sw.addEventListener('touchmove',function(e){var x=e.touches[0].clientX;tV=(tLX-x)/(Date.now()-tT+1);tT=Date.now();tLX=x;sw.scrollLeft=tSL+(tSX-x);},{passive:true});
+sw.addEventListener('touchend',function(){var v=tV*16;function step(){if(Math.abs(v)<.5)return;sw.scrollLeft+=v;v*=.96;tR=requestAnimationFrame(step);}tR=requestAnimationFrame(step);},{passive:true});
+
+/* dots */
+sw.addEventListener('scroll', function(){
+  var p = sw.scrollLeft / (scene.offsetWidth - sw.offsetWidth);
+  ['d0','d1','d2'].forEach(function(id,i){
+    document.getElementById(id).classList.toggle('on', Math.floor(p*3)===i || (i===2&&p>=.95));
+  });
+});
+
+/* category bar scroll */
+function scrollToCat(pct, btn){
+  var maxScroll = scene.offsetWidth - sw.offsetWidth;
+  sw.scrollTo({left: maxScroll * pct, behavior:'smooth'});
+  document.querySelectorAll('.cat-pill').forEach(function(p){p.classList.remove('active');});
+  btn.classList.add('active');
+}
+
+/* ── MODALES ──────────────────────────────────────────────────── */
+function openModal(id)  { document.getElementById('modal-'+id).classList.add('open'); }
+function closeModal(id) { document.getElementById('modal-'+id).classList.remove('open'); }
+
+document.querySelectorAll('.overlay').forEach(function(o){
+  o.addEventListener('click',function(e){ if(e.target===o) o.classList.remove('open'); });
+});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape') document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});
+});
+
+function irA(key){
+  document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});
+  var s=SALAS[key]; if(s&&s.url) setTimeout(function(){window.location.href=s.url;},150);
+}
+
+/* ── ABRIR PRODUCTO ──────────────────────────────────────────── */
+var _productoActual = null;
+
+function openProducto(id){
+  var p = PRODUCTOS[id];
+  if(!p) return;
+  _productoActual = id;
+
+  document.getElementById('prod-modal-emoji').textContent = p.emoji;
+  document.getElementById('prod-modal-cat').textContent   = p.cat + ' 🐾';
+  document.getElementById('prod-modal-cat-chip').textContent = p.cat;
+  document.getElementById('prod-modal-nombre').textContent   = p.nombre;
+  document.getElementById('prod-modal-precio').textContent   = p.precio;
+  document.getElementById('prod-modal-desc').textContent     = p.desc;
+
+  var fraseRaw = RENA_FRASES[Math.floor(Math.random()*RENA_FRASES.length)];
+  document.getElementById('prod-modal-rena').innerHTML = fraseRaw;
+
+  // mostrar/ocultar botón probador
+  var btnProb = document.getElementById('btn-abrir-probador');
+  btnProb.style.display = p.probador ? 'block' : 'none';
+
+  openModal('producto');
+}
+
+function irWA(){
+  var p = PRODUCTOS[_productoActual];
+  if(!p) return;
+  window.open('https://wa.me/526241263124?text='+encodeURIComponent(p.wa),'_blank');
+}
+
+/* ── ABRIR PROBADOR DESDE MODAL PRODUCTO ────────────────────── */
+function abrirProbadorDesdeProducto(){
+  closeModal('producto');
+  prob_reset();
+  // pre-seleccionar el producto actual
+  if(_productoActual && PRODUCTOS[_productoActual] && PRODUCTOS[_productoActual].probador){
+    prob_seleccionarProducto(_productoActual);
+  }
+  openModal('probador');
+}
+
+/* ── RENA BOT LAZY ───────────────────────────────────────────── */
+var _renaBotCargado = false;
+document.getElementById('modal-rena-bot').addEventListener('click',function(){});
+document.getElementById('fab').addEventListener('click',function(){
+  if(!_renaBotCargado){
+    document.getElementById('rena-bot-iframe').src='https://pigmentospet.github.io/Rena-Bot/';
+    _renaBotCargado=true;
+  }
+  openModal('rena-bot');
+});
+
+/* ════════════════════════════════════════════════════════════
+   PROBADOR MÁGICO
+════════════════════════════════════════════════════════════ */
+
+/* productos del probador (solo los que tienen probador:true) */
+var PROB_PRODUCTOS = Object.keys(PRODUCTOS).filter(function(k){return PRODUCTOS[k].probador;});
+var _probProducto  = null;
+var _probImgSrc    = null;
+
+/* generar grid de productos */
+(function(){
+  var grid = document.getElementById('prob-prod-grid');
+  PROB_PRODUCTOS.forEach(function(id){
+    var p = PRODUCTOS[id];
+    var btn = document.createElement('button');
+    btn.className = 'prob-prod-btn';
+    btn.id = 'prob-btn-'+id;
+    btn.innerHTML = '<span>'+p.emoji+'</span><span>'+p.nombre+'</span>';
+    btn.onclick = function(){ prob_seleccionarProducto(id); };
+    grid.appendChild(btn);
+  });
+})();
+
+function prob_seleccionarProducto(id){
+  _probProducto = id;
+  document.querySelectorAll('.prob-prod-btn').forEach(function(b){b.classList.remove('sel');});
+  var btn = document.getElementById('prob-btn-'+id);
+  if(btn) btn.classList.add('sel');
+}
+
+function prob_reset(){
+  _probProducto = null;
+  _probImgSrc   = null;
+  document.querySelectorAll('.prob-prod-btn').forEach(function(b){b.classList.remove('sel');});
+  prob_showStep(1);
+}
+
+function prob_showStep(n){
+  [1,2,3].forEach(function(i){
+    document.getElementById('prob-step-'+i).style.display = (i===n) ? 'block' : 'none';
+    var dot = document.getElementById('pstep-'+i);
+    dot.classList.toggle('done', i<=n);
+    if(i<3){
+      var line = document.getElementById('pline-'+i);
+      line.classList.toggle('done', i<n);
+    }
+  });
+}
+
+function prob_irStep1(){ prob_showStep(1); }
+
+function prob_irStep2(){
+  if(!_probProducto){ alert('¡Primero elige un producto! 🐾'); return; }
+  prob_showStep(2);
+}
+
+function prob_handleFile(file){
+  if(!file || !file.type.startsWith('image/')) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    _probImgSrc = e.target.result;
+    prob_showStep(3);
+    prob_renderCanvas();
+  };
+  reader.readAsDataURL(file);
+}
+
+/* drag & drop */
+var dz = document.getElementById('prob-dropzone');
+dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',function(){dz.classList.remove('drag');});
+dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('drag');prob_handleFile(e.dataTransfer.files[0]);});
+
+/* ── CANVAS RENDER ───────────────────────────────────────────── */
+function prob_renderCanvas(){
+  var canvas = document.getElementById('prob-canvas');
+  var ctx    = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var p = PRODUCTOS[_probProducto];
+  if(!p) return;
+
+  /* frase */
+  var fraseRaw = PROB_FRASES[Math.floor(Math.random()*PROB_FRASES.length)];
+  document.getElementById('prob-frase').innerHTML = fraseRaw;
+
+  /* 1 — dibujar mockup base */
+  drawMockup(ctx, p.shape, W, H);
+
+  /* 2 — foto de mascota en zona transparente */
+  var img = new Image();
+  img.onload = function(){
+    /* zona según shape */
+    var zones = {
+      mug:    [W*.22, H*.28, W*.4,  H*.34],
+      shirt:  [W*.3,  H*.35, W*.4,  H*.35],
+      tumbler:[W*.33, H*.2,  W*.34, H*.5 ],
+      bag:    [W*.22, H*.34, W*.56, H*.38],
+      cap:    [W*.32, H*.32, W*.36, H*.24],
+      charm:  [W*.3,  H*.34, W*.4,  H*.4 ],
+      canvas: [W*.16, H*.14, W*.68, H*.66],
+    };
+    var z = zones[p.shape] || [W*.2,H*.2,W*.6,H*.6];
+    var zx=z[0],zy=z[1],zw=z[2],zh=z[3];
+    /* recorte cuadrado centrado */
+    var s  = Math.min(img.width,img.height);
+    var sx = (img.width -s)/2;
+    var sy = (img.height-s)/2;
+
+    ctx.save();
+    if(p.shape==='charm'){
+      ctx.beginPath();ctx.arc(W*.5,H*.54,W*.2,0,Math.PI*2);ctx.clip();
+    } else {
+      var rad=6;
+      ctx.beginPath();
+      ctx.moveTo(zx+rad,zy);ctx.lineTo(zx+zw-rad,zy);
+      ctx.quadraticCurveTo(zx+zw,zy,zx+zw,zy+rad);
+      ctx.lineTo(zx+zw,zy+zh-rad);ctx.quadraticCurveTo(zx+zw,zy+zh,zx+zw-rad,zy+zh);
+      ctx.lineTo(zx+rad,zy+zh);ctx.quadraticCurveTo(zx,zy+zh,zx,zy+zh-rad);
+      ctx.lineTo(zx,zy+rad);ctx.quadraticCurveTo(zx,zy,zx+rad,zy);
+      ctx.closePath();ctx.clip();
+    }
+    ctx.drawImage(img,sx,sy,s,s,zx,zy,zw,zh);
+    ctx.restore();
+
+    /* 3 — overlay de brillo */
+    ctx.save();
+    var g = ctx.createLinearGradient(0,0,W,H);
+    g.addColorStop(0,'rgba(255,255,255,0.12)');
+    g.addColorStop(1,'rgba(0,0,0,0.05)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.restore();
+  };
+  img.src = _probImgSrc;
+}
+
+/* ── DRAW MOCKUP (shapes vectoriales hasta tener los PNGs reales) */
+function drawMockup(ctx, shape, W, H){
+  ctx.clearRect(0,0,W,H);
+  function rr(x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+    ctx.closePath();
+  }
+  ctx.save();
+  if(shape==='mug'){
+    ctx.fillStyle='#F5E9D8';rr(W*.18,H*.2,W*.52,H*.58,12);ctx.fill();
+    ctx.strokeStyle='#C17B4A';ctx.lineWidth=3;ctx.stroke();
+    ctx.beginPath();ctx.arc(W*.76,H*.47,W*.11,-Math.PI*.5,Math.PI*.5);
+    ctx.strokeStyle='#D9A07A';ctx.lineWidth=10;ctx.stroke();
+    ctx.clearRect(W*.22,H*.28,W*.4,H*.34);
+    ctx.fillStyle='#D9A07A';rr(W*.18,H*.2,W*.52,H*.09,8);ctx.fill();
+    ctx.fillStyle='#D9A07A';rr(W*.2,H*.74,W*.48,H*.07,6);ctx.fill();
+  } else if(shape==='shirt'){
+    ctx.fillStyle='#F5E9D8';rr(W*.2,H*.28,W*.6,H*.55,10);ctx.fill();
+    ctx.strokeStyle='#C17B4A';ctx.lineWidth=3;ctx.stroke();
+    ctx.beginPath();ctx.moveTo(W*.35,H*.28);ctx.quadraticCurveTo(W*.5,H*.36,W*.65,H*.28);
+    ctx.strokeStyle='#9A5E33';ctx.lineWidth=2;ctx.stroke();
+    [[W*.08,H*.18,W*.15,H*.24],[W*.77,H*.18,W*.15,H*.24]].forEach(function(a){
+      ctx.fillStyle='#F5E9D8';rr(a[0],a[1],a[2],a[3],6);ctx.fill();
+      ctx.strokeStyle='#C17B4A';ctx.lineWidth=2;ctx.stroke();
+    });
+    ctx.clearRect(W*.3,H*.35,W*.4,H*.35);
+  } else if(shape==='tumbler'){
+    ctx.fillStyle='#F5E9D8';
+    ctx.beginPath();ctx.moveTo(W*.3,H*.1);ctx.lineTo(W*.7,H*.1);
+    ctx.lineTo(W*.65,H*.88);ctx.lineTo(W*.35,H*.88);ctx.closePath();
+    ctx.fill();ctx.strokeStyle='#C17B4A';ctx.lineWidth=3;ctx.stroke();
+    ctx.fillStyle='#D9A07A';rr(W*.27,H*.06,W*.46,H*.09,6);ctx.fill();
+    ctx.strokeStyle='#9A5E33';ctx.lineWidth=5;
+    ctx.beginPath();ctx.moveTo(W*.6,H*.02);ctx.lineTo(W*.55,H*.12);ctx.stroke();
+    ctx.clearRect(W*.33,H*.2,W*.34,H*.5);
+  } else if(shape==='bag'){
+    ctx.fillStyle='#F5E9D8';rr(W*.15,H*.28,W*.7,H*.58,14);ctx.fill();
+    ctx.strokeStyle='#C17B4A';ctx.lineWidth=3;ctx.stroke();
+    [[W*.3,H*.18],[W*.55,H*.18]].forEach(function(a){
+      ctx.beginPath();ctx.arc(a[0],a[1]+.04*H,.08*W,-Math.PI,0);
+      ctx.strokeStyle='#9A5E33';ctx.lineWidth=5;ctx.stroke();
+    });
+    ctx.clearRect(W*.22,H*.34,W*.56,H*.38);
+  } else if(shape==='cap'){
+    ctx.fillStyle='#F5E9D8';
+    ctx.beginPath();ctx.arc(W*.5,H*.48,W*.32,-Math.PI,0);ctx.lineTo(W*.82,H*.6);ctx.lineTo(W*.18,H*.6);ctx.closePath();
+    ctx.fill();ctx.strokeStyle='#C17B4A';ctx.lineWidth=3;ctx.stroke();
+    ctx.fillStyle='#D9A07A';
+    ctx.beginPath();ctx.ellipse(W*.5,H*.6,W*.36,H*.08,0,0,Math.PI);ctx.fill();
+    ctx.strokeStyle='#C17B4A';ctx.lineWidth=2;ctx.stroke();
+    ctx.clearRect(W*.32,H*.32,W*.36,H*.24);
+  } else if(shape==='charm'){
+    ctx.fillStyle='#F5E9D8';
+    ctx.beginPath();ctx.arc(W*.5,H*.54,W*.3,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#C17B4A';ctx.lineWidth=3;ctx.stroke();
+    ctx.beginPath();ctx.arc(W*.5,H*.2,W*.07,0,Math.PI*2);
+    ctx.strokeStyle='#9A5E33';ctx.lineWidth=4;ctx.stroke();
+    ctx.clearRect(W*.3,H*.34,W*.4,H*.4);
+  } else {
+    ctx.fillStyle='#fff';rr(W*.1,H*.08,W*.8,H*.78,4);ctx.fill();
+    ctx.strokeStyle='#9A5E33';ctx.lineWidth=4;ctx.stroke();
+    rr(W*.14,H*.12,W*.72,H*.7,2);ctx.strokeStyle='#D9A07A';ctx.lineWidth=2;ctx.stroke();
+    ctx.clearRect(W*.16,H*.14,W*.68,H*.66);
+    ctx.fillStyle='#D9A07A';rr(W*.1,H*.86,W*.8,H*.08,3);ctx.fill();
+  }
+  ctx.restore();
+}
+
+function prob_irWA(){
+  var p = PRODUCTOS[_probProducto];
+  if(!p) return;
+  window.open('https://wa.me/526241263124?text='+encodeURIComponent(p.wa),'_blank');
+}
+
+/* ── HINT FADEOUT ─────────────────────────────────────────────── */
+setTimeout(function(){ document.getElementById('hint').style.animation='fadeHint 3s ease forwards'; }, 100);
+
+</script>
+</body>
+</html>
