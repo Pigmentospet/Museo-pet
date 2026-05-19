@@ -107,7 +107,7 @@ footer{
 
 /* SIN FONDO — solo emoji + tag flotantes */
 .prod-emoji{
-  font-size:clamp(20px,4vw,36px);
+  font-size:clamp(14px,2.5vw,22px);
   line-height:1;
   filter:drop-shadow(0 2px 4px rgba(0,0,0,.22));
   transition:transform .12s ease;
@@ -118,7 +118,7 @@ footer{
   background:rgba(253,246,238,.88);
   border:1.5px solid rgba(193,123,74,.3);
   border-radius:8px;padding:3px 8px;margin-top:5px;
-  font-size:clamp(9px,1.4vw,11px);font-weight:800;color:var(--ink);
+  font-size:clamp(8px,1.1vw,10px);font-weight:800;color:var(--ink);
   white-space:nowrap;max-width:120%;overflow:hidden;text-overflow:ellipsis;
   backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
   box-shadow:0 2px 6px rgba(61,32,16,.1);
@@ -516,16 +516,16 @@ function positionAll(){
   scene.style.width  = (PANEL_W * N_PANELS + Math.round(window.innerWidth*0.3))+'px';
 
   /* Tamaño de card — pequeño, ~18-20% de altura de scene */
-  var padX = Math.round(PANEL_W * 0.05);
-  var gapX = Math.round(PANEL_W * 0.03);
+  var padX = Math.round(PANEL_W * 0.06);
+  var gapX = Math.round(PANEL_W * 0.025);
   var colW = Math.round((PANEL_W - padX*2 - gapX*2) / 3);
 
-  /* Altura de card: ~18% de h → la mitad de la versión anterior (38%) */
-  var cardH = Math.round(h * 0.19);
+  /* Altura de card: ~9% de h (mitad de la versión anterior) */
+  var cardH = Math.round(h * 0.095);
 
-  /* Dos filas: 30% y 54% desde arriba */
-  var rowY0 = Math.round(h * 0.30);
-  var rowY1 = Math.round(h * 0.54);
+  /* Dos filas centradas verticalmente */
+  var rowY0 = Math.round(h * 0.32);
+  var rowY1 = Math.round(h * 0.50);
 
   LAYOUT.forEach(function(item){
     var id=item[0],pan=item[1],col=item[2],row=item[3];
