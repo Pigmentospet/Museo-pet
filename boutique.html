@@ -36,15 +36,40 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 #scene{position:relative}
 .layer{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
 .panel-div{position:absolute;top:6%;bottom:6%;width:2px;background:rgba(193,123,74,.15);z-index:5;pointer-events:none;border-radius:2px}
-
-/* Etiqueta categoría — ancho automático */
 .cat-label{position:absolute;top:0;background:var(--brand);color:var(--cream);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:0 0 10px 10px;pointer-events:none;z-index:15;opacity:.9;white-space:nowrap;display:inline-block}
 
-/* HOTSPOTS sin fondo */
-.hs{position:absolute;background:transparent;border:none;padding:0;cursor:pointer;z-index:20;-webkit-tap-highlight-color:rgba(193,123,74,.15);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:4px;transition:transform .12s ease}
+/* HOTSPOT */
+.hs{
+  position:absolute;background:transparent;border:none;padding:0;
+  cursor:pointer;z-index:20;-webkit-tap-highlight-color:rgba(193,123,74,.15);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  padding-bottom:4px;transition:transform .12s ease;
+}
 .hs:active{transform:scale(.88)}
-.prod-emoji{font-size:clamp(16px,4vw,28px);line-height:1;filter:drop-shadow(0 2px 5px rgba(0,0,0,.28));transition:transform .12s}
-.hs:hover .prod-emoji,.hs:focus .prod-emoji{transform:translateY(-3px)}
+
+/* Ilustración del producto */
+.prod-img{
+  width:70%;           /* 70% del ancho del hotspot */
+  aspect-ratio:1/1;
+  object-fit:contain;
+  filter:drop-shadow(0 3px 6px rgba(0,0,0,.22));
+  transition:transform .12s;
+  /* fallback si la img no carga: oculta y se muestra el emoji */
+}
+.hs:hover .prod-img,.hs:focus .prod-img{transform:translateY(-4px)}
+
+/* Emoji de respaldo (visible solo si la img falla) */
+.prod-emoji-fb{
+  display:none; /* oculto por defecto */
+  font-size:clamp(16px,4vw,28px);line-height:1;
+  filter:drop-shadow(0 2px 5px rgba(0,0,0,.28));
+  transition:transform .12s;
+}
+/* Si la imagen falla, JS añade clase .img-error al hs y muestra el emoji */
+.hs.img-error .prod-img{display:none}
+.hs.img-error .prod-emoji-fb{display:block}
+.hs:hover .prod-emoji-fb,.hs:focus .prod-emoji-fb{transform:translateY(-3px)}
+
 .prod-tag{background:rgba(253,246,238,.9);border:1.5px solid rgba(193,123,74,.3);border-radius:7px;padding:2px 7px;margin-top:4px;font-size:clamp(8px,1.8vw,10px);font-weight:800;color:var(--ink);white-space:nowrap;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 1px 4px rgba(61,32,16,.1)}
 .prod-price{font-size:clamp(7px,1.5vw,9px);font-weight:800;color:var(--brand-dk);margin-top:1px;background:rgba(253,246,238,.78);border-radius:5px;padding:1px 5px}
 
@@ -86,7 +111,10 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 .door-cta{display:block;width:100%;padding:13px;background:var(--brand);color:var(--cream);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;margin-top:8px}
 .door-cta.sec{background:var(--cream-dk);color:var(--brand-dk)}
 .door-cta.grn{background:#3D8B3D;color:#fff}
-.prod-preview-emoji{width:100%;height:100px;display:flex;align-items:center;justify-content:center;font-size:56px;border-radius:12px;background:white;border:1.5px solid rgba(193,123,74,.15);margin-bottom:12px}
+/* modal producto preview */
+.prod-modal-preview{width:100%;height:110px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:white;border:1.5px solid rgba(193,123,74,.15);margin-bottom:12px;overflow:hidden}
+.prod-modal-preview img{max-width:80%;max-height:90%;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(61,32,16,.15))}
+.prod-modal-preview .prod-modal-emoji{font-size:56px}
 .prod-info-name{font-size:18px;font-weight:800;color:var(--ink);font-family:'Cormorant Garamond',serif}
 .prod-info-price{font-size:20px;font-weight:800;color:var(--brand);margin:4px 0 6px}
 .prod-info-desc{font-size:13px;color:var(--ink-lt);line-height:1.6;margin-bottom:12px}
@@ -112,9 +140,10 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 .pstep-line{flex:1;height:2px;background:var(--cream-dk);transition:background .2s}
 .pstep-line.done{background:var(--brand)}
 .prob-prod-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.prob-prod-btn{background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:10px;padding:10px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all .15s}
+.prob-prod-btn{background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:10px;padding:8px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s}
 .prob-prod-btn.sel{border-color:var(--brand);background:var(--cream-dk)}
-.prob-prod-btn .ppb-emoji{font-size:22px}
+.prob-prod-btn img{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 1px 3px rgba(0,0,0,.15))}
+.prob-prod-btn .ppb-emoji{font-size:28px;line-height:1}
 .prob-prod-btn .ppb-name{font-size:10px;font-weight:800;color:var(--ink);text-align:center;line-height:1.2}
 .dropzone{border:2px dashed var(--brand-lt);border-radius:14px;padding:28px 16px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;background:white;transition:all .2s;text-align:center}
 .dropzone:hover,.dropzone.drag{background:var(--cream-dk);border-color:var(--brand)}
@@ -138,13 +167,9 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
   <button class="btn-menu" onclick="openModal('menu')" aria-label="Menú"><span></span><span></span><span></span></button>
 </nav>
 
-<!-- SCENE -->
-<div id="sw">
-  <div id="scene">
-    <img src="boutique-bg.PNG" class="layer" style="z-index:1" alt="">
-    <!-- Hotspots generados por JS según pirámide -->
-  </div>
-</div>
+<div id="sw"><div id="scene">
+  <img src="boutique-bg.PNG" class="layer" style="z-index:1" alt="">
+</div></div>
 
 <!-- CAT BAR -->
 <div id="cat-bar">
@@ -163,7 +188,6 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
   <div class="dot" id="d2"></div><div class="dot" id="d3"></div><div class="dot" id="d4"></div>
 </div>
 
-<!-- FOOTER -->
 <footer>
   <a class="ft-link" href="https://edithbojorquez.com" target="_blank">🌐 edithbojorquez.com</a>
   <div class="ft-sep"></div>
@@ -176,7 +200,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 
 <!-- ══ MODALES ══════════════════════════════════════════════════ -->
 
-<!-- PRODUCTO (genérico) -->
+<!-- PRODUCTO -->
 <div class="overlay" id="modal-producto" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
@@ -185,7 +209,10 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       <button class="modal-close" onclick="closeModal('producto')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="prod-preview-emoji" id="prod-modal-emoji">🛍️</div>
+      <!-- Preview: imagen ilustrada o emoji fallback -->
+      <div class="prod-modal-preview" id="prod-modal-preview">
+        <span class="prod-modal-emoji" id="prod-modal-emoji">🛍️</span>
+      </div>
       <div class="cat-chip" id="prod-modal-chip">Categoría</div>
       <div class="prod-info-name" id="prod-modal-nombre">Producto</div>
       <div class="prod-info-price" id="prod-modal-precio">$000 MXN</div>
@@ -201,7 +228,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
   </div>
 </div>
 
-<!-- PRODUCTO NFC — modal especial con templates -->
+<!-- NFC -->
 <div class="overlay" id="modal-nfc" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
@@ -210,37 +237,31 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       <button class="modal-close" onclick="closeModal('nfc')">✕</button>
     </div>
     <div class="modal-body">
-      <div class="prod-preview-emoji">📡</div>
+      <div class="prod-modal-preview">
+        <img src="prod-placa-nfc.PNG" alt="Placa NFC" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+        <span class="prod-modal-emoji" style="display:none">📡</span>
+      </div>
       <div class="cat-chip">Para Llevar</div>
       <div class="prod-info-name">Placa NFC</div>
       <div class="prod-info-price">$250 MXN</div>
-      <div class="prod-info-desc">Placa inteligente para el collar — al acercar cualquier celular se abre automáticamente la plantilla que elijas. Sin app, sin registro. Elige una de las 3 plantillas:</div>
+      <div class="prod-info-desc">Placa inteligente para el collar — al acercar cualquier celular se abre la plantilla que elijas. Sin app, sin registro. Elige una de las 3 plantillas:</div>
       <div class="nfc-templates">
         <div class="nfc-template">
           <div class="nfc-template-icon">⭐</div>
-          <div>
-            <div class="nfc-template-name">Pet Influencer</div>
-            <div class="nfc-template-desc">Perfil con redes sociales de tu mascota — Instagram, TikTok, fotos y más. Para los peludos que ya son celebridades.</div>
-          </div>
+          <div><div class="nfc-template-name">Pet Influencer</div><div class="nfc-template-desc">Perfil con redes sociales de tu mascota — Instagram, TikTok, fotos y más. Para los peludos que ya son celebridades.</div></div>
         </div>
         <div class="nfc-template">
           <div class="nfc-template-icon">🏥</div>
-          <div>
-            <div class="nfc-template-name">Salud</div>
-            <div class="nfc-template-desc">Datos médicos importantes: vacunas, alergias, condiciones especiales, veterinario de confianza y más.</div>
-          </div>
+          <div><div class="nfc-template-name">Salud</div><div class="nfc-template-desc">Datos médicos: vacunas, alergias, condiciones especiales y veterinario de confianza.</div></div>
         </div>
         <div class="nfc-template">
           <div class="nfc-template-icon">📍</div>
-          <div>
-            <div class="nfc-template-name">Encontradx</div>
-            <div class="nfc-template-desc">Datos de contacto de los dueños, dirección, número de celular e información importante para quien encuentre a tu mascota.</div>
-          </div>
+          <div><div class="nfc-template-name">Encontradx</div><div class="nfc-template-desc">Datos de contacto de los dueños, dirección e información importante para quien encuentre a tu mascota.</div></div>
         </div>
       </div>
       <div class="bubble-wrap">
         <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
-        <div class="bubble-box">¡Woof! La placa NFC es de mis favoritas — ¡es como darle un <b>superpoder digital</b> a tu peludo! Solo acerca el celular y ¡magia! 🐾</div>
+        <div class="bubble-box">¡Woof! La placa NFC es de mis favoritas — es como darle un <b>superpoder digital</b> a tu peludo. ¡Solo acerca el celular y magia! 🐾</div>
       </div>
       <button class="door-cta grn" onclick="window.open('https://wa.me/526241263124?text='+encodeURIComponent('Hola! Me interesa cotizar una Placa NFC 🐾 ¿Qué plantilla me recomiendas?'),'_blank')">💬 Cotizar por WhatsApp</button>
       <button class="door-cta sec" onclick="closeModal('nfc');openModal('rena-bot')">🐾 Que Rena me ayude</button>
@@ -335,179 +356,143 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
   </div>
 </div>
 
-<!-- ══ JS ══════════════════════════════════════════════════════ -->
 <script>
-/* ── DATOS ────────────────────────────────────────────────────── */
+/* ── PRODUCTOS ───────────────────────────────────────────────── */
 var PRODUCTOS = {
-  /* BEBER */
-  'taza-clasica':      {nombre:'Taza Clásica',          emoji:'☕',cat:'Para Beber',   precio:'$550 MXN',       shape:'mug',    probador:true,  nfc:false, desc:'Taza de cerámica con retrato personalizado de tu mascota. Perfecta para el café de cada mañana.',                                          wa:'Hola! Me interesa cotizar una Taza Clásica personalizada 🐾'},
-  'taza-jumbo':        {nombre:'Taza Jumbo',             emoji:'🫖',cat:'Para Beber',   precio:'$600 MXN',       shape:'mug',    probador:true,  nfc:false, desc:'Más grande, más amor. Taza jumbo con el retrato ilustrado de tu peludo.',                                                                  wa:'Hola! Me interesa cotizar una Taza Jumbo personalizada 🐾'},
-  'termo-887':         {nombre:'Termo Acero 887ml',      emoji:'🥃',cat:'Para Beber',   precio:'$850 MXN',       shape:'tumbler',probador:true,  nfc:false, desc:'Termo de acero inoxidable 887ml. Mantiene caliente o frío por horas. Tu mascota siempre contigo.',                                        wa:'Hola! Me interesa cotizar un Termo 887ml personalizado 🐾'},
-  'termo-12':          {nombre:'Termo Acero 1.2L',       emoji:'🧃',cat:'Para Beber',   precio:'$950 MXN',       shape:'tumbler',probador:true,  nfc:false, desc:'El termo más grande — 1.2 litros de amor. Ideal para días largos y aventuras con tu peludo.',                                            wa:'Hola! Me interesa cotizar un Termo 1.2L personalizado 🐾'},
-  'termo-tumbler':     {nombre:'Termo Tumbler',          emoji:'🥤',cat:'Para Beber',   precio:'$750 MXN',       shape:'tumbler',probador:true,  nfc:false, desc:'Tumbler acrílico con tapa y popote. Perfecto para bebidas frías y el retrato de tu mascota.',                                           wa:'Hola! Me interesa cotizar un Termo Tumbler personalizado 🐾'},
-  'vaso-bambu':        {nombre:'Vaso de Bambú',          emoji:'🎋',cat:'Para Beber',   precio:'$650 MXN',       shape:'tumbler',probador:true,  nfc:false, desc:'Vaso ecológico de bambú con retrato personalizado. Sostenible, bonito y con mucho amor.',                                               wa:'Hola! Me interesa cotizar un Vaso de Bambú personalizado 🐾'},
-  /* VESTIR */
-  'playera':           {nombre:'Playera',                emoji:'👕',cat:'Para Vestir',  precio:'$650 MXN',       shape:'shirt',  probador:true,  nfc:false, desc:'Playera de algodón con el retrato caricatura de tu mascota estampado con calidad premium.',                                              wa:'Hola! Me interesa cotizar una Playera personalizada 🐾'},
-  'hoodie':            {nombre:'Hoodie',                 emoji:'🧥',cat:'Para Vestir',  precio:'$950 MXN',       shape:'shirt',  probador:true,  nfc:false, desc:'Sudadera con capucha y el retrato de tu peludo. Comodidad y amor en cada uso.',                                                         wa:'Hola! Me interesa cotizar un Hoodie personalizado 🐾'},
-  'gorra':             {nombre:'Gorra',                  emoji:'🧢',cat:'Para Vestir',  precio:'$650 MXN',       shape:'cap',    probador:true,  nfc:false, desc:'Gorra con el retrato de tu mascota. ¡Llévala a todos lados y presume a tu peludo!',                                                     wa:'Hola! Me interesa cotizar una Gorra personalizada 🐾'},
-  'tote-bag':          {nombre:'Tote Bag',               emoji:'👜',cat:'Para Vestir',  precio:'$650 MXN',       shape:'bag',    probador:true,  nfc:false, desc:'Bolsa de tela reutilizable con el retrato de tu mascota. Práctica, bonita y ecológica.',                                                wa:'Hola! Me interesa cotizar una Tote Bag personalizada 🐾'},
-  /* LLEVAR */
-  'llavero':           {nombre:'Llavero Acrílico',       emoji:'🔑',cat:'Para Llevar',  precio:'$400 MXN',       shape:'charm',  probador:true,  nfc:false, desc:'Llavero de acrílico con ilustración personalizada de tu mascota. ¡El accesorio más tierno de tu bolsa!',                               wa:'Hola! Me interesa cotizar un Llavero personalizado 🐾'},
-  'funda-celular':     {nombre:'Funda de Celular',       emoji:'📱',cat:'Para Llevar',  precio:'$600 MXN',       shape:'charm',  probador:false, nfc:false, desc:'Funda personalizada para celular con el retrato ilustrado de tu mascota. Tu peludo siempre en la mano.',                                wa:'Hola! Me interesa cotizar una Funda de Celular personalizada 🐾'},
-  'placa':             {nombre:'Placa Personalizada',    emoji:'🏷️',cat:'Para Llevar',  precio:'$130 MXN',       shape:'charm',  probador:false, nfc:false, desc:'Placa de identificación para collar grabada con el nombre de tu mascota. Algunos modelos incluyen número de celular adicional para contacto rápido.',wa:'Hola! Me interesa cotizar una Placa Personalizada 🐾'},
-  'collar-placa':      {nombre:'Collar + Placa',         emoji:'🦮',cat:'Para Llevar',  precio:'$230 MXN',       shape:'charm',  probador:false, nfc:false, desc:'Collar con placa de identificación personalizada incluida — grabada con el nombre de tu mascota. Algunos modelos también incluyen número de celular.',wa:'Hola! Me interesa cotizar un Collar con Placa personalizado 🐾'},
-  'placa-nfc':         {nombre:'Placa NFC',              emoji:'📡',cat:'Para Llevar',  precio:'$250 MXN',       shape:'charm',  probador:false, nfc:true,  desc:'', wa:'Hola! Me interesa cotizar una Placa NFC 🐾 ¿Qué plantilla me recomiendas?'},
-  'blind-box':         {nombre:'Blind Box Pigmento',     emoji:'📦',cat:'Para Llevar',  precio:'$480 MXN',       shape:'charm',  probador:false, nfc:false, desc:'Adopta un Pigmento — caja sorpresa con un personaje ilustrado único. ¡No sabes cuál te toca!',                                        wa:'Hola! Me interesa cotizar un Blind Box Pigmento 🐾'},
-  'libreta':           {nombre:'Libreta Caricatura',     emoji:'📓',cat:'Para Llevar',  precio:'$450 MXN',       shape:'canvas', probador:false, nfc:false, desc:'Libreta con portada personalizada con el retrato caricatura de tu mascota. Perfecta para llevarla siempre.',                          wa:'Hola! Me interesa cotizar una Libreta personalizada 🐾'},
-  /* DECORAR */
-  'lienzo':            {nombre:'Lienzo Pintado',         emoji:'🖼️',cat:'Para Decorar', precio:'$450–$950 MXN',  shape:'canvas', probador:false, nfc:false, desc:'Lienzo pintado a mano por Edith con el retrato de tu mascota. Una obra de arte única e irrepetible para tu hogar.',                  wa:'Hola! Me interesa cotizar un Lienzo Pintado personalizado 🐾'},
-  'cuadro-mini':       {nombre:'Cuadro Mini',            emoji:'🏠',cat:'Para Decorar', precio:'$480 MXN',       shape:'canvas', probador:false, nfc:false, desc:'Cuadro miniatura de escritorio con el retrato de tu peludo. Ideal para oficina, buró o repisa.',                                     wa:'Hola! Me interesa cotizar un Cuadro Mini personalizado 🐾'},
-  'cuadro-escritorio': {nombre:'Cuadro de Escritorio',   emoji:'📐',cat:'Para Decorar', precio:'$560 MXN',       shape:'canvas', probador:false, nfc:false, desc:'Cuadro con soporte para escritorio. El retrato de tu mascota siempre presente en tu espacio.',                                       wa:'Hola! Me interesa cotizar un Cuadro de Escritorio personalizado 🐾'},
-  'portavasos':        {nombre:'Portavasos',             emoji:'🫗',cat:'Para Decorar', precio:'$390 MXN',       shape:'charm',  probador:false, nfc:false, desc:'Portavasos con diseño caricatura de tu mascota. Protege tu mesa con estilo y mucho amor.',                                           wa:'Hola! Me interesa cotizar Portavasos personalizados 🐾'},
-  'acuarela':          {nombre:'Acuarela Original',      emoji:'🎨',cat:'Para Decorar', precio:'$350–$500 MXN',  shape:'canvas', probador:false, nfc:false, desc:'Retrato en acuarela original pintado a mano por Edith. Una pieza de colección única e irrepetible.',                                wa:'Hola! Me interesa cotizar una Acuarela Original 🐾'},
-  'kit-caricatura':    {nombre:'Kit Digital Caricatura', emoji:'🎭',cat:'Para Decorar', precio:'$530 MXN',       shape:'canvas', probador:false, nfc:false, desc:'Kit digital con retrato caricatura en alta resolución. Archivo PNG listo para usar donde quieras.',                                  wa:'Hola! Me interesa cotizar un Kit Digital Caricatura 🐾'},
-  'kit-detallado':     {nombre:'Kit Digital Detallado',  emoji:'✨',cat:'Para Decorar', precio:'$640 MXN',       shape:'canvas', probador:false, nfc:false, desc:'Ilustración detallada de alta calidad con fondo personalizado. Múltiples formatos incluidos.',                                       wa:'Hola! Me interesa cotizar un Kit Digital Detallado 🐾'},
-  /* REGALAR */
-  'postal':            {nombre:'Postal Ilustrada',       emoji:'💌',cat:'Para Regalar', precio:'$50 MXN',        shape:'canvas', probador:false, nfc:false, desc:'Postal ilustrada personalizada. El regalo más bonito y accesible para sorprender a alguien especial.',                               wa:'Hola! Me interesa cotizar una Postal Ilustrada personalizada 🐾'},
-  'tarjeta-regalo':    {nombre:'Tarjeta de Regalo',      emoji:'🎁',cat:'Para Regalar', precio:'$400/$650/$850/$1,000',shape:'canvas',probador:false,nfc:false,desc:'Tarjeta de regalo Pigmentos.pet — el regalo perfecto para quien amas (y para su mascota).',                                      wa:'Hola! Me interesa una Tarjeta de Regalo de Pigmentos.pet 🐾'},
+  'taza-clasica':      {nombre:'Taza Clásica',          emoji:'☕',cat:'Para Beber',   precio:'$550 MXN',     shape:'mug',    probador:true,  nfc:false,desc:'Taza de cerámica con retrato personalizado de tu mascota. Perfecta para el café de cada mañana.',                                         wa:'Hola! Me interesa cotizar una Taza Clásica personalizada 🐾'},
+  'taza-jumbo':        {nombre:'Taza Jumbo',             emoji:'🫖',cat:'Para Beber',   precio:'$600 MXN',     shape:'mug',    probador:true,  nfc:false,desc:'Más grande, más amor. Taza jumbo con el retrato ilustrado de tu peludo.',                                                                 wa:'Hola! Me interesa cotizar una Taza Jumbo personalizada 🐾'},
+  'termo-887':         {nombre:'Termo Acero 887ml',      emoji:'🥃',cat:'Para Beber',   precio:'$850 MXN',     shape:'tumbler',probador:true,  nfc:false,desc:'Termo de acero inoxidable 887ml. Mantiene caliente o frío por horas.',                                                                   wa:'Hola! Me interesa cotizar un Termo 887ml personalizado 🐾'},
+  'termo-12':          {nombre:'Termo Acero 1.2L',       emoji:'🧃',cat:'Para Beber',   precio:'$950 MXN',     shape:'tumbler',probador:true,  nfc:false,desc:'El termo más grande — 1.2 litros de amor. Ideal para días largos.',                                                                     wa:'Hola! Me interesa cotizar un Termo 1.2L personalizado 🐾'},
+  'termo-tumbler':     {nombre:'Termo Tumbler',          emoji:'🥤',cat:'Para Beber',   precio:'$750 MXN',     shape:'tumbler',probador:true,  nfc:false,desc:'Tumbler acrílico con tapa y popote. Perfecto para bebidas frías.',                                                                      wa:'Hola! Me interesa cotizar un Termo Tumbler personalizado 🐾'},
+  'vaso-bambu':        {nombre:'Vaso de Bambú',          emoji:'🎋',cat:'Para Beber',   precio:'$650 MXN',     shape:'tumbler',probador:true,  nfc:false,desc:'Vaso ecológico de bambú con retrato personalizado.',                                                                                    wa:'Hola! Me interesa cotizar un Vaso de Bambú personalizado 🐾'},
+  'playera':           {nombre:'Playera',                emoji:'👕',cat:'Para Vestir',  precio:'$650 MXN',     shape:'shirt',  probador:true,  nfc:false,desc:'Playera de algodón con el retrato caricatura de tu mascota.',                                                                           wa:'Hola! Me interesa cotizar una Playera personalizada 🐾'},
+  'hoodie':            {nombre:'Hoodie',                 emoji:'🧥',cat:'Para Vestir',  precio:'$950 MXN',     shape:'shirt',  probador:true,  nfc:false,desc:'Sudadera con capucha y el retrato de tu peludo.',                                                                                       wa:'Hola! Me interesa cotizar un Hoodie personalizado 🐾'},
+  'gorra':             {nombre:'Gorra',                  emoji:'🧢',cat:'Para Vestir',  precio:'$650 MXN',     shape:'cap',    probador:true,  nfc:false,desc:'Gorra con el retrato de tu mascota. ¡Llévala a todos lados!',                                                                          wa:'Hola! Me interesa cotizar una Gorra personalizada 🐾'},
+  'tote-bag':          {nombre:'Tote Bag',               emoji:'👜',cat:'Para Vestir',  precio:'$650 MXN',     shape:'bag',    probador:true,  nfc:false,desc:'Bolsa de tela reutilizable con el retrato de tu mascota.',                                                                              wa:'Hola! Me interesa cotizar una Tote Bag personalizada 🐾'},
+  'llavero':           {nombre:'Llavero Acrílico',       emoji:'🔑',cat:'Para Llevar',  precio:'$400 MXN',     shape:'charm',  probador:true,  nfc:false,desc:'Llavero de acrílico con ilustración personalizada de tu mascota.',                                                                     wa:'Hola! Me interesa cotizar un Llavero personalizado 🐾'},
+  'funda-celular':     {nombre:'Funda de Celular',       emoji:'📱',cat:'Para Llevar',  precio:'$600 MXN',     shape:'charm',  probador:true,  nfc:false,desc:'Funda personalizada para celular con el retrato ilustrado de tu mascota.',                                                             wa:'Hola! Me interesa cotizar una Funda de Celular personalizada 🐾'},
+  'placa':             {nombre:'Placa Personalizada',    emoji:'🏷️',cat:'Para Llevar',  precio:'$130 MXN',     shape:'charm',  probador:false, nfc:false,desc:'Placa de identificación para collar grabada con el nombre de tu mascota. Algunos modelos incluyen número de celular adicional.',       wa:'Hola! Me interesa cotizar una Placa Personalizada 🐾'},
+  'collar-placa':      {nombre:'Collar + Placa',         emoji:'🦮',cat:'Para Llevar',  precio:'$230 MXN',     shape:'charm',  probador:false, nfc:false,desc:'Collar con placa de identificación personalizada incluida — grabada con el nombre. Algunos modelos incluyen número de celular.',       wa:'Hola! Me interesa cotizar un Collar con Placa personalizado 🐾'},
+  'placa-nfc':         {nombre:'Placa NFC',              emoji:'📡',cat:'Para Llevar',  precio:'$250 MXN',     shape:'charm',  probador:false, nfc:true, desc:'',                                                                                                                                    wa:'Hola! Me interesa cotizar una Placa NFC 🐾'},
+
+  'libreta':           {nombre:'Libreta Caricatura',     emoji:'📓',cat:'Para Llevar',  precio:'$450 MXN',     shape:'canvas', probador:true,  nfc:false,desc:'Libreta con portada personalizada con el retrato caricatura de tu mascota.',                                                           wa:'Hola! Me interesa cotizar una Libreta personalizada 🐾'},
+  'lienzo':            {nombre:'Lienzo Pintado',         emoji:'🖼️',cat:'Para Decorar', precio:'$450–$950 MXN', shape:'canvas', probador:false, nfc:false,desc:'Lienzo pintado a mano por Edith con el retrato de tu mascota. Una obra de arte única.',                                              wa:'Hola! Me interesa cotizar un Lienzo Pintado personalizado 🐾'},
+  'cuadro-mini':       {nombre:'Cuadro Mini',            emoji:'🏠',cat:'Para Decorar', precio:'$480 MXN',     shape:'canvas', probador:false, nfc:false,desc:'Cuadro miniatura de escritorio con el retrato de tu peludo.',                                                                          wa:'Hola! Me interesa cotizar un Cuadro Mini personalizado 🐾'},
+  'cuadro-escritorio': {nombre:'Cuadro de Escritorio',   emoji:'📐',cat:'Para Decorar', precio:'$560 MXN',     shape:'canvas', probador:false, nfc:false,desc:'Cuadro con soporte para escritorio. El retrato de tu mascota siempre a la vista.',                                                    wa:'Hola! Me interesa cotizar un Cuadro de Escritorio personalizado 🐾'},
+  'portavasos':        {nombre:'Portavasos',             emoji:'🫗',cat:'Para Decorar', precio:'$390 MXN',     shape:'charm',  probador:true,  nfc:false,desc:'Portavasos con diseño caricatura de tu mascota. Protege tu mesa con estilo.',                                                          wa:'Hola! Me interesa cotizar Portavasos personalizados 🐾'},
+  'acuarela':          {nombre:'Acuarela Original',      emoji:'🎨',cat:'Para Decorar', precio:'$350–$500 MXN', shape:'canvas', probador:false, nfc:false,desc:'Retrato en acuarela original pintado a mano por Edith. Pieza de colección única.',                                                   wa:'Hola! Me interesa cotizar una Acuarela Original 🐾'},
+  'kit-caricatura':    {nombre:'Kit Digital Caricatura', emoji:'🎭',cat:'Para Decorar', precio:'$530 MXN',     shape:'canvas', probador:false, nfc:false,desc:'Kit digital con retrato caricatura en alta resolución.',                                                                               wa:'Hola! Me interesa cotizar un Kit Digital Caricatura 🐾'},
+  'kit-detallado':     {nombre:'Kit Digital Detallado',  emoji:'✨',cat:'Para Decorar', precio:'$640 MXN',     shape:'canvas', probador:false, nfc:false,desc:'Ilustración detallada de alta calidad con fondo personalizado y múltiples formatos.',                                                  wa:'Hola! Me interesa cotizar un Kit Digital Detallado 🐾'},
+  'postal':            {nombre:'Postal Ilustrada',       emoji:'💌',cat:'Para Regalar', precio:'$50 MXN',      shape:'canvas', probador:false, nfc:false,desc:'Postal ilustrada personalizada. El regalo más bonito y accesible.',                                                                    wa:'Hola! Me interesa cotizar una Postal Ilustrada personalizada 🐾'},
+  'tarjeta-regalo':    {nombre:'Tarjeta de Regalo',      emoji:'🎁',cat:'Para Regalar', precio:'$400/$650/$850/$1,000',shape:'canvas',probador:false,nfc:false,desc:'Tarjeta de regalo Pigmentos.pet — el regalo perfecto para quien amas.',                                                       wa:'Hola! Me interesa una Tarjeta de Regalo de Pigmentos.pet 🐾'},
 };
 
 var RENA_FRASES=['¡Guau! ¿Ya te imaginas a tu peludo en este producto? 🐾','¡Woof! Esto se ve <em>increíble</em> — ¡te lo <b>grrr-antizo</b>! 🐾','¡Arf! Cada producto es único, igual que tu mascota 🐾','¡<b>Grrr-enial</b> elección! Edith lo ilustrará con todo el amor 🐾'];
 var PROB_FRASES=['¡Guau! El resultado final podría ser aún más <b>woof-derful</b> 🐾','¡Arf! Este preview es solo una probadita — Edith le pondrá su magia 🐾','¡<b>Grrr-enial</b>! Tu peludo <em>podría</em> lucir espectacular aquí 🐾'];
 
-/*
-  ESTRUCTURA DE PANELES — pirámide 3-2-1
-  Cada panel es un array de filas.
-  Fila 0 = BASE (centro pantalla, hasta 3 items)
-  Fila 1 = MEDIA (sobre base, hasta 2 items)
-  Fila 2 = PUNTA (sobre media, 1 item)
-  Los items en cada fila se centran horizontalmente.
-*/
+/* PANELES — pirámide 3-2-1 */
 var PANELS_DEF = [
-  /* 0 — Para Beber (6 items → 3+2+1) */
   {label:'🫖 Para Beber', rows:[
-    ['taza-clasica','taza-jumbo','termo-887'],   // base
-    ['termo-12','termo-tumbler'],                // media
-    ['vaso-bambu'],                              // punta
+    ['taza-clasica','taza-jumbo','termo-887'],
+    ['termo-12','termo-tumbler'],
+    ['vaso-bambu'],
   ]},
-  /* 1 — Para Vestir (4 items → 3+1) */
   {label:'👕 Para Vestir', rows:[
-    ['playera','hoodie','gorra'],  // base
-    ['tote-bag'],                  // media (centrada)
+    ['playera','hoodie','gorra'],
+    ['tote-bag'],
   ]},
-  /* 2 — Para Llevar (7 items → 3+2+2) */
   {label:'🎒 Para Llevar', rows:[
-    ['llavero','funda-celular','placa'],   // base
-    ['collar-placa','placa-nfc'],          // media
-    ['blind-box','libreta'],               // punta (2 centrados)
+    ['llavero','funda-celular','placa'],
+    ['collar-placa','placa-nfc'],
+    ['libreta'],
   ]},
-  /* 3 — Para Decorar (7 items → 3+2+2) */
   {label:'🖼️ Para Decorar', rows:[
-    ['lienzo','cuadro-mini','cuadro-escritorio'],  // base
-    ['portavasos','acuarela'],                     // media
-    ['kit-caricatura','kit-detallado'],            // punta
+    ['lienzo','cuadro-mini','cuadro-escritorio'],
+    ['portavasos','acuarela'],
+    ['kit-caricatura','kit-detallado'],
   ]},
-  /* 4 — Para Regalar (2 items → 2 en base centrados) */
   {label:'🎁 Para Regalar', rows:[
-    ['postal','tarjeta-regalo'],  // base
+    ['postal','tarjeta-regalo'],
   ]},
 ];
 
-var N_PANELS = PANELS_DEF.length;
-var PANEL_W  = 0;
-var sw    = document.getElementById('sw');
-var scene = document.getElementById('scene');
+var N_PANELS=PANELS_DEF.length, PANEL_W=0;
+var sw=document.getElementById('sw'), scene=document.getElementById('scene');
 
 /* ── POSICIONAMIENTO ─────────────────────────────────────────── */
 function positionAll(){
-  /* 62% del viewport: se ve 1 vitrina completa + arranque de la siguiente */
   PANEL_W = Math.round(window.innerWidth * 0.62);
   var h   = window.innerHeight - 50 - 60;
-
-  scene.style.height = h + 'px';
-  scene.style.width  = (PANEL_W * N_PANELS + Math.round(window.innerWidth * 0.25)) + 'px';
+  scene.style.height = h+'px';
+  scene.style.width  = (PANEL_W*N_PANELS + Math.round(window.innerWidth*0.25))+'px';
 
   var padX  = Math.round(PANEL_W * 0.07);
   var gapX  = Math.round(PANEL_W * 0.04);
-  /* colW = ancho de columna base (3 cols) */
-  var colW  = Math.round((PANEL_W - padX * 2 - gapX * 2) / 3);
-  var cardH = Math.round(h * 0.09);  /* alto de cada card */
-  var gapY  = Math.round(h * 0.05);  /* espacio entre filas */
+  var colW  = Math.round((PANEL_W - padX*2 - gapX*2) / 3);
+  var cardH = Math.round(h * 0.09);
+  var gapY  = Math.round(h * 0.05);
+  var baseY = Math.round(h * 0.55) - cardH;
+  var rowY  = [baseY, baseY-cardH-gapY, baseY-(cardH+gapY)*2];
 
-  /*
-    Posición vertical:
-    - Fila 0 (base): centro de la escena
-    - Fila 1 (media): encima de base
-    - Fila 2 (punta): encima de media
-    El bloque total crece hacia arriba desde el centro.
-  */
-  var maxRows = 3;
-  var blockH  = maxRows * cardH + (maxRows - 1) * gapY;
-  /* base arranca en el centro óptico ligeramente bajo */
-  var baseY   = Math.round(h * 0.55) - cardH;
-
-  var rowY = [
-    baseY,                       // fila 0 — base
-    baseY - cardH - gapY,        // fila 1 — media
-    baseY - (cardH + gapY) * 2,  // fila 2 — punta
-  ];
-
-  /* Limpiar hotspots y etiquetas anteriores */
+  /* Limpiar */
   scene.querySelectorAll('.hs,.cat-label,.panel-div').forEach(function(e){e.remove();});
 
   PANELS_DEF.forEach(function(panel, pi){
     var panelX = pi * PANEL_W;
+    var availW = PANEL_W - padX*2;
 
-    /* Etiqueta categoría */
+    /* Etiqueta */
     var lbl = document.createElement('div');
-    lbl.className = 'cat-label';
-    lbl.textContent = panel.label;
-    lbl.style.left = (panelX + padX) + 'px';
+    lbl.className='cat-label';
+    lbl.textContent=panel.label;
+    lbl.style.left=(panelX+padX)+'px';
     scene.appendChild(lbl);
 
-    /* Divisor (excepto antes del primero) */
-    if(pi > 0){
-      var div = document.createElement('div');
-      div.className = 'panel-div';
-      div.style.left = panelX + 'px';
+    /* Divisor */
+    if(pi>0){
+      var div=document.createElement('div');
+      div.className='panel-div';div.style.left=panelX+'px';
       scene.appendChild(div);
     }
 
     /* Filas */
     panel.rows.forEach(function(row, ri){
-      var n = row.length;
-      /* Ancho total de los items de esta fila */
-      var rowTotalW = n * colW + (n - 1) * gapX;
-      /* Offset para centrar dentro del panel (descontando padX a cada lado) */
-      var availW   = PANEL_W - padX * 2;
-      var offsetX  = Math.round((availW - rowTotalW) / 2);
+      var n=row.length;
+      var rowTotalW=n*colW+(n-1)*gapX;
+      var offsetX=Math.round((availW-rowTotalW)/2);
 
       row.forEach(function(id, ci){
-        var prod = PRODUCTOS[id]; if(!prod) return;
-        var el = document.createElement('button');
-        el.className = 'hs';
-        el.id = 'hs-' + id;
-        el.innerHTML =
-          '<div class="prod-emoji">'+prod.emoji+'</div>'+
+        var prod=PRODUCTOS[id]; if(!prod)return;
+
+        var el=document.createElement('button');
+        el.className='hs';
+        el.id='hs-'+id;
+
+        /* Imagen ilustrada + emoji fallback */
+        var imgSrc='prod-'+id+'.PNG';
+        el.innerHTML=
+          '<img class="prod-img" src="'+imgSrc+'" alt="'+prod.nombre+'" '+
+            'onerror="this.closest(\'.hs\').classList.add(\'img-error\')">' +
+          '<span class="prod-emoji-fb">'+prod.emoji+'</span>'+
           '<div class="prod-tag">'+prod.nombre+'</div>'+
           '<div class="prod-price">'+prod.precio+'</div>';
-        el.style.left   = (panelX + padX + offsetX + ci * (colW + gapX)) + 'px';
-        el.style.top    = rowY[ri] + 'px';
-        el.style.width  = colW + 'px';
-        el.style.height = cardH + 'px';
-        /* NFC tiene su propio modal */
-        if(prod.nfc){
-          el.setAttribute('onclick','openModal(\'nfc\')');
-        } else {
-          el.setAttribute('onclick','openProducto(\''+id+'\')');
-        }
+
+        el.style.left  =(panelX+padX+offsetX+ci*(colW+gapX))+'px';
+        el.style.top   =rowY[ri]+'px';
+        el.style.width =colW+'px';
+        el.style.height=cardH+'px';
+
+        el.setAttribute('onclick', prod.nfc
+          ? 'openModal(\'nfc\')'
+          : 'openProducto(\''+id+'\')');
+
         scene.appendChild(el);
       });
     });
   });
 }
 positionAll();
-window.addEventListener('resize', positionAll);
+window.addEventListener('resize',positionAll);
 
 /* ── SCROLL ──────────────────────────────────────────────────── */
 sw.addEventListener('wheel',function(e){e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
@@ -525,40 +510,37 @@ sw.addEventListener('scroll',function(){
   var p=max>0?sw.scrollLeft/max:0;
   var active=Math.min(N_PANELS-1,Math.round(p*(N_PANELS-1)));
   for(var i=0;i<N_PANELS;i++){var d=document.getElementById('d'+i);if(d)d.classList.toggle('on',i===active);}
-  var panelActive=Math.floor((sw.scrollLeft+PANEL_W*0.5)/PANEL_W);
-  document.querySelectorAll('.cat-pill[data-panel]').forEach(function(pill){
-    pill.classList.toggle('active',parseInt(pill.dataset.panel)===panelActive);
-  });
+  var pa=Math.floor((sw.scrollLeft+PANEL_W*0.5)/PANEL_W);
+  document.querySelectorAll('.cat-pill[data-panel]').forEach(function(pill){pill.classList.toggle('active',parseInt(pill.dataset.panel)===pa);});
   if(sw.scrollLeft>PANEL_W*0.3) document.querySelector('.cat-pill:not([data-panel])').classList.remove('active');
 });
-
-function scrollToCat(pi,btn){
-  sw.scrollTo({left:pi*PANEL_W,behavior:'smooth'});
-  document.querySelectorAll('.cat-pill').forEach(function(p){p.classList.remove('active');});
-  btn.classList.add('active');
-}
+function scrollToCat(pi,btn){sw.scrollTo({left:pi*PANEL_W,behavior:'smooth'});document.querySelectorAll('.cat-pill').forEach(function(p){p.classList.remove('active');});btn.classList.add('active');}
 
 /* ── MODALES ─────────────────────────────────────────────────── */
 function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
-document.querySelectorAll('.overlay').forEach(function(o){
-  o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});
-});
-document.addEventListener('keydown',function(e){
-  if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});
-});
+document.querySelectorAll('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});});
 var SALAS={vestibulo:{url:'index.html'},galeria:{url:'galeria.html'},boutique:{url:'boutique.html'},taller:{url:'taller.html'},altar:{url:'altar.html'},biblioteca:{url:'biblioteca.html'}};
-function irA(key){
-  document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});
-  var s=SALAS[key];if(s&&s.url)setTimeout(function(){window.location.href=s.url;},150);
-}
+function irA(key){document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});var s=SALAS[key];if(s&&s.url)setTimeout(function(){window.location.href=s.url;},150);}
 
 /* ── PRODUCTO ────────────────────────────────────────────────── */
 var _prodActual=null;
 function openProducto(id){
   var p=PRODUCTOS[id];if(!p)return;
   _prodActual=id;
-  document.getElementById('prod-modal-emoji').textContent=p.emoji;
+  /* Preview en modal: intentar imagen ilustrada, si falla mostrar emoji */
+  var preview=document.getElementById('prod-modal-preview');
+  preview.innerHTML='';
+  var mi=document.createElement('img');
+  mi.src='prod-'+id+'.PNG';
+  mi.alt=p.nombre;
+  mi.style.cssText='max-width:80%;max-height:90%;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(61,32,16,.15))';
+  mi.onerror=function(){
+    preview.innerHTML='<span class="prod-modal-emoji">'+p.emoji+'</span>';
+  };
+  preview.appendChild(mi);
+
   document.getElementById('prod-modal-cat-sub').textContent=p.cat+' 🐾';
   document.getElementById('prod-modal-chip').textContent=p.cat;
   document.getElementById('prod-modal-nombre').textContent=p.nombre;
@@ -568,22 +550,12 @@ function openProducto(id){
   document.getElementById('btn-abrir-probador').style.display=p.probador?'block':'none';
   openModal('producto');
 }
-function irWA(){
-  var p=PRODUCTOS[_prodActual];if(!p)return;
-  window.open('https://wa.me/526241263124?text='+encodeURIComponent(p.wa),'_blank');
-}
-function abrirProbadorDesdeProducto(){
-  closeModal('producto');prob_reset();
-  if(_prodActual&&PRODUCTOS[_prodActual]&&PRODUCTOS[_prodActual].probador)prob_seleccionarProducto(_prodActual);
-  openModal('probador');
-}
+function irWA(){var p=PRODUCTOS[_prodActual];if(!p)return;window.open('https://wa.me/526241263124?text='+encodeURIComponent(p.wa),'_blank');}
+function abrirProbadorDesdeProducto(){closeModal('producto');prob_reset();if(_prodActual&&PRODUCTOS[_prodActual]&&PRODUCTOS[_prodActual].probador)prob_seleccionarProducto(_prodActual);openModal('probador');}
 
 /* ── RENA BOT ────────────────────────────────────────────────── */
 var _rbCargado=false;
-document.getElementById('fab').addEventListener('click',function(){
-  if(!_rbCargado){document.getElementById('rena-bot-iframe').src='https://pigmentospet.github.io/Rena-Bot/';_rbCargado=true;}
-  openModal('rena-bot');
-});
+document.getElementById('fab').addEventListener('click',function(){if(!_rbCargado){document.getElementById('rena-bot-iframe').src='https://pigmentospet.github.io/Rena-Bot/';_rbCargado=true;}openModal('rena-bot');});
 
 /* ── PROBADOR ────────────────────────────────────────────────── */
 var PROB_IDS=Object.keys(PRODUCTOS).filter(function(k){return PRODUCTOS[k].probador;});
@@ -594,11 +566,21 @@ var _probProducto=null,_probImgSrc=null;
     var p=PRODUCTOS[id];
     var btn=document.createElement('button');
     btn.className='prob-prod-btn';btn.id='ppb-'+id;
-    btn.innerHTML='<span class="ppb-emoji">'+p.emoji+'</span><span class="ppb-name">'+p.nombre+'</span>';
+    /* Imagen en el selector del probador */
+    var imgEl=document.createElement('img');
+    imgEl.src='prod-'+id+'.PNG';
+    imgEl.alt=p.nombre;
+    imgEl.onerror=function(){this.style.display='none';this.nextSibling.style.display='block';};
+    var emojiEl=document.createElement('span');
+    emojiEl.className='ppb-emoji';emojiEl.style.display='none';emojiEl.textContent=p.emoji;
+    var nameEl=document.createElement('span');
+    nameEl.className='ppb-name';nameEl.textContent=p.nombre;
+    btn.appendChild(imgEl);btn.appendChild(emojiEl);btn.appendChild(nameEl);
     btn.onclick=function(){prob_seleccionarProducto(id);};
     grid.appendChild(btn);
   });
 })();
+
 function prob_seleccionarProducto(id){_probProducto=id;document.querySelectorAll('.prob-prod-btn').forEach(function(b){b.classList.remove('sel');});var b=document.getElementById('ppb-'+id);if(b)b.classList.add('sel');}
 function prob_reset(){_probProducto=null;_probImgSrc=null;document.querySelectorAll('.prob-prod-btn').forEach(function(b){b.classList.remove('sel');});prob_showStep(1);}
 function prob_showStep(n){[1,2,3].forEach(function(i){document.getElementById('prob-step-'+i).style.display=i===n?'block':'none';document.getElementById('pstep-'+i).classList.toggle('done',i<=n);if(i<3)document.getElementById('pline-'+i).classList.toggle('done',i<n);});}
@@ -609,24 +591,43 @@ var dz=document.getElementById('prob-dropzone');
 dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag');});
 dz.addEventListener('dragleave',function(){dz.classList.remove('drag');});
 dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('drag');prob_handleFile(e.dataTransfer.files[0]);});
+
 function prob_renderCanvas(){
   var canvas=document.getElementById('prob-canvas');
   var ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
   var p=PRODUCTOS[_probProducto];if(!p)return;
   document.getElementById('prob-frase').innerHTML=PROB_FRASES[Math.floor(Math.random()*PROB_FRASES.length)];
-  drawMockup(ctx,p.shape,W,H);
+
+  /* Intentar cargar mockup PNG real; si no existe, usar shape vectorial */
+  var mockupImg=new Image();
+  mockupImg.onload=function(){
+    ctx.clearRect(0,0,W,H);
+    ctx.drawImage(mockupImg,0,0,W,H);
+    overlayMascota(ctx,p.shape,W,H);
+  };
+  mockupImg.onerror=function(){
+    drawMockup(ctx,p.shape,W,H);
+    overlayMascota(ctx,p.shape,W,H);
+  };
+  mockupImg.src='mockup-'+_probProducto+'.PNG';
+}
+
+function overlayMascota(ctx,shape,W,H){
+  if(!_probImgSrc)return;
+  var zones={mug:[W*.22,H*.28,W*.4,H*.34],shirt:[W*.3,H*.35,W*.4,H*.35],tumbler:[W*.33,H*.2,W*.34,H*.5],bag:[W*.22,H*.34,W*.56,H*.38],cap:[W*.32,H*.32,W*.36,H*.24],charm:[W*.3,H*.34,W*.4,H*.4],canvas:[W*.16,H*.14,W*.68,H*.66]};
+  var z=zones[shape]||[W*.2,H*.2,W*.6,H*.6];
+  var zx=z[0],zy=z[1],zw=z[2],zh=z[3];
   var img=new Image();
   img.onload=function(){
-    var zones={mug:[W*.22,H*.28,W*.4,H*.34],shirt:[W*.3,H*.35,W*.4,H*.35],tumbler:[W*.33,H*.2,W*.34,H*.5],bag:[W*.22,H*.34,W*.56,H*.38],cap:[W*.32,H*.32,W*.36,H*.24],charm:[W*.3,H*.34,W*.4,H*.4],canvas:[W*.16,H*.14,W*.68,H*.66]};
-    var z=zones[p.shape]||[W*.2,H*.2,W*.6,H*.6];var zx=z[0],zy=z[1],zw=z[2],zh=z[3];
     var s=Math.min(img.width,img.height),sx=(img.width-s)/2,sy=(img.height-s)/2;
     ctx.save();
-    if(p.shape==='charm'){ctx.beginPath();ctx.arc(W*.5,H*.54,W*.2,0,Math.PI*2);ctx.clip();}
-    else{var r=6;ctx.beginPath();ctx.moveTo(zx+r,zy);ctx.lineTo(zx+zw-r,zy);ctx.quadraticCurveTo(zx+zw,zy,zx+zw,zy+r);ctx.lineTo(zx+zw,zy+zh-r);ctx.quadraticCurveTo(zx+zw,zy+zh,zx+zw-r,zy+zh);ctx.lineTo(zx+r,zy+zh);ctx.quadraticCurveTo(zx,zy+zh,zx,zy+zh-r);ctx.lineTo(zx,zy+r);ctx.quadraticCurveTo(zx,zy,zx+r,zy);ctx.closePath();ctx.clip();}
-    ctx.drawImage(img,sx,sy,s,s,zx,zy,zw,zh);ctx.restore();
+    var r=6;ctx.beginPath();ctx.moveTo(zx+r,zy);ctx.lineTo(zx+zw-r,zy);ctx.quadraticCurveTo(zx+zw,zy,zx+zw,zy+r);ctx.lineTo(zx+zw,zy+zh-r);ctx.quadraticCurveTo(zx+zw,zy+zh,zx+zw-r,zy+zh);ctx.lineTo(zx+r,zy+zh);ctx.quadraticCurveTo(zx,zy+zh,zx,zy+zh-r);ctx.lineTo(zx,zy+r);ctx.quadraticCurveTo(zx,zy,zx+r,zy);ctx.closePath();ctx.clip();
+    ctx.drawImage(img,sx,sy,s,s,zx,zy,zw,zh);
+    ctx.restore();
   };
   img.src=_probImgSrc;
 }
+
 function drawMockup(ctx,shape,W,H){
   ctx.clearRect(0,0,W,H);
   function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();}
