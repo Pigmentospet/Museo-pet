@@ -49,7 +49,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 
 /* Ilustración del producto */
 .prod-img{
-  width:70%;           /* 70% del ancho del hotspot */
+  width:85%;           /* más grande dentro del hotspot */
   aspect-ratio:1/1;
   object-fit:contain;
   filter:drop-shadow(0 3px 6px rgba(0,0,0,.22));
@@ -223,7 +223,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       </div>
       <button class="door-cta grn" onclick="irWA()">💬 Cotizar por WhatsApp</button>
       <button class="door-cta" id="btn-abrir-probador" onclick="abrirProbadorDesdeProducto()">✨ Probar en el Probador Mágico</button>
-      <button class="door-cta sec" onclick="closeModal('producto');openModal('rena-bot')">🐾 Que Rena me ayude</button>
+      <button class="door-cta sec" onclick="closeModal('producto');openRenaBot()">🐾 Que Rena me ayude</button>
     </div>
   </div>
 </div>
@@ -328,7 +328,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       <button class="modal-close" onclick="closeModal('rena-bot')">✕</button>
     </div>
     <div style="height:520px;max-height:72vh">
-      <iframe id="rena-bot-iframe" style="width:100%;height:100%;border:none;border-radius:0 0 20px 20px" title="Rena Bot" loading="lazy"></iframe>
+      <iframe id="rena-bot-iframe" style="width:100%;height:100%;border:none;border-radius:0 0 20px 20px" title="Rena Bot"></iframe>
     </div>
   </div>
 </div>
@@ -421,18 +421,25 @@ var sw=document.getElementById('sw'), scene=document.getElementById('scene');
 
 /* ── POSICIONAMIENTO ─────────────────────────────────────────── */
 function positionAll(){
-  PANEL_W = Math.round(window.innerWidth * 0.62);
+  PANEL_W = Math.round(window.innerWidth * 0.75);
   var h   = window.innerHeight - 50 - 60;
   scene.style.height = h+'px';
   scene.style.width  = (PANEL_W*N_PANELS + Math.round(window.innerWidth*0.25))+'px';
 
-  var padX  = Math.round(PANEL_W * 0.07);
-  var gapX  = Math.round(PANEL_W * 0.04);
+  var padX  = Math.round(PANEL_W * 0.06);
+  var gapX  = Math.round(PANEL_W * 0.03);
   var colW  = Math.round((PANEL_W - padX*2 - gapX*2) / 3);
-  var cardH = Math.round(h * 0.09);
-  var gapY  = Math.round(h * 0.05);
-  var baseY = Math.round(h * 0.55) - cardH;
-  var rowY  = [baseY, baseY-cardH-gapY, baseY-(cardH+gapY)*2];
+
+  /* Cards más grandes — 16% de h */
+  var cardH = Math.round(h * 0.16);
+  var gapY  = Math.round(h * 0.03);
+
+  /* 3 filas, pirámide hacia arriba, centradas en la escena */
+  var rowY = [
+    Math.round(h * 0.52),                    // base (fila 0)
+    Math.round(h * 0.52) - cardH - gapY,     // media (fila 1)
+    Math.round(h * 0.52) - (cardH+gapY)*2,   // punta (fila 2)
+  ];
 
   /* Limpiar */
   scene.querySelectorAll('.hs,.cat-label,.panel-div').forEach(function(e){e.remove();});
@@ -553,9 +560,13 @@ function openProducto(id){
 function irWA(){var p=PRODUCTOS[_prodActual];if(!p)return;window.open('https://wa.me/526241263124?text='+encodeURIComponent(p.wa),'_blank');}
 function abrirProbadorDesdeProducto(){closeModal('producto');prob_reset();if(_prodActual&&PRODUCTOS[_prodActual]&&PRODUCTOS[_prodActual].probador)prob_seleccionarProducto(_prodActual);openModal('probador');}
 
-/* ── RENA BOT ────────────────────────────────────────────────── */
-var _rbCargado=false;
-document.getElementById('fab').addEventListener('click',function(){if(!_rbCargado){document.getElementById('rena-bot-iframe').src='https://pigmentospet.github.io/Rena-Bot/';_rbCargado=true;}openModal('rena-bot');});
+/* ── RENA BOT — carga inmediata, función unificada ──────────── */
+document.getElementById('rena-bot-iframe').src='https://pigmentospet.github.io/Rena-Bot/';
+
+function openRenaBot(){
+  openModal('rena-bot');
+}
+document.getElementById('fab').addEventListener('click', openRenaBot);
 
 /* ── PROBADOR ────────────────────────────────────────────────── */
 var PROB_IDS=Object.keys(PRODUCTOS).filter(function(k){return PRODUCTOS[k].probador;});
