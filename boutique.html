@@ -49,8 +49,10 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 
 /* Ilustración del producto */
 .prod-img{
-  width:85%;           /* más grande dentro del hotspot */
-  aspect-ratio:1/1;
+  height:75%;          /* escala por altura — más grande en cards verticales */
+  width:auto;
+  max-width:95%;
+  aspect-ratio:unset;
   object-fit:contain;
   filter:drop-shadow(0 3px 6px rgba(0,0,0,.22));
   transition:transform .12s;
@@ -61,7 +63,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 /* Emoji de respaldo (visible solo si la img falla) */
 .prod-emoji-fb{
   display:none; /* oculto por defecto */
-  font-size:clamp(16px,4vw,28px);line-height:1;
+  font-size:clamp(28px,6vw,48px);line-height:1;
   filter:drop-shadow(0 2px 5px rgba(0,0,0,.28));
   transition:transform .12s;
 }
@@ -430,15 +432,16 @@ function positionAll(){
   var gapX  = Math.round(PANEL_W * 0.03);
   var colW  = Math.round((PANEL_W - padX*2 - gapX*2) / 3);
 
-  /* Cards más grandes — 16% de h */
-  var cardH = Math.round(h * 0.16);
-  var gapY  = Math.round(h * 0.03);
+  /* Cards casi el doble — 28% de h, imagen escala por altura */
+  var cardH = Math.round(h * 0.28);
+  var gapY  = Math.round(h * 0.02);
 
-  /* 3 filas, pirámide hacia arriba, centradas en la escena */
+  /* 3 filas, pirámide hacia arriba */
+  var base  = Math.round(h * 0.62);
   var rowY = [
-    Math.round(h * 0.52),                    // base (fila 0)
-    Math.round(h * 0.52) - cardH - gapY,     // media (fila 1)
-    Math.round(h * 0.52) - (cardH+gapY)*2,   // punta (fila 2)
+    base,
+    base - cardH - gapY,
+    base - (cardH + gapY) * 2,
   ];
 
   /* Limpiar */
