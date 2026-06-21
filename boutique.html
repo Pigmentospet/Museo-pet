@@ -49,10 +49,12 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 
 /* Ilustración del producto */
 .prod-img{
-  height:75%;          /* escala por altura — más grande en cards verticales */
+  height:75%;
   width:auto;
   max-width:95%;
   aspect-ratio:unset;
+  opacity:0;
+  transition:opacity .15s ease;
   object-fit:contain;
   filter:drop-shadow(0 3px 6px rgba(0,0,0,.22));
   transition:transform .12s;
@@ -226,7 +228,6 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       <button class="door-cta grn" onclick="irWA()">💬 Cotizar por WhatsApp</button>
       <button class="door-cta" id="btn-abrir-probador" onclick="abrirProbadorDesdeProducto()">✨ Probar en el Probador Mágico</button>
       <button class="door-cta sec" onclick="closeModal('producto');openRenaBot()">🐾 Que Rena me ayude</button>
-      <button class="door-cta sec" onclick="closeModal('producto')" style="margin-top:4px;opacity:.7">✕ Cerrar y seguir explorando</button>
     </div>
   </div>
 </div>
@@ -304,6 +305,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
         </div>
         <input type="file" id="prob-file" accept="image/*" style="display:none" onchange="prob_handleFile(this.files[0])">
         <button class="door-cta sec" style="margin-top:10px" onclick="prob_irStep1()">← Cambiar producto</button>
+        <button class="door-cta sec" onclick="volverAlProducto()" style="font-size:12px;padding:10px;margin-top:4px;opacity:.75">← Regresar al producto</button>
       </div>
       <div id="prob-step-3" style="display:none">
         <div class="bubble-wrap" style="margin-bottom:12px">
@@ -318,6 +320,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
           <button class="door-cta sec" style="flex:1" onclick="prob_irStep1()">🔄 Otro producto</button>
         </div>
         <button class="door-cta sec" onclick="closeModal('probador')" style="margin-top:4px;opacity:.7">✕ Cerrar y seguir explorando</button>
+        <button class="door-cta sec" onclick="volverAlProducto()" style="font-size:12px;padding:10px;margin-top:4px;opacity:.75">← Regresar al producto</button>
       </div>
     </div>
   </div>
@@ -331,8 +334,11 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       <div><div class="modal-head-name">Rena Bot</div><div class="modal-head-sub">¡Te ayudo a elegir! 🐾</div></div>
       <button class="modal-close" onclick="closeModal('rena-bot')">✕</button>
     </div>
-    <div style="height:520px;max-height:72vh">
-      <iframe id="rena-bot-iframe" style="width:100%;height:100%;border:none;border-radius:0 0 20px 20px" title="Rena Bot"></iframe>
+    <div style="height:480px;max-height:66vh">
+      <iframe id="rena-bot-iframe" style="width:100%;height:100%;border:none" title="Rena Bot"></iframe>
+    </div>
+    <div style="padding:10px 16px 16px;background:var(--cream);border-radius:0 0 20px 20px">
+      <button class="door-cta sec" onclick="volverAlProducto()" style="font-size:12px;padding:10px">← Regresar al producto</button>
     </div>
   </div>
 </div>
@@ -484,6 +490,7 @@ function positionAll(){
         var imgSrc='prod-'+id+'.png';
         el.innerHTML=
           '<img class="prod-img" src="'+imgSrc+'" alt="" '+
+            'onload="this.style.opacity=1" '+
             'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'block\'">' +
           '<span class="prod-emoji-fb">'+prod.emoji+'</span>'+
           '<div class="prod-tag">'+(prod.tag||prod.nombre)+'</div>'+
@@ -572,6 +579,11 @@ function openRenaBot(){
   openModal('rena-bot');
 }
 document.getElementById('fab').addEventListener('click', openRenaBot);
+
+function volverAlProducto(){
+  document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});
+  if(_prodActual) setTimeout(function(){ openProducto(_prodActual); }, 50);
+}
 
 /* ── PROBADOR ────────────────────────────────────────────────── */
 var PROB_IDS=Object.keys(PRODUCTOS).filter(function(k){return PRODUCTOS[k].probador;});
