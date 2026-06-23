@@ -451,16 +451,16 @@ function positionAll(){
   var gapX  = Math.round(PANEL_W * 0.03);
   var colW  = Math.round((PANEL_W - padX*2 - gapX*2) / 3);
 
-  /* Cards casi el doble — 28% de h, imagen escala por altura */
-  var cardH = Math.round(h * 0.28);
-  var gapY  = Math.round(h * 0.02);
+  /* Cards más pequeñas — 12% de h para sentarse sobre los estantes */
+  var cardH = Math.round(h * 0.12);
+  var gapY  = Math.round(h * 0.01);
 
-  /* 3 filas, pirámide hacia arriba */
-  var base  = Math.round(h * 0.62);
+  /* Filas fijas alineadas con los 3 niveles de estantes:
+     el BOTTOM de cada card coincide con la repisa ilustrada   */
   var rowY = [
-    base,
-    base - cardH - gapY,
-    base - (cardH + gapY) * 2,
+    Math.round(h * 0.66),   /* base  — sobre ESTANTE-GRANDE  */
+    Math.round(h * 0.41),   /* media — sobre ESTANTE-MEDIANO */
+    Math.round(h * 0.16),   /* punta — sobre ESTANTE-CHICO   */
   ];
 
   /* Limpiar */
