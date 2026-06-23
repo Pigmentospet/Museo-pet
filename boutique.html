@@ -34,7 +34,13 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 #sw{position:fixed;top:var(--nav);left:0;right:0;bottom:var(--footer);overflow-x:scroll;overflow-y:hidden;cursor:grab;-webkit-overflow-scrolling:touch;background:linear-gradient(to bottom,#FFFFFF 50%,#8B5236 50%)}
 #sw::-webkit-scrollbar{display:none}
 #scene{position:relative}
-.layer{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.estante-layer{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;
+  background-size:auto 100%;
+  background-repeat:no-repeat;
+  background-position:left top;
+}
 .panel-div{position:absolute;top:6%;bottom:6%;width:2px;background:rgba(193,123,74,.15);z-index:5;pointer-events:none;border-radius:2px}
 .cat-label{position:absolute;top:0;background:var(--brand);color:var(--cream);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:0 0 10px 10px;pointer-events:none;z-index:15;opacity:.9;white-space:nowrap;display:inline-block}
 
@@ -167,7 +173,11 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 </nav>
 
 <div id="sw"><div id="scene">
-  <img src="boutique-bg.PNG" class="layer" style="z-index:1" alt="">
+  <!-- boutique-bg.PNG se carga via JS preloader — nunca muestra ícono roto -->
+  <!-- Estantes: se cargan via JS preloader -->
+  <div id="estante-grande"  class="estante-layer" style="z-index:2"></div>
+  <div id="estante-mediano" class="estante-layer" style="z-index:3"></div>
+  <div id="estante-chico"   class="estante-layer" style="z-index:4"></div>
 </div></div>
 
 <!-- CAT BAR -->
@@ -532,6 +542,38 @@ function positionAll(){
 }
 positionAll();
 window.addEventListener('resize',positionAll);
+
+/* ── FONDO PANORÁMICO — preloader iOS Safari ──────────────────
+   Nunca usa <img> para el fondo — evita ícono roto mientras
+   boutique-bg.PNG no exista aún o tarde en cargar.            */
+(function(){
+  var pre=new Image();
+  pre.onload=function(){
+    scene.style.backgroundImage='url("boutique-bg.PNG")';
+    scene.style.backgroundSize='auto 100%';
+    scene.style.backgroundRepeat='repeat-x';
+    scene.style.backgroundPosition='left top';
+  };
+  pre.src='boutique-bg.PNG';
+})();
+
+/* ── CAPAS DE ESTANTES — preloader ────────────────────────────
+   ESTANTE-GRANDE.PNG  → z-index 2 (estante bajo, más productos)
+   ESTANTE-MEDIANO.PNG → z-index 3 (estante medio)
+   ESTANTE-CHICO.PNG   → z-index 4 (estante alto, menos productos)  */
+[
+  {id:'estante-grande',  file:'ESTANTE-GRANDE.PNG'},
+  {id:'estante-mediano', file:'ESTANTE-MEDIANO.PNG'},
+  {id:'estante-chico',   file:'ESTANTE-CHICO.PNG'},
+].forEach(function(s){
+  var el=document.getElementById(s.id);
+  if(!el) return;
+  var pre=new Image();
+  pre.onload=function(){
+    el.style.backgroundImage='url("'+s.file+'")';
+  };
+  pre.src=s.file;
+});
 
 /* ── SCROLL ──────────────────────────────────────────────────── */
 sw.addEventListener('wheel',function(e){e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
