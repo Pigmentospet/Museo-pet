@@ -449,16 +449,16 @@ function positionAll(){
   var gapX  = Math.round(PANEL_W * 0.03);
   var colW  = Math.round((PANEL_W - padX*2 - gapX*2) / 3);
 
-  /* Cards más pequeñas — 12% de h para sentarse sobre los estantes */
-  var cardH = Math.round(h * 0.12);
+  /* Tamaño de card restaurado — 22% de h */
+  var cardH = Math.round(h * 0.22);
   var gapY  = Math.round(h * 0.01);
 
-  /* Filas fijas alineadas con los 3 niveles de estantes:
-     el BOTTOM de cada card coincide con la repisa ilustrada   */
+  /* Filas alineadas con los 3 niveles de estantes
+     Distribuidas para caber las 3 sin solaparse         */
   var rowY = [
-    Math.round(h * 0.66),   /* base  — sobre ESTANTE-GRANDE  */
-    Math.round(h * 0.41),   /* media — sobre ESTANTE-MEDIANO */
-    Math.round(h * 0.16),   /* punta — sobre ESTANTE-CHICO   */
+    Math.round(h * 0.55),   /* base  — área marrón, sobre ESTANTE-GRANDE  */
+    Math.round(h * 0.29),   /* media — zona media, sobre ESTANTE-MEDIANO  */
+    Math.round(h * 0.05),   /* punta — área blanca, sobre ESTANTE-CHICO   */
   ];
 
   /* Limpiar */
@@ -541,7 +541,7 @@ function positionAll(){
   /* ── POSICIONAR ESTANTES — tile por panel ──────────────────────
      Cada estante se repite una vez por vitrina (PANEL_W px de ancho)
      y se posiciona justo debajo de su fila de productos            */
-  var shelfH = Math.round(h * 0.08); /* alto de la repisa visible  */
+  var shelfH = Math.round(h * 0.10); /* estante más grueso/visible */
   [
     {id:'estante-grande',  row:0},
     {id:'estante-mediano', row:1},
