@@ -453,12 +453,11 @@ function positionAll(){
   var cardH = Math.round(h * 0.22);
   var gapY  = Math.round(h * 0.01);
 
-  /* Filas alineadas con los 3 niveles de estantes
-     Distribuidas para caber las 3 sin solaparse         */
+  /* Filas con espacio suficiente para que chico no choque con mediano */
   var rowY = [
-    Math.round(h * 0.55),   /* base  — área marrón, sobre ESTANTE-GRANDE  */
-    Math.round(h * 0.29),   /* media — zona media, sobre ESTANTE-MEDIANO  */
-    Math.round(h * 0.05),   /* punta — área blanca, sobre ESTANTE-CHICO   */
+    Math.round(h * 0.60),   /* base  — área marrón, sobre ESTANTE-GRANDE  */
+    Math.round(h * 0.34),   /* media — zona media, sobre ESTANTE-MEDIANO  */
+    Math.round(h * 0.02),   /* punta — muy arriba en área blanca           */
   ];
 
   /* Limpiar */
@@ -541,16 +540,15 @@ function positionAll(){
   /* ── POSICIONAR ESTANTES — tile por panel ──────────────────────
      Cada estante se repite una vez por vitrina (PANEL_W px de ancho)
      y se posiciona justo debajo de su fila de productos            */
-  var shelfH = Math.round(h * 0.10); /* estante más grueso/visible */
+  var shelfH = Math.round(h * 0.12); /* estante más grueso */
   [
-    {id:'estante-grande',  row:0},
-    {id:'estante-mediano', row:1},
-    {id:'estante-chico',   row:2},
+    {id:'estante-grande',  row:0, offset:0.75},
+    {id:'estante-mediano', row:1, offset:0.75},
+    {id:'estante-chico',   row:2, offset:0.65}, /* chico sube más */
   ].forEach(function(cfg){
     var el = document.getElementById(cfg.id);
     if(!el) return;
-    /* Shelf arranca justo debajo del bottom de la fila de productos */
-    var shelfTop = rowY[cfg.row] + cardH;
+    var shelfTop = rowY[cfg.row] + Math.round(cardH * cfg.offset);
     el.style.backgroundSize     = PANEL_W + 'px ' + shelfH + 'px';
     el.style.backgroundRepeat   = 'repeat-x';
     el.style.backgroundPosition = '0px ' + shelfTop + 'px';
