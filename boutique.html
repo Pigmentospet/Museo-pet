@@ -461,7 +461,7 @@ function positionAll(){
   ];
 
   /* Limpiar */
-  scene.querySelectorAll('.hs,.cat-label,.panel-div').forEach(function(e){e.remove();});
+  scene.querySelectorAll('.hs,.cat-label,.panel-div,.shelf-div').forEach(function(e){e.remove();});
 
   PANELS_DEF.forEach(function(panel, pi){
     var panelX = pi * PANEL_W;
@@ -537,23 +537,31 @@ function positionAll(){
     });
   });
 
-  /* ── POSICIONAR ESTANTES — tile por panel ──────────────────────
-     Cada estante se repite una vez por vitrina (PANEL_W px de ancho)
-     y se posiciona justo debajo de su fila de productos            */
-  var shelfH = Math.round(h * 0.20); /* más grueso/ancho */
-  [
-    {id:'estante-grande',  row:0, offset:0.75},
-    {id:'estante-mediano', row:1, offset:0.75},
-    {id:'estante-chico',   row:2, offset:0.80}, /* un poco más abajo que antes para no tapar precio */
-  ].forEach(function(cfg){
-    var el = document.getElementById(cfg.id);
-    if(!el) return;
-    var shelfTop = rowY[cfg.row] + Math.round(cardH * cfg.offset);
-    /* auto width mantiene proporción del PNG y lo repite — se ve más ancho */
-    el.style.backgroundSize     = 'auto ' + shelfH + 'px';
-    el.style.backgroundRepeat   = 'repeat-x';
-    el.style.backgroundPosition = '0px ' + shelfTop + 'px';
-  });
+  /* ── ESTANTES — 1 div por fila × por panel ────────────────────
+     shelf-div se crea aquí y se limpia al inicio de positionAll()
+     1 shelf per row × N_PANELS = 3×5 = 15 divs total             */
+  var shelfH   = Math.round(h * 0.20);
+  var shelfMap = {0:'ESTANTE-GRANDE.PNG', 1:'ESTANTE-MEDIANO.PNG', 2:'ESTANTE-CHICO.PNG'};
+  /* offset: shelf arranca a 88% del card → precio queda encima del estante */
+  var shelfOffset = Math.round(cardH * 0.88);
+
+  for(var pi=0; pi<N_PANELS; pi++){
+    var panX = pi * PANEL_W;
+    for(var ri=0; ri<3; ri++){
+      var sd = document.createElement('div');
+      sd.className = 'shelf-div';
+      sd.style.cssText =
+        'position:absolute;pointer-events:none;z-index:5;' +
+        'left:'+panX+'px;'+
+        'width:'+PANEL_W+'px;'+
+        'top:'+(rowY[ri]+shelfOffset)+'px;'+
+        'height:'+shelfH+'px;'+
+        'background-image:url("'+shelfMap[ri]+'");'+
+        'background-size:100% 100%;'+
+        'background-repeat:no-repeat;';
+      scene.appendChild(sd);
+    }
+  }
 }
 positionAll();
 window.addEventListener('resize',positionAll);
@@ -572,23 +580,8 @@ window.addEventListener('resize',positionAll);
   pre.src='boutique-bg.PNG';
 })();
 
-/* ── CAPAS DE ESTANTES — preloader ────────────────────────────
-   ESTANTE-GRANDE.PNG  → z-index 2 (estante bajo, más productos)
-   ESTANTE-MEDIANO.PNG → z-index 3 (estante medio)
-   ESTANTE-CHICO.PNG   → z-index 4 (estante alto, menos productos)  */
-[
-  {id:'estante-grande',  file:'ESTANTE-GRANDE.PNG'},
-  {id:'estante-mediano', file:'ESTANTE-MEDIANO.PNG'},
-  {id:'estante-chico',   file:'ESTANTE-CHICO.PNG'},
-].forEach(function(s){
-  var el=document.getElementById(s.id);
-  if(!el) return;
-  var pre=new Image();
-  pre.onload=function(){
-    el.style.backgroundImage='url("'+s.file+'")';
-  };
-  pre.src=s.file;
-});
+
+
 
 /* ── SCROLL ──────────────────────────────────────────────────── */
 sw.addEventListener('wheel',function(e){e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
