@@ -69,7 +69,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 }
 .hs:hover .prod-emoji-fb,.hs:focus .prod-emoji-fb{transform:translateY(-3px)}
 
-.prod-tag{background:rgba(253,246,238,.9);border:1.5px solid rgba(193,123,74,.3);border-radius:7px;padding:2px 7px;margin-top:4px;font-size:clamp(8px,1.8vw,10px);font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110%;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 1px 4px rgba(61,32,16,.1)}
+.prod-tag{background:rgba(253,246,238,.9);border:1.5px solid rgba(193,123,74,.3);border-radius:7px;padding:2px 7px;margin-top:4px;font-size:clamp(7px,1.6vw,10px);font-weight:800;color:var(--ink);text-align:center;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 1px 4px rgba(61,32,16,.1)}
 .prod-price{font-size:clamp(7px,1.5vw,9px);font-weight:800;color:var(--brand-dk);margin-top:1px;background:rgba(253,246,238,.78);border-radius:5px;padding:1px 5px}
 
 /* CAT BAR liquid glass */
@@ -449,8 +449,8 @@ function positionAll(){
   var gapX  = Math.round(PANEL_W * 0.03);
   var colW  = Math.round((PANEL_W - padX*2 - gapX*2) / 3);
 
-  /* Tamaño de card restaurado — 22% de h */
-  var cardH = Math.round(h * 0.22);
+  /* Tamaño de card restaurado — 28% de h */
+  var cardH = Math.round(h * 0.28);
   var gapY  = Math.round(h * 0.01);
 
   /* Posiciones de fila — restauradas al estado aprobado */
@@ -543,7 +543,7 @@ function positionAll(){
   var shelfH   = Math.round(h * 0.20);
   var shelfMap = {0:'ESTANTE-GRANDE.PNG', 1:'ESTANTE-MEDIANO.PNG', 2:'ESTANTE-CHICO.PNG'};
   /* offset: shelf arranca a 50% del card → sube el doble, productos sientan sobre él */
-  var shelfOffset = Math.round(cardH * 0.62);
+  var shelfOffset = Math.round(cardH * 0.49);
 
   for(var pi=0; pi<N_PANELS; pi++){
     var panX = pi * PANEL_W;
