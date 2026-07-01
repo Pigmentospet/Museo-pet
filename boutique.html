@@ -431,7 +431,8 @@ var PANELS_DEF = [
     ['kit-caricatura','kit-detallado'],
   ]},
   {label:'🎁 Para Regalar', rows:[
-    ['postal','tarjeta-regalo'],
+    ['postal'],           /* base  */
+    ['tarjeta-regalo'],   /* media */
   ]},
 ];
 
@@ -547,7 +548,10 @@ function positionAll(){
 
   for(var pi=0; pi<N_PANELS; pi++){
     var panX = pi * PANEL_W;
+    var panelRows = PANELS_DEF[pi].rows; /* filas con productos en este panel */
     for(var ri=0; ri<3; ri++){
+      /* Solo crear estante si esta fila tiene productos en este panel */
+      if(!panelRows[ri] || panelRows[ri].length===0) continue;
       var sd = document.createElement('div');
       sd.className = 'shelf-div';
       sd.style.cssText =
