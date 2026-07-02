@@ -22,12 +22,11 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 .nav-sala{font-family:var(--font);font-size:10px;font-weight:700;color:rgba(253,246,238,.7);letter-spacing:.12em;text-transform:uppercase;}
 .nav-menu-btn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:8px;padding:8px 10px;cursor:pointer;display:flex;flex-direction:column;gap:4px;}
 .nav-menu-btn span{display:block;width:18px;height:2px;background:var(--cream);border-radius:1px;}
-.footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:var(--brand);display:flex;align-items:center;justify-content:center;gap:16px;z-index:300;border-top:1px solid rgba(255,255,255,.15);overflow-x:auto;padding:0 12px;}
-.footer::-webkit-scrollbar{display:none;}
-.footer a{color:var(--cream);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;display:flex;align-items:center;gap:5px;opacity:.85;transition:opacity .15s;white-space:nowrap;flex-shrink:0;}
-.footer a:hover{opacity:1;}
-.footer-icon{font-size:16px;}
-.footer-divider{width:1px;height:18px;background:rgba(255,255,255,.25);flex-shrink:0;}
+/* FOOTER — íconos circulares SVG */
+.footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:var(--brand);display:flex;align-items:center;justify-content:center;gap:10px;z-index:300;}
+.ft-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.16);transition:background .15s;flex-shrink:0;text-decoration:none;}
+.ft-icon:hover,.ft-icon:active{background:rgba(255,255,255,.28);}
+.ft-icon svg{width:18px;height:18px;fill:var(--cream);}
 #sw{position:fixed;top:var(--nav);left:0;right:0;bottom:var(--footer);overflow-x:scroll;overflow-y:hidden;cursor:grab;-webkit-overflow-scrolling:touch;user-select:none;scroll-behavior:auto;background:linear-gradient(to bottom,#DEC9A8 85%,#7B4A28 85%);}
 #sw:active{cursor:grabbing;}
 #sw::-webkit-scrollbar{display:none;}
@@ -35,28 +34,22 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 #scene img.layer{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;display:block;pointer-events:none;}
 .hs{position:absolute;background:transparent;border:none;padding:0;cursor:pointer;z-index:20;-webkit-tap-highlight-color:rgba(193,123,74,.15);}
 .hs:hover{background:rgba(193,123,74,.08);}
-/* FRAMES */
 .fs{position:absolute;cursor:pointer;background:none;border:none;padding:0;transition:transform .2s ease,filter .2s;filter:drop-shadow(0 3px 8px rgba(0,0,0,.4));-webkit-tap-highlight-color:rgba(193,123,74,.15);}
 .fs:hover{transform:scale(1.08) translateY(-3px);filter:drop-shadow(0 7px 16px rgba(0,0,0,.55));z-index:50!important;}
 .fs:active{transform:scale(0.95);}
-/* Placeholder SVG como fondo del interior del marco */
 .fs-empty{position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:hidden;}
 .fs-empty img{width:100%;height:100%;object-fit:cover;display:block;}
-/* Foto real del cliente */
 .fs-photo{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2;border-radius:2px;}
-/* Marco PNG ilustrado encima */
 .fs-ov{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:fill;z-index:3;pointer-events:none;display:block;}
 .fs-cap{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap;pointer-events:none;z-index:4;}
 .c-name{display:block;font-family:var(--font-ttl);font-weight:600;font-size:.6rem;color:#f0d8b0;text-shadow:0 1px 3px rgba(0,0,0,.5);line-height:1.1;}
 .c-info{display:block;font-size:.48rem;font-weight:700;color:rgba(255,210,155,.75);letter-spacing:.06em;text-transform:uppercase;}
-/* CTA */
 .cta-panel{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;z-index:15;transition:transform .25s;background:none;padding:0;pointer-events:none;}
 .cta-paw,.cta-badge{pointer-events:auto;}
 .cta-panel:hover{transform:scale(1.06);}
 .cta-badge{background:var(--brand);color:var(--cream);font-family:var(--font);font-size:11px;font-weight:800;padding:10px 16px;border-radius:30px;box-shadow:0 6px 20px rgba(193,123,74,.55);text-align:center;line-height:1.4;letter-spacing:.04em;}
 .cta-paw{font-size:1.4rem;animation:bounce 1.8s infinite;}
 @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-/* MODALES */
 .overlay{display:none;position:fixed;inset:0;background:rgba(40,18,6,.7);z-index:400;align-items:flex-end;justify-content:center;}
 .overlay.open{display:flex;}
 @media(min-width:600px){.overlay{align-items:center;}}
@@ -121,77 +114,84 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 <div id="sw"><div id="scene">
   <img class="layer" src="galeria-bg.PNG" alt="" style="z-index:1;" onerror="this.style.display='none'">
 
-<button class="fs" id="s1" style="left:1.0%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(1)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-1"></span><span class="c-info" id="ci-1"></span></div></button>
-<button class="fs" id="s2" style="left:1.0%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(2)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-2"></span><span class="c-info" id="ci-2"></span></div></button>
-<button class="fs" id="s3" style="left:1.0%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(3)"><div class="fs-empty"></div><img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-3"></span><span class="c-info" id="ci-3"></span></div></button>
-<button class="fs" id="s4" style="left:6.83%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(4)"><div class="fs-empty"></div><img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-4"></span><span class="c-info" id="ci-4"></span></div></button>
-<button class="fs" id="s5" style="left:6.83%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(5)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-5"></span><span class="c-info" id="ci-5"></span></div></button>
-<button class="fs" id="s6" style="left:6.83%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(6)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-6"></span><span class="c-info" id="ci-6"></span></div></button>
-<button class="fs" id="s7" style="left:6.83%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(7)"><div class="fs-empty"></div><img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-7"></span><span class="c-info" id="ci-7"></span></div></button>
-<button class="fs" id="s8" style="left:11.66%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(8)"><div class="fs-empty"></div><img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-8"></span><span class="c-info" id="ci-8"></span></div></button>
-<button class="fs" id="s9" style="left:11.66%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(9)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-9"></span><span class="c-info" id="ci-9"></span></div></button>
-<button class="fs" id="s10" style="left:11.66%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(10)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-10"></span><span class="c-info" id="ci-10"></span></div></button>
-<button class="fs" id="s11" style="left:17.490000000000002%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(11)"><div class="fs-empty"></div><img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-11"></span><span class="c-info" id="ci-11"></span></div></button>
-<button class="fs" id="s12" style="left:17.490000000000002%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(12)"><div class="fs-empty"></div><img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-12"></span><span class="c-info" id="ci-12"></span></div></button>
-<button class="fs" id="s13" style="left:17.490000000000002%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(13)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-13"></span><span class="c-info" id="ci-13"></span></div></button>
-<button class="fs" id="s14" style="left:17.490000000000002%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(14)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-14"></span><span class="c-info" id="ci-14"></span></div></button>
-<button class="fs" id="s15" style="left:22.32%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(15)"><div class="fs-empty"></div><img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-15"></span><span class="c-info" id="ci-15"></span></div></button>
-<button class="fs" id="s16" style="left:22.32%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(16)"><div class="fs-empty"></div><img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-16"></span><span class="c-info" id="ci-16"></span></div></button>
-<button class="fs" id="s17" style="left:22.32%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(17)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-17"></span><span class="c-info" id="ci-17"></span></div></button>
-<button class="fs" id="s18" style="left:28.15%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(18)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-18"></span><span class="c-info" id="ci-18"></span></div></button>
-<button class="fs" id="s19" style="left:28.15%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(19)"><div class="fs-empty"></div><img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-19"></span><span class="c-info" id="ci-19"></span></div></button>
-<button class="fs" id="s20" style="left:28.15%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(20)"><div class="fs-empty"></div><img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-20"></span><span class="c-info" id="ci-20"></span></div></button>
-<button class="fs" id="s21" style="left:28.15%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(21)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-21"></span><span class="c-info" id="ci-21"></span></div></button>
-<button class="fs" id="s22" style="left:32.98%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(22)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-22"></span><span class="c-info" id="ci-22"></span></div></button>
-<button class="fs" id="s23" style="left:32.98%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(23)"><div class="fs-empty"></div><img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-23"></span><span class="c-info" id="ci-23"></span></div></button>
-<button class="fs" id="s24" style="left:32.98%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(24)"><div class="fs-empty"></div><img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-24"></span><span class="c-info" id="ci-24"></span></div></button>
-<button class="fs" id="s25" style="left:38.809999999999995%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(25)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-25"></span><span class="c-info" id="ci-25"></span></div></button>
-<button class="fs" id="s26" style="left:38.809999999999995%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(26)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-26"></span><span class="c-info" id="ci-26"></span></div></button>
-<button class="fs" id="s27" style="left:38.809999999999995%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(27)"><div class="fs-empty"></div><img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-27"></span><span class="c-info" id="ci-27"></span></div></button>
-<button class="fs" id="s28" style="left:38.809999999999995%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(28)"><div class="fs-empty"></div><img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-28"></span><span class="c-info" id="ci-28"></span></div></button>
-<button class="fs" id="s29" style="left:43.63999999999999%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(29)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-29"></span><span class="c-info" id="ci-29"></span></div></button>
-<button class="fs" id="s30" style="left:43.63999999999999%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(30)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-30"></span><span class="c-info" id="ci-30"></span></div></button>
-<button class="fs" id="s31" style="left:43.63999999999999%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(31)"><div class="fs-empty"></div><img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-31"></span><span class="c-info" id="ci-31"></span></div></button>
-<button class="fs" id="s32" style="left:49.46999999999999%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(32)"><div class="fs-empty"></div><img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-32"></span><span class="c-info" id="ci-32"></span></div></button>
-<button class="fs" id="s33" style="left:49.46999999999999%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(33)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-33"></span><span class="c-info" id="ci-33"></span></div></button>
-<button class="fs" id="s34" style="left:49.46999999999999%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(34)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-34"></span><span class="c-info" id="ci-34"></span></div></button>
-<button class="fs" id="s35" style="left:49.46999999999999%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(35)"><div class="fs-empty"></div><img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-35"></span><span class="c-info" id="ci-35"></span></div></button>
-<button class="fs" id="s36" style="left:54.29999999999999%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(36)"><div class="fs-empty"></div><img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-36"></span><span class="c-info" id="ci-36"></span></div></button>
-<button class="fs" id="s37" style="left:54.29999999999999%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(37)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-37"></span><span class="c-info" id="ci-37"></span></div></button>
-<button class="fs" id="s38" style="left:54.29999999999999%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(38)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-38"></span><span class="c-info" id="ci-38"></span></div></button>
-<button class="fs" id="s39" style="left:60.12999999999999%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(39)"><div class="fs-empty"></div><img class="fs-ov" src="marco-03.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-39"></span><span class="c-info" id="ci-39"></span></div></button>
-<button class="fs" id="s40" style="left:60.12999999999999%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(40)"><div class="fs-empty"></div><img class="fs-ov" src="marco-04.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-40"></span><span class="c-info" id="ci-40"></span></div></button>
-<button class="fs" id="s41" style="left:60.12999999999999%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(41)"><div class="fs-empty"></div><img class="fs-ov" src="marco-01.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-41"></span><span class="c-info" id="ci-41"></span></div></button>
-<button class="fs" id="s42" style="left:60.12999999999999%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(42)"><div class="fs-empty"></div><img class="fs-ov" src="marco-02.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-42"></span><span class="c-info" id="ci-42"></span></div></button>
+<button class="fs" id="s1" style="left:1.0%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(1)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-1"></span><span class="c-info" id="ci-1"></span></div></button>
+<button class="fs" id="s2" style="left:1.0%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(2)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-2"></span><span class="c-info" id="ci-2"></span></div></button>
+<button class="fs" id="s3" style="left:1.0%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(3)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-3"></span><span class="c-info" id="ci-3"></span></div></button>
+<button class="fs" id="s4" style="left:6.83%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(4)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-4"></span><span class="c-info" id="ci-4"></span></div></button>
+<button class="fs" id="s5" style="left:6.83%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(5)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-5"></span><span class="c-info" id="ci-5"></span></div></button>
+<button class="fs" id="s6" style="left:6.83%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(6)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-6"></span><span class="c-info" id="ci-6"></span></div></button>
+<button class="fs" id="s7" style="left:6.83%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(7)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-7"></span><span class="c-info" id="ci-7"></span></div></button>
+<button class="fs" id="s8" style="left:11.66%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(8)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-8"></span><span class="c-info" id="ci-8"></span></div></button>
+<button class="fs" id="s9" style="left:11.66%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(9)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-9"></span><span class="c-info" id="ci-9"></span></div></button>
+<button class="fs" id="s10" style="left:11.66%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(10)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-10"></span><span class="c-info" id="ci-10"></span></div></button>
+<button class="fs" id="s11" style="left:17.49%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(11)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-11"></span><span class="c-info" id="ci-11"></span></div></button>
+<button class="fs" id="s12" style="left:17.49%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(12)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-12"></span><span class="c-info" id="ci-12"></span></div></button>
+<button class="fs" id="s13" style="left:17.49%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(13)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-13"></span><span class="c-info" id="ci-13"></span></div></button>
+<button class="fs" id="s14" style="left:17.49%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(14)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-14"></span><span class="c-info" id="ci-14"></span></div></button>
+<button class="fs" id="s15" style="left:22.32%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(15)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-15"></span><span class="c-info" id="ci-15"></span></div></button>
+<button class="fs" id="s16" style="left:22.32%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(16)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-16"></span><span class="c-info" id="ci-16"></span></div></button>
+<button class="fs" id="s17" style="left:22.32%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(17)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-17"></span><span class="c-info" id="ci-17"></span></div></button>
+<button class="fs" id="s18" style="left:28.15%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(18)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-18"></span><span class="c-info" id="ci-18"></span></div></button>
+<button class="fs" id="s19" style="left:28.15%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(19)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-19"></span><span class="c-info" id="ci-19"></span></div></button>
+<button class="fs" id="s20" style="left:28.15%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(20)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-20"></span><span class="c-info" id="ci-20"></span></div></button>
+<button class="fs" id="s21" style="left:28.15%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(21)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-21"></span><span class="c-info" id="ci-21"></span></div></button>
+<button class="fs" id="s22" style="left:32.98%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(22)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-22"></span><span class="c-info" id="ci-22"></span></div></button>
+<button class="fs" id="s23" style="left:32.98%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(23)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-23"></span><span class="c-info" id="ci-23"></span></div></button>
+<button class="fs" id="s24" style="left:32.98%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(24)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-24"></span><span class="c-info" id="ci-24"></span></div></button>
+<button class="fs" id="s25" style="left:38.81%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(25)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-25"></span><span class="c-info" id="ci-25"></span></div></button>
+<button class="fs" id="s26" style="left:38.81%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(26)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-26"></span><span class="c-info" id="ci-26"></span></div></button>
+<button class="fs" id="s27" style="left:38.81%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(27)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-27"></span><span class="c-info" id="ci-27"></span></div></button>
+<button class="fs" id="s28" style="left:38.81%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(28)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-28"></span><span class="c-info" id="ci-28"></span></div></button>
+<button class="fs" id="s29" style="left:43.64%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(29)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-29"></span><span class="c-info" id="ci-29"></span></div></button>
+<button class="fs" id="s30" style="left:43.64%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(30)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-30"></span><span class="c-info" id="ci-30"></span></div></button>
+<button class="fs" id="s31" style="left:43.64%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(31)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-31"></span><span class="c-info" id="ci-31"></span></div></button>
+<button class="fs" id="s32" style="left:49.47%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(32)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-32"></span><span class="c-info" id="ci-32"></span></div></button>
+<button class="fs" id="s33" style="left:49.47%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(33)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-33"></span><span class="c-info" id="ci-33"></span></div></button>
+<button class="fs" id="s34" style="left:49.47%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(34)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-34"></span><span class="c-info" id="ci-34"></span></div></button>
+<button class="fs" id="s35" style="left:49.47%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(35)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-35"></span><span class="c-info" id="ci-35"></span></div></button>
+<button class="fs" id="s36" style="left:54.30%;top:3%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(36)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-36"></span><span class="c-info" id="ci-36"></span></div></button>
+<button class="fs" id="s37" style="left:54.30%;top:31%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(37)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-37"></span><span class="c-info" id="ci-37"></span></div></button>
+<button class="fs" id="s38" style="left:54.30%;top:59%;width:4.33%;height:26%;z-index:10;" onclick="openPortrait(38)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-38"></span><span class="c-info" id="ci-38"></span></div></button>
+<button class="fs" id="s39" style="left:60.13%;top:2%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(39)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-39"></span><span class="c-info" id="ci-39"></span></div></button>
+<button class="fs" id="s40" style="left:60.13%;top:24%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(40)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-40"></span><span class="c-info" id="ci-40"></span></div></button>
+<button class="fs" id="s41" style="left:60.13%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(41)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-41"></span><span class="c-info" id="ci-41"></span></div></button>
+<button class="fs" id="s42" style="left:60.13%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(42)"><div class="fs-empty"></div><img class="fs-ov" src="MARCO_GALERIA.PNG" alt="" onerror="this.style.display='none'"/><div class="fs-cap"><span class="c-name" id="cn-42"></span><span class="c-info" id="ci-42"></span></div></button>
 
-  <!-- CTA separado ~12% del ultimo frame (que termina en ~63.5%) -->
   <div class="cta-panel" style="left:65%;top:14%;width:8%;" onclick="openModal('quiero')">
     <div class="cta-paw">&#128062;</div>
     <div class="cta-badge">&#161;Quiero<br>el m&#237;o!</div>
   </div>
-
-  <!-- Arco de salida -->
   <button class="hs" style="left:74%;top:0;width:5%;height:100%;z-index:20;" onclick="openModal('menu')" aria-label="Ver todas las salas"></button>
-
 </div></div>
 
 <div id="scroll-hint">&#8592; desliza para explorar &#8594;</div>
 
 <footer class="footer">
-  <a href="https://edithbojorquez.com" target="_blank" rel="noopener"><span class="footer-icon">&#127760;</span> edithbojorquez.com</a>
-  <div class="footer-divider"></div>
-  <a href="https://instagram.com/pigmentos.pet" target="_blank" rel="noopener"><span class="footer-icon">&#128247;</span> Instagram</a>
-  <div class="footer-divider"></div>
-  <a href="https://www.tiktok.com/@pigmentosedithbojorquez" target="_blank" rel="noopener"><span class="footer-icon">&#127925;</span> TikTok</a>
-  <div class="footer-divider"></div>
-  <a href="https://wa.me/5216241263124" target="_blank" rel="noopener"><span class="footer-icon">&#128172;</span> WhatsApp</a>
+  <a class="ft-icon" href="https://instagram.com/pigmentos.pet" target="_blank" aria-label="Instagram">
+    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://youtube.com/@pigmentosedithbojorquez" target="_blank" aria-label="YouTube">
+    <svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://tiktok.com/@pigmentosedithbojorquez" target="_blank" aria-label="TikTok">
+    <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://facebook.com/pigmentos.pet" target="_blank" aria-label="Facebook">
+    <svg viewBox="0 0 24 24"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://ko-fi.com/pigmentosedithbojorquez/commissions" target="_blank" aria-label="Ko-fi">
+    <svg viewBox="0 0 24 24"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://wa.me/526241263124" target="_blank" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
 </footer>
 
 <!-- MODAL RENA -->
 <div class="overlay" id="modal-rena" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="Rena" onerror="this.parentElement.textContent='&#128021;'"></div>
+      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="" onerror="this.parentElement.textContent='&#128021;'"></div>
       <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">edithbojorquez.com</div></div>
       <button class="modal-close" onclick="closeModal('rena')">&#10005;</button>
     </div>
@@ -217,7 +217,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 <div class="overlay" id="modal-portrait" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="Rena" onerror="this.parentElement.textContent='&#128021;'"></div>
+      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="" onerror="this.parentElement.textContent='&#128021;'"></div>
       <div><div class="modal-head-name">Rena</div><div class="modal-head-sub" id="pm-sub">Galer&#237;a de los Inmortales</div></div>
       <button class="modal-close" onclick="closeModal('portrait')">&#10005;</button>
     </div>
@@ -232,11 +232,11 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
   </div>
 </div>
 
-<!-- MODAL PLACEHOLDER — al tocar un frame vacio -->
+<!-- MODAL PLACEHOLDER -->
 <div class="overlay" id="modal-placeholder" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="Rena" onerror="this.parentElement.textContent='&#128021;'"></div>
+      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="" onerror="this.parentElement.textContent='&#128021;'"></div>
       <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">&#161;Este lugar es para ti!</div></div>
       <button class="modal-close" onclick="closeModal('placeholder')">&#10005;</button>
     </div>
@@ -255,20 +255,14 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 <div class="overlay" id="modal-quiero" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="Rena" onerror="this.parentElement.textContent='&#128021;'"></div>
+      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="" onerror="this.parentElement.textContent='&#128021;'"></div>
       <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">&#161;&#218;nete a la galer&#237;a!</div></div>
       <button class="modal-close" onclick="closeModal('quiero')">&#10005;</button>
     </div>
     <div class="modal-body">
       <div class="bubble-wrap">
         <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
-        <div class="bubble-box">
-          &#128054; <b>&#161;Arf!</b> &#191;Quieres que tu retrato aparezca aqu&#237;? &#128062;<br><br>
-          Pide tu retrato en <b>La Boutique</b>. Sube una foto de tu producto o de tu mascota con &#233;l como <b>post o historia</b> en Instagram, TikTok o Facebook
-          con el hashtag:<br><br>
-          <span class="hashtag-chip">#PigmentosPetGaleria</span><br>
-          <em>&#161;Con eso participas y podr&#237;as aparecer en la galer&#237;a!</em> &#10024;
-        </div>
+        <div class="bubble-box">&#128054; <b>&#161;Arf!</b> &#191;Quieres que tu retrato aparezca aqu&#237;? &#128062;<br><br>Pide tu retrato en <b>La Boutique</b>. Sube una foto de tu producto o de tu mascota con &#233;l como <b>post o historia</b> en Instagram, TikTok o Facebook con el hashtag:<br><br><span class="hashtag-chip">#PigmentosPetGaleria</span><br><em>&#161;Con eso participas y podr&#237;as aparecer en la galer&#237;a!</em> &#10024;</div>
       </div>
       <div class="redes-row">
         <span class="red-chip">&#128247; Instagram</span>
@@ -285,7 +279,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 <div class="overlay" id="modal-menu" role="dialog" aria-modal="true">
   <div class="modal">
     <div class="modal-head">
-      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="Rena" onerror="this.parentElement.textContent='&#128021;'"></div>
+      <div class="modal-avatar"><img src="rena-avatar.JPG" alt="" onerror="this.parentElement.textContent='&#128021;'"></div>
       <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Encuentra tu sala</div></div>
       <button class="modal-close" onclick="closeModal('menu')">&#10005;</button>
     </div>
@@ -307,92 +301,40 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 </div>
 
 <script>
-/* Placeholder SVG embebido (se muestra en frames vacios) */
-var PLACEHOLDER_SRC = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPGRlZnM+CiAgICA8IS0tIFRleHR1cmEgZGUgY2FudmFzIChydWlkbyBzdXRpbCkgLS0+CiAgICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICAgIDxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjkiIG51bU9jdGF2ZXM9IjQiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz4KICAgICAgPGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPgogICAgICA8ZmVCbGVuZCBpbj0iU291cmNlR3JhcGhpYyIgbW9kZT0ibXVsdGlwbHkiIHJlc3VsdD0iYmxlbmQiLz4KICAgICAgPGZlQ29tcG9zaXRlIGluPSJibGVuZCIgaW4yPSJTb3VyY2VHcmFwaGljIiBvcGVyYXRvcj0iaW4iLz4KICAgIDwvZmlsdGVyPgogICAgPCEtLSBHcmFkaWVudGUgZGUgZm9uZG8gY2FsaWRvIC0tPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiICAgc3RvcC1jb2xvcj0iI0VERDlCQyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNEOUMwQTAiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8IS0tIE1hcmNvIG9ybmFtZW50YWRvIHNpbXVsYWRvIC0tPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJmcmFtZS1ncmFkIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgICBzdG9wLWNvbG9yPSIjQzg5NjNFIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iNDAlIiAgc3RvcC1jb2xvcj0iI0U4QkM2QSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjYwJSIgIHN0b3AtY29sb3I9IiNCMDc4MzAiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRDRBNDU1Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KCiAgPCEtLSBGb25kbyBjYW52YXMgY2FsaWRvIC0tPgogIDxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI2JnKSIgcng9IjIiLz4KICA8IS0tIFRleHR1cmEgc3V0aWwgLS0+CiAgPHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9InVybCgjYmcpIiBmaWx0ZXI9InVybCgjbm9pc2UpIiBvcGFjaXR5PSIwLjA4IiByeD0iMiIvPgoKICA8IS0tIE1hcmNvIGRvcmFkbyBleHRlcmlvciAtLT4KICA8cmVjdCB4PSI2IiB5PSI2IiB3aWR0aD0iMTg4IiBoZWlnaHQ9IjE4OCIgZmlsbD0ibm9uZSIKICAgICAgICBzdHJva2U9InVybCgjZnJhbWUtZ3JhZCkiIHN0cm9rZS13aWR0aD0iOSIgcng9IjIiLz4KICA8IS0tIE1hcmNvIGludGVyaW9yIGRlbGdhZG8gLS0+CiAgPHJlY3QgeD0iMTYiIHk9IjE2IiB3aWR0aD0iMTY4IiBoZWlnaHQ9IjE2OCIgZmlsbD0ibm9uZSIKICAgICAgICBzdHJva2U9IiNDODk2M0UiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjUiIHJ4PSIxIi8+CiAgPCEtLSBMaW5lYSBpbnRlcm5hIGRlY29yYXRpdmEgLS0+CiAgPHJlY3QgeD0iMTkiIHk9IjE5IiB3aWR0aD0iMTYyIiBoZWlnaHQ9IjE2MiIgZmlsbD0ibm9uZSIKICAgICAgICBzdHJva2U9IiNFOEQwQTAiIHN0cm9rZS13aWR0aD0iMC44IiBvcGFjaXR5PSIwLjYiIHJ4PSIxIi8+CgogIDwhLS0gRXNxdWluYXMgb3JuYW1lbnRhZGFzIChyb21ib3MpIC0tPgogIDxyZWN0IHg9IjkiICAgeT0iOSIgICB3aWR0aD0iNyIgaGVpZ2h0PSI3IiBmaWxsPSIjRThCQzZBIiB0cmFuc2Zvcm09InJvdGF0ZSg0NSAxMi41IDEyLjUpIiBvcGFjaXR5PSIwLjkiLz4KICA8cmVjdCB4PSIxODQiIHk9IjkiICAgd2lkdGg9IjciIGhlaWdodD0iNyIgZmlsbD0iI0U4QkM2QSIgdHJhbnNmb3JtPSJyb3RhdGUoNDUgMTg3LjUgMTIuNSkiIG9wYWNpdHk9IjAuOSIvPgogIDxyZWN0IHg9IjkiICAgeT0iMTg0IiB3aWR0aD0iNyIgaGVpZ2h0PSI3IiBmaWxsPSIjRThCQzZBIiB0cmFuc2Zvcm09InJvdGF0ZSg0NSAxMi41IDE4Ny41KSIgb3BhY2l0eT0iMC45Ii8+CiAgPHJlY3QgeD0iMTg0IiB5PSIxODQiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIGZpbGw9IiNFOEJDNkEiIHRyYW5zZm9ybT0icm90YXRlKDQ1IDE4Ny41IDE4Ny41KSIgb3BhY2l0eT0iMC45Ii8+CgogIDwhLS0gU2lsdWV0YSBkZSBtYXNjb3RhIG11eSBzdXRpbCAoc29sbyBjb250b3JubykgLS0+CiAgPCEtLSBDYWJlemEgLS0+CiAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iNzgiIHI9IjIyIiBmaWxsPSJub25lIiBzdHJva2U9IiNDMTdCNEEiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjIyIi8+CiAgPCEtLSBPcmVqYXMgLS0+CiAgPGVsbGlwc2UgY3g9IjgzIiBjeT0iNjIiIHJ4PSI4IiByeT0iMTEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0MxN0I0QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuMjIiIHRyYW5zZm9ybT0icm90YXRlKC0xNSA4MyA2MikiLz4KICA8ZWxsaXBzZSBjeD0iMTE3IiBjeT0iNjIiIHJ4PSI4IiByeT0iMTEiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0MxN0I0QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuMjIiIHRyYW5zZm9ybT0icm90YXRlKDE1IDExNyA2MikiLz4KICA8IS0tIEN1ZXJwbyAtLT4KICA8ZWxsaXBzZSBjeD0iMTAwIiBjeT0iMTE2IiByeD0iMjYiIHJ5PSIyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzE3QjRBIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC4xOCIvPgoKICA8IS0tIFBhdGEgZGUgaHVlbGxhIGRlY29yYXRpdmEsIGNlbnRyYWRhIC0tPgogIDxnIG9wYWNpdHk9IjAuMTgiIGZpbGw9IiM5QTVFMzMiPgogICAgPGNpcmNsZSBjeD0iMTAwIiBjeT0iMTQ4IiByPSI1LjUiLz4KICAgIDxjaXJjbGUgY3g9IjkxIiBjeT0iMTQyIiByPSIzLjIiLz4KICAgIDxjaXJjbGUgY3g9IjEwOSIgY3k9IjE0MiIgcj0iMy4yIi8+CiAgICA8Y2lyY2xlIGN4PSI5NSIgY3k9IjEzOCIgcj0iMi44Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMDUiIGN5PSIxMzgiIHI9IjIuOCIvPgogIDwvZz4KCiAgPCEtLSBUZXh0byBwcmluY2lwYWwgLS0+CiAgPHRleHQgeD0iMTAwIiB5PSIxNzAiIGZvbnQtZmFtaWx5PSJHZW9yZ2lhLCBzZXJpZiIgZm9udC1zaXplPSI4LjUiIGZvbnQtc3R5bGU9Iml0YWxpYyIKICAgICAgICBmaWxsPSIjOUE1RTMzIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBvcGFjaXR5PSIwLjg1Ij4mIzE5MTtUdSByZXRyYXRvIHBvZHImIzIzNzthIHZpdmlyIGFxdSYjMjM3Oz88L3RleHQ+CgogIDwhLS0gSGFzaHRhZyAtLT4KICA8dGV4dCB4PSIxMDAiIHk9IjE4MiIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjYuNSIgZm9udC13ZWlnaHQ9ImJvbGQiCiAgICAgICAgZmlsbD0iI0MxN0I0QSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9IjAuNSIgb3BhY2l0eT0iMC43NSI+I1BpZ21lbnRvc1BldEdhbGVyaWE8L3RleHQ+Cjwvc3ZnPg==";
+var PLACEHOLDER_SRC="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+CiAgPGRlZnM+CiAgICA8ZmlsdGVyIGlkPSJub2lzZSI+CiAgICAgIDxmZVR1cmJ1bGVuY2UgdHlwZT0iZnJhY3RhbE5vaXNlIiBiYXNlRnJlcXVlbmN5PSIwLjkiIG51bU9jdGF2ZXM9IjQiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48ZmVDb2xvck1hdHJpeCB0eXBlPSJzYXR1cmF0ZSIgdmFsdWVzPSIwIi8+PGZlQmxlbmQgaW49IlNvdXJjZUdyYXBoaWMiIG1vZGU9Im11bHRpcGx5IiByZXN1bHQ9ImJsZW5kIi8+PGZlQ29tcG9zaXRlIGluPSJibGVuZCIgaW4yPSJTb3VyY2VHcmFwaGljIiBvcGVyYXRvcj0iaW4iLz4KICAgIDwvZmlsdGVyPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZyIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI0VERDlCQyIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI0Q5QzBBMCIvPjwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImZyYW1lLWdyYWQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNDODk2M0UiLz48c3RvcCBvZmZzZXQ9IjQwJSIgc3RvcC1jb2xvcj0iI0U4QkM2QSIvPjxzdG9wIG9mZnNldD0iNjAlIiBzdG9wLWNvbG9yPSIjQjA3ODMwIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjRDRBNDU1Ii8+PC9saW5lYXJHcmFkaWVudD4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9InVybCgjYmcpIiByeD0iMiIvPgogIDxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSJ1cmwoI2JnKSIgZmlsdGVyPSJ1cmwoI25vaXNlKSIgb3BhY2l0eT0iMC4wOCIgcng9IjIiLz4KICA8cmVjdCB4PSI2IiB5PSI2IiB3aWR0aD0iMTg4IiBoZWlnaHQ9IjE4OCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ1cmwoI2ZyYW1lLWdyYWQpIiBzdHJva2Utd2lkdGg9IjkiIHJ4PSIyIi8+CiAgPHJlY3QgeD0iMTYiIHk9IjE2IiB3aWR0aD0iMTY4IiBoZWlnaHQ9IjE2OCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzg5NjNFIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC41IiByeD0iMSIvPgogIDxyZWN0IHg9IjkiIHk9IjkiIHdpZHRoPSI3IiBoZWlnaHQ9IjciIGZpbGw9IiNFOEJDNkEiIHRyYW5zZm9ybT0icm90YXRlKDQ1IDEyLjUgMTIuNSkiIG9wYWNpdHk9IjAuOSIvPgogIDxyZWN0IHg9IjE4NCIgeT0iOSIgd2lkdGg9IjciIGhlaWdodD0iNyIgZmlsbD0iI0U4QkM2QSIgdHJhbnNmb3JtPSJyb3RhdGUoNDUgMTg3LjUgMTIuNSkiIG9wYWNpdHk9IjAuOSIvPgogIDxyZWN0IHg9IjkiIHk9IjE4NCIgd2lkdGg9IjciIGhlaWdodD0iNyIgZmlsbD0iI0U4QkM2QSIgdHJhbnNmb3JtPSJyb3RhdGUoNDUgMTIuNSAxODcuNSkiIG9wYWNpdHk9IjAuOSIvPgogIDxyZWN0IHg9IjE4NCIgeT0iMTg0IiB3aWR0aD0iNyIgaGVpZ2h0PSI3IiBmaWxsPSIjRThCQzZBIiB0cmFuc2Zvcm09InJvdGF0ZSg0NSAxODcuNSAxODcuNSkiIG9wYWNpdHk9IjAuOSIvPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9Ijc4IiByPSIyMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjQzE3QjRBIiBzdHJva2Utd2lkdGg9IjEuNSIgb3BhY2l0eT0iMC4yMiIvPgogIDxlbGxpcHNlIGN4PSI4MyIgY3k9IjYyIiByeD0iOCIgcnk9IjExIiBmaWxsPSJub25lIiBzdHJva2U9IiNDMTdCNEEiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjIyIiB0cmFuc2Zvcm09InJvdGF0ZSgtMTUgODMgNjIpIi8+CiAgPGVsbGlwc2UgY3g9IjExNyIgY3k9IjYyIiByeD0iOCIgcnk9IjExIiBmaWxsPSJub25lIiBzdHJva2U9IiNDMTdCNEEiIHN0cm9rZS13aWR0aD0iMS41IiBvcGFjaXR5PSIwLjIyIiB0cmFuc2Zvcm09InJvdGF0ZSgxNSAxMTcgNjIpIi8+CiAgPGVsbGlwc2UgY3g9IjEwMCIgY3k9IjExNiIgcng9IjI2IiByeT0iMjIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI0MxN0I0QSIgc3Ryb2tlLXdpZHRoPSIxLjUiIG9wYWNpdHk9IjAuMTgiLz4KICA8ZyBvcGFjaXR5PSIwLjE4IiBmaWxsPSIjOUE1RTMzIj48Y2lyY2xlIGN4PSIxMDAiIGN5PSIxNDgiIHI9IjUuNSIvPjxjaXJjbGUgY3g9IjkxIiBjeT0iMTQyIiByPSIzLjIiLz48Y2lyY2xlIGN4PSIxMDkiIGN5PSIxNDIiIHI9IjMuMiIvPjxjaXJjbGUgY3g9Ijk1IiBjeT0iMTM4IiByPSIyLjgiLz48Y2lyY2xlIGN4PSIxMDUiIGN5PSIxMzgiIHI9IjIuOCIvPjwvZz4KICA8dGV4dCB4PSIxMDAiIHk9IjE3MCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iOC41IiBmb250LXN0eWxlPSJpdGFsaWMiIGZpbGw9IiM5QTVFMzMiIHRleHQtYW5jaG9yPSJtaWRkbGUiIG9wYWNpdHk9IjAuODUiPiYjMTkxO1R1IHJldHJhdG8gcG9kciYjMjM3O2Egdml2aXIgYXF1aSY8L3RleHQ+CiAgPHRleHQgeD0iMTAwIiB5PSIxODIiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjYuNSIgZm9udC13ZWlnaHQ9ImJvbGQiIGZpbGw9IiNDMTdCNEEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSIwLjUiIG9wYWNpdHk9IjAuNzUiPiNQaWdtZW50b3NQZXRHYWxlcmlhPC90ZXh0Pgo8L3N2Zz4=";
 
-var RETRATOS = [
-  // {slot:1, img:"luna.PNG", ciudad:"Guadalajara, Jal."}
-];
-
-var RATIO = 6;
+var RETRATOS=[];
+var RATIO=6;
 var SALAS={vestibulo:{url:"index.html"},boutique:{url:"boutique.html"},taller:{url:"taller.html"},biblioteca:{url:"biblioteca.html"},altar:{url:"altar.html"}};
+var RENAS=["<b>&#161;Woof woof!</b> &#128054; Mira qu&#233; belleza... <em>&#161;Grrr-antizadamente adorable!</em> &#10024;","&#128054; <b>&#161;ARF ARF!</b> &#161;Este retrato me hace mover la cola de felicidad! &#128062;","<em>Grrr...</em> &#161;qu&#233; arte tan <b>woof-derful!</b> Edith lo logr&#243; de nuevo &#127912; &#128062;","<b>&#161;Guau guau!</b> &#128054; &#161;Podr&#237;a mirar este retrato todo el d&#237;a! <em>&#161;Grrr-enial!</em> &#10024;","&#128062; &#161;Este retrato me llena el coraz&#243;n! <b>&#161;Woof!</b> <em>Puro amor ilustrado.</em> &#128149;"];
+var RENAS_EMPTY=["&#128054; <b>&#161;Woof!</b> Este marco est&#225; esperando a alguien especial... <em>&#191;podr&#237;a ser tu peludx?</em> &#128062;","<b>&#161;Arf!</b> &#128054; <em>&#191;Te imaginas una foto de tu mascota con su retrato de Pigmentos aqu&#237;?</em> &#161;Participa y qui&#233;n sabe! &#10024;","&#128062; <b>&#161;Guau!</b> Este espacio podr&#237;a tener tu historia. <em>&#161;Etiq&#250;etanos y podr&#237;as ser parte de la galer&#237;a!</em> &#128444;"];
 
-/* Expresiones de Rena al ver un retrato real */
-var RENAS=[
-  "<b>&#161;Woof woof!</b> &#128054; Mira qu&#233; belleza... <em>&#161;Grrr-antizadamente adorable!</em> &#10024;",
-  "&#128054; <b>&#161;ARF ARF!</b> &#161;Este retrato me hace mover la cola de felicidad! &#128062;",
-  "<em>Grrr...</em> &#161;qu&#233; arte tan <b>woof-derful!</b> Edith lo logr&#243; de nuevo &#127912; &#128062;",
-  "<b>&#161;Guau guau!</b> &#128054; &#161;Podr&#237;a mirar este retrato todo el d&#237;a! <em>&#161;Grrr-enial!</em> &#10024;",
-  "&#128062; &#161;Este retrato me llena el coraz&#243;n! <b>&#161;Woof!</b> <em>Puro amor ilustrado.</em> &#128149;",
-  "<b>&#161;Arf arf arf!</b> &#128054; &#161;Esto es exactamente por qu&#233; amo ser la gu&#237;a del museo! &#127881;",
-  "<em>Grrr...</em> &#128062; &#161;Tan tan lindo! <b>Woof-derful</b> en todos los sentidos &#10024;",
-  "&#128054; <b>&#161;Guau!</b> &#161;Cada retrato nuevo me emociona igual que el primero! <em>&#161;Grrr-enial!</em>"
-];
-
-/* Expresiones de Rena al tocar un frame vacio */
-var RENAS_EMPTY=[
-  "&#128054; <b>&#161;Woof!</b> Este marco est&#225; esperando a alguien especial... <em>&#191;podr&#237;a ser tu peludx?</em> &#128062;",
-  "<b>&#161;Arf!</b> &#128054; <em>&#191;Te imaginas una foto de tu mascota con su retrato de Pigmentos aqu&#237;?</em> &#161;Participa y qui&#233;n sabe! &#10024;",
-  "&#128062; <b>&#161;Guau!</b> Este espacio podr&#237;a tener tu historia. <em>&#161;Etiq&#250;etanos y podr&#237;as ser parte de la galer&#237;a!</em> &#128444;",
-  "&#128054; <em>Psst...</em> &#161;Este marco est&#225; solit&#237;simo! <b>&#161;Usa el hashtag y podr&#237;as aparecer aqu&#237;!</b> &#128062;"
-];
-
-function setSceneSize(){
-  var h=window.innerHeight-50-60;
-  var scene=document.getElementById("scene");
-  scene.style.width=(h*RATIO)+"px";
-  scene.style.height=h+"px";
-}
+function setSceneSize(){var h=window.innerHeight-50-60;var scene=document.getElementById("scene");scene.style.width=(h*RATIO)+"px";scene.style.height=h+"px";}
 setSceneSize();
 window.addEventListener("resize",setSceneSize);
 
 function initRetratos(){
   var ocupados={};
-  /* Llenar slots con retratos reales */
   RETRATOS.forEach(function(r){
-    var slot=document.getElementById("s"+r.slot);
-    if(!slot)return;
+    var slot=document.getElementById("s"+r.slot);if(!slot)return;
     ocupados[r.slot]=true;
-    /* Ocultar placeholder */
-    var emp=slot.querySelector(".fs-empty");
-    if(emp)emp.style.display="none";
-    /* Insertar foto real */
-    var img=document.createElement("img");
-    img.src=r.img; img.className="fs-photo";
+    var emp=slot.querySelector(".fs-empty");if(emp)emp.style.display="none";
+    var img=document.createElement("img");img.src=r.img;img.className="fs-photo";
     slot.insertBefore(img,slot.querySelector(".fs-ov"));
-    /* Ocultar el marco PNG — la foto ocupa todo el slot */
-    var ov=slot.querySelector(".fs-ov");
-    if(ov) ov.style.display="none";
+    var ov=slot.querySelector(".fs-ov");if(ov)ov.style.display="none";
     if(r.ciudad){var ci=document.getElementById("ci-"+r.slot);if(ci)ci.textContent=r.ciudad;}
   });
-
-  /* Inyectar placeholder SVG en todos los frames vacios */
   document.querySelectorAll(".fs").forEach(function(slot){
-    var num=parseInt(slot.id.replace("s",""));
-    if(ocupados[num])return;
-    var emp=slot.querySelector(".fs-empty");
-    if(!emp)return;
-    var img=document.createElement("img");
-    img.src=PLACEHOLDER_SRC;
-    img.alt="Marco disponible";
-    img.style.cssText="width:100%;height:100%;object-fit:cover;display:block;";
+    var num=parseInt(slot.id.replace("s",""));if(ocupados[num])return;
+    var emp=slot.querySelector(".fs-empty");if(!emp)return;
+    var img=document.createElement("img");img.src=PLACEHOLDER_SRC;img.alt="";img.style.cssText="width:100%;height:100%;object-fit:cover;display:block;";
     emp.appendChild(img);
   });
 }
 
 function openPortrait(n){
-  var r=null;
-  for(var i=0;i<RETRATOS.length;i++){if(RETRATOS[i].slot===n){r=RETRATOS[i];break;}}
-
-  if(!r){
-    /* Frame vacio — abrir modal placeholder */
-    var msg=RENAS_EMPTY[Math.floor(Math.random()*RENAS_EMPTY.length)];
-    document.getElementById("placeholder-rena").innerHTML=msg;
-    openModal("placeholder");
-    return;
-  }
-
-  /* Frame con retrato real */
+  var r=null;for(var i=0;i<RETRATOS.length;i++){if(RETRATOS[i].slot===n){r=RETRATOS[i];break;}}
+  if(!r){document.getElementById("placeholder-rena").innerHTML=RENAS_EMPTY[Math.floor(Math.random()*RENAS_EMPTY.length)];openModal("placeholder");return;}
   document.getElementById("pm-img").src=r.img;
   document.getElementById("pm-rena").innerHTML=RENAS[Math.floor(Math.random()*RENAS.length)];
   document.getElementById("pm-sub").textContent=r.ciudad||"Galería de los Inmortales";
@@ -401,16 +343,9 @@ function openPortrait(n){
 
 function openModal(id){document.getElementById("modal-"+id).classList.add("open");}
 function closeModal(id){document.getElementById("modal-"+id).classList.remove("open");}
-document.querySelectorAll(".overlay").forEach(function(o){
-  o.addEventListener("click",function(e){if(e.target===o)o.classList.remove("open");});
-});
-document.addEventListener("keydown",function(e){
-  if(e.key==="Escape")document.querySelectorAll(".overlay.open").forEach(function(o){o.classList.remove("open");});
-});
-function irA(key){
-  document.querySelectorAll(".overlay.open").forEach(function(o){o.classList.remove("open");});
-  var s=SALAS[key];if(s&&s.url)setTimeout(function(){window.location.href=s.url;},150);
-}
+document.querySelectorAll(".overlay").forEach(function(o){o.addEventListener("click",function(e){if(e.target===o)o.classList.remove("open");});});
+document.addEventListener("keydown",function(e){if(e.key==="Escape")document.querySelectorAll(".overlay.open").forEach(function(o){o.classList.remove("open");});});
+function irA(key){document.querySelectorAll(".overlay.open").forEach(function(o){o.classList.remove("open");});var s=SALAS[key];if(s&&s.url)setTimeout(function(){window.location.href=s.url;},150);}
 
 var sw=document.getElementById("sw");
 sw.addEventListener("wheel",function(e){e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
@@ -422,8 +357,7 @@ var tSX=0,tSL=0,tLX=0,tV=0,tT=0,tR=null;
 sw.addEventListener("touchstart",function(e){if(tR){cancelAnimationFrame(tR);tR=null;}tSX=tLX=e.touches[0].clientX;tSL=sw.scrollLeft;tV=0;tT=Date.now();},{passive:true});
 sw.addEventListener("touchmove",function(e){var x=e.touches[0].clientX;tV=(tLX-x)/(Date.now()-tT+1);tT=Date.now();tLX=x;sw.scrollLeft=tSL+(tSX-x);},{passive:true});
 sw.addEventListener("touchend",function(){var v=tV*16;function step(){if(Math.abs(v)<.5)return;sw.scrollLeft+=v;v*=.96;tR=requestAnimationFrame(step);}tR=requestAnimationFrame(step);},{passive:true});
-var hint=document.getElementById("scroll-hint");
-var hd=false;
+var hint=document.getElementById("scroll-hint");var hd=false;
 function hideHint(){if(hd)return;hd=true;hint.classList.add("hidden");}
 sw.addEventListener("scroll",hideHint,{passive:true,once:true});
 setTimeout(hideHint,3500);
