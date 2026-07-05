@@ -312,16 +312,6 @@ var RENAS_EMPTY=["&#128054; <b>&#161;Woof!</b> Este marco est&#225; esperando a 
 function setSceneSize(){var h=window.innerHeight-50-60;var scene=document.getElementById("scene");scene.style.width=(h*RATIO)+"px";scene.style.height=h+"px";}
 setSceneSize();
 
-// Preloader MARCO_GALERIA.PNG — fix iOS Safari + todos los navegadores
-(function(){
-  var pre=new Image();
-  pre.onload=function(){
-    document.querySelectorAll(".fs-ov").forEach(function(d){
-      d.style.backgroundImage="url('MARCO_GALERIA.PNG')";
-    });
-  };
-  pre.src="MARCO_GALERIA.PNG";
-})();
 window.addEventListener("resize",setSceneSize);
 
 function initRetratos(){
