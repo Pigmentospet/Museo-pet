@@ -609,7 +609,6 @@ window.addEventListener('resize',positionAll);
 /* ── SCROLL ──────────────────────────────────────────────────── */
 var hint=document.getElementById('hint');var hintHidden=false;
 function hideHint(){if(hintHidden)return;hintHidden=true;hint.classList.add('hidden');}
-sw.addEventListener('scroll',hideHint,{passive:true,once:true});
 setTimeout(hideHint,3500);
 sw.addEventListener('wheel',function(e){e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
 var isDrag=false,sX=0,sL=0;
