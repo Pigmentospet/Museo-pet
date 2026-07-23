@@ -147,7 +147,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div id="layer-paso4"   class="layer" style="z-index:6;"></div>
   <div id="layer-cajas"   class="layer" style="z-index:7;"></div>
   <div id="layer-pinboard" class="layer" style="z-index:7;"></div>
-  <div id="layer-arco"    class="layer" style="z-index:12;"></div>
+  <div id="layer-arco"    class="layer" style="z-index:12;left:93%;width:6%;top:auto;bottom:0;height:45%;background-size:contain;background-position:center bottom;background-repeat:no-repeat;"></div>
 
   <!-- Etiquetas temporales de zona — guía mientras no hay fondo ilustrado. Quitar cuando taller-bg.PNG esté listo -->
   <div class="zone-tag" style="left:2%;">Zona A · Bienvenida</div>
@@ -417,7 +417,7 @@ FAQS.forEach(function(f,i){
    Mismo patrón que arco-salida.PNG del vestíbulo — así no hay que regresar al inicio para saltar de sala. */
 var elArco=document.createElement('button');
 elArco.className='hs';
-elArco.style.cssText='left:91%;top:0;width:9%;height:100%;z-index:20;';
+elArco.style.cssText='left:93%;top:auto;bottom:0;width:6%;height:45%;z-index:20;';
 elArco.setAttribute('aria-label','Ver todas las salas');
 elArco.onclick=function(){ openModal('menu'); };
 scene.appendChild(elArco);
