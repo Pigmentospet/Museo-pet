@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>El Taller de Edith — Museo Pigmentos.pet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#C17B4A;--brand-dk:#9A5E33;--brand-lt:#D9A07A;
+  --cream:#FDF6EE;--cream-dk:#F5E9D8;--ink:#3D2010;--ink-lt:#7A4820;
+  --font:'Nunito',sans-serif;--font-ttl:'Cormorant Garamond',serif;
+  --nav:50px;--footer:60px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit-tap-highlight-color:transparent;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav);background:var(--brand);display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.2);gap:10px;}
+.nav-left{display:flex;align-items:center;gap:8px;min-width:0;}
+.btn-back{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:8px;color:var(--cream);font-family:var(--font);font-size:11px;font-weight:800;padding:5px 9px;cursor:pointer;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0;}
+.btn-back:hover{background:rgba(255,255,255,.28);}
+.nav-titles{min-width:0;}
+.nav-brand{font-size:13px;font-weight:800;color:var(--cream);text-transform:uppercase;letter-spacing:.08em;line-height:1.15;white-space:nowrap;}
+.nav-sub{font-size:10px;color:rgba(253,246,238,.7);font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.btn-menu{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:8px;width:36px;height:36px;cursor:pointer;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.btn-menu span{display:block;width:16px;height:2px;background:var(--cream);border-radius:2px;}
+
+/* FOOTER */
+footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:var(--brand);display:flex;align-items:center;justify-content:center;gap:10px;z-index:300;}
+.ft-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.16);transition:background .15s;flex-shrink:0;text-decoration:none;}
+.ft-icon:hover,.ft-icon:active{background:rgba(255,255,255,.28);}
+.ft-icon svg{width:18px;height:18px;fill:var(--cream);}
+
+/* SCENE */
+#sw{position:fixed;top:var(--nav);left:0;right:0;bottom:var(--footer);overflow-x:scroll;overflow-y:hidden;cursor:grab;-webkit-overflow-scrolling:touch;user-select:none;scroll-behavior:auto;background:linear-gradient(to bottom,#FFFFFF 50%,#8B5236 50%);}
+#sw:active{cursor:grabbing;}
+#sw::-webkit-scrollbar{display:none;}
+#scene{position:relative;}
+/* Capas — igual que index/galeria: divs con background-image, NUNCA <img> para assets de escena (regla iOS Safari) */
+.layer{position:absolute;top:0;left:0;width:100%;height:100%;background-repeat:no-repeat;background-size:100% 100%;pointer-events:none;opacity:0;transition:opacity .25s;}
+.layer.loaded{opacity:1;}
+
+/* HOTSPOTS */
+.hs{position:absolute;background:transparent;border:none;padding:0;cursor:pointer;z-index:20;-webkit-tap-highlight-color:rgba(193,123,74,.15);transition:transform .12s ease;}
+.hs:hover{background:rgba(193,123,74,.08);}
+.hs:active{transform:scale(.93);}
+
+/* Zona labels (temporales, guía visual mientras no hay assets — se pueden quitar cuando estén los PNG) */
+.zone-tag{position:absolute;top:3%;background:rgba(154,94,51,.85);color:var(--cream);font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;border-radius:0 0 10px 10px;z-index:15;pointer-events:none;white-space:nowrap;}
+
+/* DOTS */
+#dots{position:fixed;bottom:calc(var(--footer)+12px);left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:249;pointer-events:none;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(61,32,16,.2);transition:all .25s;}
+.dot.on{background:var(--brand-dk);transform:scale(1.25);}
+
+/* SCROLL HINT */
+#hint{position:fixed;bottom:calc(var(--footer)+10px);right:14px;background:rgba(154,94,51,.88);color:var(--cream);border-radius:20px;padding:5px 13px;font-size:10px;font-weight:800;letter-spacing:.06em;pointer-events:none;opacity:1;transition:opacity 1s;z-index:290;}
+#hint.hidden{opacity:0;}
+
+/* MODALES */
+.overlay{display:none;position:fixed;inset:0;background:rgba(40,18,6,.72);z-index:400;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+@media(min-width:600px){.overlay{align-items:center;}}
+.modal{background:var(--cream);border-radius:20px 20px 0 0;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;animation:sUp .22s ease;}
+@media(min-width:600px){.modal{border-radius:20px;width:90%;}}
+@keyframes sUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{background:var(--brand);border-radius:20px 20px 0 0;padding:14px 16px 12px;display:flex;align-items:center;gap:12px;position:relative;}
+.modal-avatar{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.35);object-fit:cover;flex-shrink:0;background:var(--brand-lt);}
+.modal-head-name{font-size:15px;font-weight:800;color:var(--cream);line-height:1.1;}
+.modal-head-sub{font-size:11px;color:rgba(253,246,238,.72);}
+.modal-close{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.18);border:none;width:28px;height:28px;border-radius:50%;color:var(--cream);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:rgba(255,255,255,.3);}
+.modal-body{padding:16px 16px 28px;}
+.bubble-wrap{margin-bottom:14px;}
+.bubble-tail{display:block;margin-left:18px;margin-top:-1px;}
+.bubble-box{background:var(--cream-dk);border:1.5px solid rgba(193,123,74,.2);border-radius:4px 16px 16px 16px;padding:12px 14px;font-size:14px;line-height:1.65;color:var(--ink);}
+.bubble-box b{font-weight:800;color:var(--brand-dk);}
+.bubble-box em{font-style:italic;color:var(--brand);}
+.door-cta{display:block;width:100%;padding:13px;background:var(--brand);color:var(--cream);font-family:var(--font);font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;margin-top:8px;transition:background .15s;}
+.door-cta:hover{background:var(--brand-dk);}
+.door-cta.sec{background:var(--cream-dk);color:var(--brand-dk);}
+.door-cta.sec:hover{background:#e0cdb5;}
+.door-cta.grn{background:#3D8B3D;color:#fff;}
+
+/* Proceso — número grande de paso */
+.paso-num{font-family:var(--font-ttl);font-size:38px;font-weight:600;color:var(--brand);line-height:1;margin-bottom:2px;}
+.paso-titulo{font-size:18px;font-weight:800;color:var(--ink);margin-bottom:10px;}
+.paso-nav{display:flex;gap:8px;margin-top:12px;}
+.paso-nav button{flex:1;}
+
+/* Punto de entrega */
+.punto-chip{display:inline-block;background:var(--cream-dk);color:var(--brand-dk);font-size:10px;font-weight:800;padding:3px 9px;border-radius:20px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
+.punto-info{display:flex;flex-direction:column;gap:6px;background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:12px;padding:12px 14px;margin-bottom:12px;}
+.punto-info-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--ink);line-height:1.5;}
+.punto-info-item b{color:var(--brand-dk);}
+.punto-nota{font-size:11px;color:var(--ink-lt);line-height:1.5;font-style:italic;margin-top:6px;}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:6px;}
+.faq-item{background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:12px;overflow:hidden;}
+.faq-q{width:100%;text-align:left;background:none;border:none;padding:12px 14px;font-family:var(--font);font-size:13px;font-weight:800;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.faq-q:hover{background:var(--cream-dk);}
+.faq-arrow{transition:transform .2s;flex-shrink:0;color:var(--brand);font-weight:800;}
+.faq-item.open .faq-arrow{transform:rotate(180deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+.faq-item.open .faq-a{max-height:300px;}
+.faq-a-inner{padding:0 14px 14px;font-size:12.5px;color:var(--ink-lt);line-height:1.6;}
+
+/* Menú / salas */
+.menu-item{display:flex;align-items:center;gap:12px;padding:12px 13px;background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:12px;cursor:pointer;font-family:var(--font);width:100%;text-align:left;transition:all .15s;margin-bottom:8px;}
+.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt);}
+.mi-num{width:30px;height:30px;border-radius:50%;background:var(--cream-dk);font-size:11px;font-weight:800;color:var(--brand-dk);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mi-num.active{background:var(--brand);color:var(--cream);}
+.mi-name{font-size:13px;font-weight:800;color:var(--ink);}
+.mi-desc{font-size:11px;color:var(--ink-lt);}
+.mi-arrow{font-size:14px;color:rgba(193,123,74,.5);margin-left:auto;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <button class="btn-back" onclick="window.location.href='index.html'">← Vestíbulo</button>
+    <div class="nav-titles">
+      <div class="nav-brand">Museo Pigmentos.pet</div>
+      <div class="nav-sub">Sala 03 · El Taller de Edith</div>
+    </div>
+  </div>
+  <button class="btn-menu" onclick="openModal('menu')" aria-label="Menú"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- SCROLL WRAPPER -->
+<div id="sw"><div id="scene">
+
+  <!-- CAPAS — mismo patrón que index/galeria: divs con background-image + preloader JS -->
+  <div id="layer-bg"      class="layer" style="z-index:1;"></div>
+  <div id="layer-mesa"    class="layer" style="z-index:2;"></div>
+  <div id="layer-bocetos" class="layer" style="z-index:3;"></div>
+  <div id="layer-cortina" class="layer" style="z-index:4;"></div>
+  <div id="layer-planta"  class="layer" style="z-index:5;"></div>
+  <div id="layer-paso1"   class="layer" style="z-index:6;"></div>
+  <div id="layer-paso2"   class="layer" style="z-index:6;"></div>
+  <div id="layer-paso3"   class="layer" style="z-index:6;"></div>
+  <div id="layer-paso4"   class="layer" style="z-index:6;"></div>
+  <div id="layer-cajas"   class="layer" style="z-index:7;"></div>
+  <div id="layer-pinboard" class="layer" style="z-index:7;"></div>
+
+  <!-- Etiquetas temporales de zona — guía mientras no hay fondo ilustrado. Quitar cuando taller-bg.PNG esté listo -->
+  <div class="zone-tag" style="left:2%;">Zona A · Bienvenida</div>
+  <div class="zone-tag" style="left:27%;">Zona B · Proceso de Pedido</div>
+  <div class="zone-tag" style="left:52%;">Zona C · Envíos y Entregas</div>
+  <div class="zone-tag" style="left:77%;">Zona D · Preguntas Frecuentes</div>
+
+  <!-- ZONA A — hotspot sobre bocetos/tableta en la mesa -->
+  <button class="hs" style="left:9%;top:35%;width:9%;height:45%;" onclick="openModal('tiempos')" aria-label="Tiempos de elaboración"></button>
+
+  <!-- Hotspots generados por JS: 4 pasos (Zona B), 4 puntos/envío (Zona C), 7 FAQ (Zona D) -->
+
+</div></div>
+
+<!-- DOTS -->
+<div id="dots">
+  <div class="dot on" id="d0"></div>
+  <div class="dot" id="d1"></div>
+  <div class="dot" id="d2"></div>
+  <div class="dot" id="d3"></div>
+</div>
+
+<div id="hint">← desliza para explorar →</div>
+
+<!-- FOOTER -->
+<footer>
+  <a class="ft-icon" href="https://instagram.com/pigmentos.pet" target="_blank" aria-label="Instagram">
+    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://youtube.com/@pigmentosedithbojorquez" target="_blank" aria-label="YouTube">
+    <svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://tiktok.com/@pigmentosedithbojorquez" target="_blank" aria-label="TikTok">
+    <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://facebook.com/pigmentos.pet" target="_blank" aria-label="Facebook">
+    <svg viewBox="0 0 24 24"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://ko-fi.com/pigmentosedithbojorquez/commissions" target="_blank" aria-label="Ko-fi">
+    <svg viewBox="0 0 24 24"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://wa.me/526241263124" target="_blank" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+</footer>
+
+<!-- ══ MODALES ══════════════════════════════════════════════════ -->
+
+<!-- TIEMPOS DE ELABORACIÓN (Zona A) -->
+<div class="overlay" id="modal-tiempos" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Tiempos de elaboración 🐾</div></div>
+      <button class="modal-close" onclick="closeModal('tiempos')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box">¡<b>Guau!</b> 🐾 Aquí es donde toda la magia empieza — Edith con su café, su tableta y muchos bocetos. <em>¡Grrr-eativo, no crees?</em></div>
+      </div>
+      <div class="punto-info">
+        <div class="punto-info-item"><b>1 a 2 semanas</b> — dependiendo de la agenda del momento.</div>
+        <div class="punto-info-item"><b>Envío nacional:</b> 7 a 10 días hábiles adicionales.</div>
+      </div>
+      <button class="door-cta grn" onclick="window.open('https://wa.me/526241263124?text='+encodeURIComponent('Hola! Quiero preguntar por los tiempos de entrega de mi pedido 🐾'),'_blank')">💬 Preguntar por WhatsApp</button>
+      <button class="door-cta sec" onclick="closeModal('tiempos')">Seguir explorando</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESO — PASO (contenido dinámico via JS) -->
+<div class="overlay" id="modal-paso" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Proceso de Pedido 🐾</div></div>
+      <button class="modal-close" onclick="closeModal('paso')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="paso-num" id="paso-num">1</div>
+      <div class="paso-titulo" id="paso-titulo">Escríbeme</div>
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box" id="paso-rena"></div>
+      </div>
+      <p style="font-size:13px;color:var(--ink-lt);line-height:1.6;" id="paso-texto"></p>
+      <div class="paso-nav">
+        <button class="door-cta sec" id="paso-prev" onclick="pasoIr(-1)">← Anterior</button>
+        <button class="door-cta" id="paso-next" onclick="pasoIr(1)">Siguiente →</button>
+      </div>
+      <button class="door-cta grn" onclick="window.open('https://wa.me/526241263124?text='+encodeURIComponent('Hola! Quiero empezar mi pedido en Pigmentos.pet 🐾'),'_blank')" style="margin-top:12px;">💬 Empezar mi pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- ENVÍOS / PUNTOS DE ENTREGA — contenido dinámico via JS -->
+<div class="overlay" id="modal-punto" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Envíos y Entregas 🐾</div></div>
+      <button class="modal-close" onclick="closeModal('punto')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="punto-chip" id="punto-chip">Punto de entrega</div>
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box" id="punto-rena"></div>
+      </div>
+      <div class="punto-info" id="punto-info"></div>
+      <div class="punto-nota">También puedes solicitar Uber/Didi desde cualquiera de estos puntos y horarios 🚗</div>
+      <button class="door-cta grn" onclick="window.open('https://wa.me/526241263124?text='+encodeURIComponent('Hola! Quiero coordinar la entrega de mi pedido 🐾'),'_blank')" style="margin-top:12px;">💬 Coordinar por WhatsApp</button>
+      <button class="door-cta sec" onclick="closeModal('punto')">Seguir explorando</button>
+    </div>
+  </div>
+</div>
+
+<!-- PREGUNTAS FRECUENTES -->
+<div class="overlay" id="modal-faq" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Preguntas Frecuentes 🐾</div></div>
+      <button class="modal-close" onclick="closeModal('faq')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box"><em>Grrr...</em> ¿tienes dudas? <b>Toca cualquier notita</b> y te la resuelvo al toque 🐾</div>
+      </div>
+      <div class="faq-list" id="faq-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MENÚ -->
+<div class="overlay" id="modal-menu" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">¿A dónde vamos? 🐾</div></div>
+      <button class="modal-close" onclick="closeModal('menu')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap" style="margin-bottom:16px;">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box"><b>¡Arf!</b> El museo tiene muchas salas — ¿quieres explorar otra? 🐾</div>
+      </div>
+      <button class="menu-item" onclick="irA('vestibulo')"><div class="mi-num">00</div><div><div class="mi-name">Vestíbulo de Rena</div><div class="mi-desc">Entrada principal</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('galeria')"><div class="mi-num">01</div><div><div class="mi-name">Galería de los Inmortales</div><div class="mi-desc">Retratos de mascotas</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('boutique')"><div class="mi-num">02</div><div><div class="mi-name">La Boutique</div><div class="mi-desc">Productos personalizados</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('taller')"><div class="mi-num active">03</div><div><div class="mi-name">El Taller de Edith</div><div class="mi-desc">Proceso, envíos · estás aquí</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('biblioteca')"><div class="mi-num">04</div><div><div class="mi-name">Biblioteca de Cuidados</div><div class="mi-desc">Cómo cuidar tus productos</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('altar')"><div class="mi-num">05</div><div><div class="mi-name">Altar de los Recuerdos</div><div class="mi-desc">Para mascotas que ya partieron</div></div><div class="mi-arrow">›</div></button>
+    </div>
+  </div>
+</div>
+
+<script>
+var sw=document.getElementById('sw'), scene=document.getElementById('scene');
+var RATIO=5; /* 5400x1080 */
+
+function setSceneSize(){
+  var h=window.innerHeight-50-60;
+  scene.style.width=(h*RATIO)+'px';
+  scene.style.height=h+'px';
+}
+setSceneSize();
+window.addEventListener('resize',setSceneSize);
+
+/* ── PRELOADER DE CAPAS — nunca <img>, siempre background-image + JS Image() ── */
+function preloadLayer(id, src){
+  var el=document.getElementById(id);
+  if(!el)return;
+  var pre=new Image();
+  pre.onload=function(){
+    el.style.backgroundImage='url("'+src+'")';
+    el.classList.add('loaded');
+  };
+  pre.onerror=function(){ /* silencioso: no muestra ícono roto, la capa queda invisible */ };
+  pre.src=src;
+}
+preloadLayer('layer-bg','taller-bg.PNG');
+preloadLayer('layer-mesa','taller-mesa.PNG');
+preloadLayer('layer-bocetos','taller-bocetos.PNG');
+preloadLayer('layer-cortina','taller-cortina.PNG');
+preloadLayer('layer-planta','taller-planta.PNG');
+preloadLayer('layer-paso1','taller-paso1.PNG');
+preloadLayer('layer-paso2','taller-paso2.PNG');
+preloadLayer('layer-paso3','taller-paso3.PNG');
+preloadLayer('layer-paso4','taller-paso4.PNG');
+preloadLayer('layer-cajas','taller-cajas.PNG');
+preloadLayer('layer-pinboard','taller-pinboard.PNG');
+
+/* ── DATOS ───────────────────────────────────────────────────── */
+var PASOS=[
+  {titulo:'Escríbeme', texto:'Menciona qué producto te interesa y con gusto te ayudo a elegir la opción perfecta para tu peludx.', rena:'¡Guau! Cuéntame qué buscas y empezamos 🐾'},
+  {titulo:'Te daré una cotización', texto:'Te doy la cotización de tu pedido junto con las fechas de entrega y de depósito.', rena:'¡Arf! Aquí va todo clarito — precio y fechas 🐾'},
+  {titulo:'Realiza el depósito', texto:'Una vez confirmado el primer depósito, envía la foto de tu mascota para comenzar a trabajar en tu retrato.', rena:'¡Woof! Con tu depósito reservamos tu lugar en la agenda 🐾'},
+  {titulo:'Te mantendré informado', texto:'Te aviso del avance de tu pedido. Siéntete libre de escribirme cualquier duda o comentario en el camino.', rena:'<em>Grrr...</em> ¡nunca te dejo en visto! Te voy contando cómo va tu retrato 🐾'}
+];
+
+var PUNTOS=[
+  {chip:'Plaza Paseo 2000', rena:'¡Guau guau! Este es uno de mis puntos favoritos — ¡nos vemos ahí! 🐾',
+   info:[['Ubicación','Frente a Little Caesar\'s'],['Horario','Sábado 9:00 a.m.'],['Espera','Máx. 10 min']]},
+  {chip:'Plaza Carrousel', rena:'¡Arf! En la esquina de Sears — ¡fácil de encontrar! 🐾',
+   info:[['Ubicación','En la esquina de Sears'],['Horario','Sábado 11:00 a.m.'],['Espera','Máx. 15 min']]},
+  {chip:'Viñas del Mar', rena:'¡Woof! Este punto es cada 15 días — coordinamos el horario contigo 🐾',
+   info:[['Frecuencia','Cada 15 días, sábado'],['Horario','A definir según las entregas']]},
+  {chip:'Envío Nacional', rena:'<em>Grrr-enial!</em> ¿No estás en Tijuana? ¡Yo también viajo por todo México! 🐾',
+   info:[['Cobertura','Todo México'],['Costo','$290 MXN'],['Tiempo','7 a 10 días hábiles']]}
+];
+
+var FAQS=[
+  {q:'¿Cuánto tarda mi pedido?', a:'De 1 a 2 semanas dependiendo de la agenda; el envío nacional toma de 7 a 10 días hábiles.'},
+  {q:'¿Cómo pago?', a:'Se requiere un depósito o transferencia para apartar tu lugar en agenda y producto. La otra mitad se liquida al momento de la entrega personal o antes del envío.'},
+  {q:'¿Qué foto debo mandar de mi mascota?', a:'Una foto clara, de frente, con buena luz y sin recortar — mientras más nítida, mejor sale el retrato.'},
+  {q:'¿Hacen envíos a todo México?', a:'Sí, envío nacional con costo de $290, 7 a 10 días hábiles.'},
+  {q:'¿Puedo recoger en persona?', a:'Sí, en los puntos de entrega en Tijuana (Plaza Paseo 2000, Plaza Carrousel, Viñas del Mar) o pedir Uber/Didi.'},
+  {q:'¿Puedo personalizar con más de una mascota?', a:'Sí, se pueden agregar varias mascotas dependiendo del producto — el precio varía según cada uno.'},
+  {q:'¿Hay garantía si algo llega dañado?', a:'Sí. Todo se empaca con cuidado y amor para que llegue siempre a salvo, pero si algo llega dañado, repórtalo en cuanto recibas tu pedido y envía un video — se reenvía el mismo producto sin costo extra. No aplica cambio por otro producto ni devolución de dinero.'}
+];
+
+/* ── GENERAR HOTSPOTS ────────────────────────────────────────── */
+/* Zona B (25%-50%) — 4 pasos evenly spaced. 🔧 ajustar % cuando taller-paso1-4.PNG estén listos */
+var pasoPos=[27,33,39,45];
+PASOS.forEach(function(p,i){
+  var el=document.createElement('button');
+  el.className='hs';
+  el.style.cssText='left:'+pasoPos[i]+'%;top:28%;width:5%;height:42%;';
+  el.setAttribute('aria-label',p.titulo);
+  el.onclick=function(){ openPaso(i); };
+  scene.appendChild(el);
+});
+
+/* Zona C (50%-75%) — 3 puntos de entrega + 1 envío nacional. 🔧 ajustar % cuando taller-cajas.PNG esté listo */
+var puntoPos=[53,60,67,74];
+PUNTOS.forEach(function(p,i){
+  var el=document.createElement('button');
+  el.className='hs';
+  el.style.cssText='left:'+puntoPos[i]+'%;top:32%;width:6%;height:38%;';
+  el.setAttribute('aria-label',p.chip);
+  el.onclick=function(){ openPunto(i); };
+  scene.appendChild(el);
+});
+
+/* Zona D (75%-100%) — 7 notitas en el corcho. 🔧 ajustar % cuando taller-pinboard.PNG esté listo */
+var faqPos=[
+  [77,10],[83,10],[89,10],[95,10],
+  [79,52],[86,52],[93,52]
+];
+FAQS.forEach(function(f,i){
+  var el=document.createElement('button');
+  el.className='hs';
+  var pos=faqPos[i];
+  el.style.cssText='left:'+pos[0]+'%;top:'+pos[1]+'%;width:5%;height:30%;';
+  el.setAttribute('aria-label',f.q);
+  el.onclick=function(){ openFaqModal(i); };
+  scene.appendChild(el);
+});
+
+/* ── MODAL PASO ──────────────────────────────────────────────── */
+var pasoActual=0;
+function openPaso(i){
+  pasoActual=i;
+  renderPaso();
+  openModal('paso');
+}
+function renderPaso(){
+  var p=PASOS[pasoActual];
+  document.getElementById('paso-num').textContent=(pasoActual+1);
+  document.getElementById('paso-titulo').textContent=p.titulo;
+  document.getElementById('paso-rena').innerHTML=p.rena;
+  document.getElementById('paso-texto').textContent=p.texto;
+  document.getElementById('paso-prev').style.visibility=pasoActual===0?'hidden':'visible';
+  document.getElementById('paso-next').textContent=pasoActual===PASOS.length-1?'Volver al inicio ↺':'Siguiente →';
+}
+function pasoIr(dir){
+  if(dir===1 && pasoActual===PASOS.length-1){ pasoActual=0; }
+  else{ pasoActual=Math.max(0,Math.min(PASOS.length-1,pasoActual+dir)); }
+  renderPaso();
+}
+
+/* ── MODAL PUNTO ─────────────────────────────────────────────── */
+function openPunto(i){
+  var p=PUNTOS[i];
+  document.getElementById('punto-chip').textContent=p.chip;
+  document.getElementById('punto-rena').innerHTML=p.rena;
+  var html='';
+  p.info.forEach(function(row){ html+='<div class="punto-info-item"><b>'+row[0]+':</b> '+row[1]+'</div>'; });
+  document.getElementById('punto-info').innerHTML=html;
+  openModal('punto');
+}
+
+/* ── MODAL FAQ ───────────────────────────────────────────────── */
+(function(){
+  var list=document.getElementById('faq-list');
+  FAQS.forEach(function(f,i){
+    var item=document.createElement('div');
+    item.className='faq-item';
+    item.id='faq-item-'+i;
+    var qBtn=document.createElement('button');
+    qBtn.className='faq-q';
+    qBtn.innerHTML='<span>'+f.q+'</span><span class="faq-arrow">▾</span>';
+    qBtn.onclick=function(){ item.classList.toggle('open'); };
+    var aDiv=document.createElement('div');
+    aDiv.className='faq-a';
+    aDiv.innerHTML='<div class="faq-a-inner">'+f.a+'</div>';
+    item.appendChild(qBtn);
+    item.appendChild(aDiv);
+    list.appendChild(item);
+  });
+})();
+function openFaqModal(i){
+  openModal('faq');
+  document.querySelectorAll('.faq-item').forEach(function(it){ it.classList.remove('open'); });
+  var target=document.getElementById('faq-item-'+i);
+  if(target){
+    target.classList.add('open');
+    setTimeout(function(){ target.scrollIntoView({block:'center'}); },150);
+  }
+}
+
+/* ── MODALES genérico ────────────────────────────────────────── */
+function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});});
+
+var SALAS={vestibulo:{url:'index.html'},galeria:{url:'galeria.html'},boutique:{url:'boutique.html'},taller:{url:'taller.html'},biblioteca:{url:'biblioteca.html'},altar:{url:'altar.html'}};
+function irA(key){document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});var s=SALAS[key];if(s&&s.url)setTimeout(function(){window.location.href=s.url;},150);}
+
+/* ── SCROLL — mismo patrón que galería/boutique ─────────────── */
+var hint=document.getElementById('hint');var hintHidden=false;
+function hideHint(){if(hintHidden)return;hintHidden=true;hint.classList.add('hidden');}
+setTimeout(hideHint,3500);
+sw.addEventListener('wheel',function(e){e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
+var isDrag=false,sX=0,sL=0;
+sw.addEventListener('mousedown',function(e){isDrag=true;sX=e.pageX;sL=sw.scrollLeft;sw.style.cursor='grabbing';});
+window.addEventListener('mousemove',function(e){if(!isDrag)return;sw.scrollLeft=sL-(e.pageX-sX);});
+window.addEventListener('mouseup',function(){isDrag=false;sw.style.cursor='grab';});
+var tSX=0,tSL=0,tLX=0,tV=0,tT=0,tR=null;
+sw.addEventListener('touchstart',function(e){if(tR){cancelAnimationFrame(tR);tR=null;}tSX=tLX=e.touches[0].clientX;tSL=sw.scrollLeft;tV=0;tT=Date.now();},{passive:true});
+sw.addEventListener('touchmove',function(e){var x=e.touches[0].clientX;tV=(tLX-x)/(Date.now()-tT+1);tT=Date.now();tLX=x;sw.scrollLeft=tSL+(tSX-x);},{passive:true});
+sw.addEventListener('touchend',function(){var v=tV*16;(function step(){if(Math.abs(v)<.5)return;sw.scrollLeft+=v;v*=.96;tR=requestAnimationFrame(step);})();},{passive:true});
+sw.addEventListener('scroll',function(){
+  hideHint();
+  var max=scene.offsetWidth-sw.offsetWidth;
+  var p=max>0?sw.scrollLeft/max:0;
+  var active=Math.min(3,Math.round(p*3));
+  for(var i=0;i<4;i++){var d=document.getElementById('d'+i);if(d)d.classList.toggle('on',i===active);}
+},{passive:true});
+window.addEventListener('load',function(){sw.scrollLeft=0;});
+</script>
+</body>
+</html>
