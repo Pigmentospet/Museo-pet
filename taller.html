@@ -147,12 +147,14 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div id="layer-paso4"   class="layer" style="z-index:6;"></div>
   <div id="layer-cajas"   class="layer" style="z-index:7;"></div>
   <div id="layer-pinboard" class="layer" style="z-index:7;"></div>
+  <div id="layer-arco"    class="layer" style="z-index:12;"></div>
 
   <!-- Etiquetas temporales de zona — guía mientras no hay fondo ilustrado. Quitar cuando taller-bg.PNG esté listo -->
   <div class="zone-tag" style="left:2%;">Zona A · Bienvenida</div>
   <div class="zone-tag" style="left:27%;">Zona B · Proceso de Pedido</div>
   <div class="zone-tag" style="left:52%;">Zona C · Envíos y Entregas</div>
   <div class="zone-tag" style="left:77%;">Zona D · Preguntas Frecuentes</div>
+  <div class="zone-tag" style="left:92%;">Salida · Ver salas</div>
 
   <!-- ZONA A — hotspot sobre bocetos/tableta en la mesa -->
   <button class="hs" style="left:9%;top:35%;width:9%;height:45%;" onclick="openModal('tiempos')" aria-label="Tiempos de elaboración"></button>
@@ -341,6 +343,7 @@ preloadLayer('layer-paso3','taller-paso3.PNG');
 preloadLayer('layer-paso4','taller-paso4.PNG');
 preloadLayer('layer-cajas','taller-cajas.PNG');
 preloadLayer('layer-pinboard','taller-pinboard.PNG');
+preloadLayer('layer-arco','taller-arco.PNG');
 
 /* ── DATOS ───────────────────────────────────────────────────── */
 var PASOS=[
@@ -394,20 +397,30 @@ PUNTOS.forEach(function(p,i){
   scene.appendChild(el);
 });
 
-/* Zona D (75%-100%) — 7 notitas en el corcho. 🔧 ajustar % cuando taller-pinboard.PNG esté listo */
+/* Zona D (75%-91%) — 7 notitas en el corcho. Se deja 91%-100% libre para el arco de salida.
+   🔧 ajustar % cuando taller-pinboard.PNG esté listo */
 var faqPos=[
-  [77,10],[83,10],[89,10],[95,10],
-  [79,52],[86,52],[93,52]
+  [76,10],[80,10],[84,10],[88,10],
+  [77,52],[81,52],[85,52]
 ];
 FAQS.forEach(function(f,i){
   var el=document.createElement('button');
   el.className='hs';
   var pos=faqPos[i];
-  el.style.cssText='left:'+pos[0]+'%;top:'+pos[1]+'%;width:5%;height:30%;';
+  el.style.cssText='left:'+pos[0]+'%;top:'+pos[1]+'%;width:4%;height:30%;';
   el.setAttribute('aria-label',f.q);
   el.onclick=function(){ openFaqModal(i); };
   scene.appendChild(el);
 });
+
+/* ARCO DE SALIDA — al final del recorrido, lleva directo al menú de salas.
+   Mismo patrón que arco-salida.PNG del vestíbulo — así no hay que regresar al inicio para saltar de sala. */
+var elArco=document.createElement('button');
+elArco.className='hs';
+elArco.style.cssText='left:91%;top:0;width:9%;height:100%;z-index:20;';
+elArco.setAttribute('aria-label','Ver todas las salas');
+elArco.onclick=function(){ openModal('menu'); };
+scene.appendChild(elArco);
 
 /* ── MODAL PASO ──────────────────────────────────────────────── */
 var pasoActual=0;
