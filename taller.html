@@ -147,14 +147,14 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div id="layer-paso4"   class="layer" style="z-index:6;"></div>
   <div id="layer-cajas"   class="layer" style="z-index:7;"></div>
   <div id="layer-pinboard" class="layer" style="z-index:7;"></div>
-  <div id="layer-arco"    class="layer" style="z-index:12;left:90%;width:10%;top:auto;bottom:0;height:78%;background-size:contain;background-position:center bottom;background-repeat:no-repeat;border:4px solid red;"></div>
+  <div id="layer-arco"    class="layer" style="z-index:12;"></div>
 
   <!-- Etiquetas temporales de zona — guía mientras no hay fondo ilustrado. Quitar cuando taller-bg.PNG esté listo -->
   <div class="zone-tag" style="left:2%;">Zona A · Bienvenida</div>
   <div class="zone-tag" style="left:27%;">Zona B · Proceso de Pedido</div>
   <div class="zone-tag" style="left:52%;">Zona C · Envíos y Entregas</div>
   <div class="zone-tag" style="left:77%;">Zona D · Preguntas Frecuentes</div>
-  <div class="zone-tag" style="left:92%;">Salida · Ver salas</div>
+  <div class="zone-tag" style="left:88%;">Salida · Ver salas</div>
 
   <!-- ZONA A — hotspot sobre bocetos/tableta en la mesa -->
   <button class="hs" style="left:9%;top:35%;width:9%;height:45%;" onclick="openModal('tiempos')" aria-label="Tiempos de elaboración"></button>
@@ -311,11 +311,15 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 <script>
 var sw=document.getElementById('sw'), scene=document.getElementById('scene');
 var RATIO=5; /* 5400x1080 */
+var SCALE=0.55; /* mismo factor que el vestíbulo */
 
 function setSceneSize(){
-  var h=window.innerHeight-50-60;
-  scene.style.width=(h*RATIO)+'px';
+  var avail=window.innerHeight-50-60;
+  var h=avail*SCALE;
+  var w=h*RATIO;
+  scene.style.width=w+'px';
   scene.style.height=h+'px';
+  scene.style.marginTop=((avail-h)/2)+'px';
 }
 setSceneSize();
 window.addEventListener('resize',setSceneSize);
@@ -397,17 +401,17 @@ PUNTOS.forEach(function(p,i){
   scene.appendChild(el);
 });
 
-/* Zona D (75%-91%) — 7 notitas en el corcho. Se deja 91%-100% libre para el arco de salida.
-   🔧 ajustar % cuando taller-pinboard.PNG esté listo */
+/* Zona D (75%-86.7%) — 7 notitas en el corcho. Se deja 86.7%-100% libre para el arco de salida
+   (mismas proporciones 13.3% que usa el vestíbulo). 🔧 ajustar % cuando taller-pinboard.PNG esté listo */
 var faqPos=[
-  [76,10],[80,10],[84,10],[88,10],
-  [77,52],[81,52],[85,52]
+  [76,10],[79,10],[82,10],[85,10],
+  [77,52],[80,52],[83,52]
 ];
 FAQS.forEach(function(f,i){
   var el=document.createElement('button');
   el.className='hs';
   var pos=faqPos[i];
-  el.style.cssText='left:'+pos[0]+'%;top:'+pos[1]+'%;width:4%;height:30%;';
+  el.style.cssText='left:'+pos[0]+'%;top:'+pos[1]+'%;width:3%;height:30%;';
   el.setAttribute('aria-label',f.q);
   el.onclick=function(){ openFaqModal(i); };
   scene.appendChild(el);
@@ -417,7 +421,7 @@ FAQS.forEach(function(f,i){
    Mismo patrón que arco-salida.PNG del vestíbulo — así no hay que regresar al inicio para saltar de sala. */
 var elArco=document.createElement('button');
 elArco.className='hs';
-elArco.style.cssText='left:90%;top:auto;bottom:0;width:10%;height:78%;z-index:20;';
+elArco.style.cssText='left:86.7%;top:0;width:13.3%;height:100%;z-index:20;';
 elArco.setAttribute('aria-label','Ver todas las salas');
 elArco.onclick=function(){ openModal('menu'); };
 scene.appendChild(elArco);
