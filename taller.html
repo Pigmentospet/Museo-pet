@@ -319,7 +319,11 @@ function setSceneSize(){
   var w=h*RATIO;
   scene.style.width=w+'px';
   scene.style.height=h+'px';
-  scene.style.marginTop=((avail-h)/2)+'px';
+  var marginTop=(avail-h)/2;
+  scene.style.marginTop=marginTop+'px';
+  document.querySelectorAll('.zone-tag').forEach(function(tag){
+    tag.style.top=(-marginTop+8)+'px';
+  });
 }
 setSceneSize();
 window.addEventListener('resize',setSceneSize);
