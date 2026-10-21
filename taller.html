@@ -110,7 +110,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 
 /* Menú / salas */
 .menu-item{display:flex;align-items:center;gap:12px;padding:12px 13px;background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:12px;cursor:pointer;font-family:var(--font);width:100%;text-align:left;transition:all .15s;margin-bottom:8px;}
-.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt);}
+@media (hover:hover){.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt);}}
 .mi-num{width:30px;height:30px;border-radius:50%;background:var(--cream-dk);font-size:11px;font-weight:800;color:var(--brand-dk);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .mi-num.active{background:var(--brand);color:var(--cream);}
 .mi-name{font-size:13px;font-weight:800;color:var(--ink);}
@@ -150,14 +150,14 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div id="layer-arco"    class="layer" style="z-index:12;"></div>
 
   <!-- Etiquetas temporales de zona — guía mientras no hay fondo ilustrado. Quitar cuando taller-bg.PNG esté listo -->
-  <div class="zone-tag" style="left:2%;">Zona A · Bienvenida</div>
-  <div class="zone-tag" style="left:27%;">Zona B · Proceso de Pedido</div>
-  <div class="zone-tag" style="left:52%;">Zona C · Envíos y Entregas</div>
-  <div class="zone-tag" style="left:77%;">Zona D · Preguntas Frecuentes</div>
-  <div class="zone-tag" style="left:88%;">Salida · Ver salas</div>
+  <div class="zone-tag" style="left:1%;">A · Bienvenida</div>
+  <div class="zone-tag" style="left:24.6%;">B · Proceso</div>
+  <div class="zone-tag" style="left:50%;">C · Envíos</div>
+  <div class="zone-tag" style="left:73%;">D · FAQ</div>
+  <div class="zone-tag" style="left:88%;">Salida</div>
 
   <!-- ZONA A — hotspot sobre bocetos/tableta en la mesa -->
-  <button class="hs" style="left:9%;top:35%;width:9%;height:45%;" onclick="openModal('tiempos')" aria-label="Tiempos de elaboración"></button>
+  <button class="hs" style="left:8.33%;top:32.4%;width:9.26%;height:46.3%;" onclick="openModal('tiempos')" aria-label="Tiempos de elaboración"></button>
 
   <!-- Hotspots generados por JS: 4 pasos (Zona B), 4 puntos/envío (Zona C), 7 FAQ (Zona D) -->
 
@@ -384,22 +384,22 @@ var FAQS=[
 
 /* ── GENERAR HOTSPOTS ────────────────────────────────────────── */
 /* Zona B (25%-50%) — 4 pasos evenly spaced. 🔧 ajustar % cuando taller-paso1-4.PNG estén listos */
-var pasoPos=[27,33,39,45];
+var pasoPos=[24.63,30.37,36.11,41.85];
 PASOS.forEach(function(p,i){
   var el=document.createElement('button');
   el.className='hs';
-  el.style.cssText='left:'+pasoPos[i]+'%;top:28%;width:5%;height:42%;';
+  el.style.cssText='left:'+pasoPos[i]+'%;top:25.9%;width:4.81%;height:33.3%;';
   el.setAttribute('aria-label',p.titulo);
   el.onclick=function(){ openPaso(i); };
   scene.appendChild(el);
 });
 
 /* Zona C (50%-75%) — 3 puntos de entrega + 1 envío nacional. 🔧 ajustar % cuando taller-cajas.PNG esté listo */
-var puntoPos=[53,60,67,74];
+var puntoPos=[50,55.19,60.37,65.56];
 PUNTOS.forEach(function(p,i){
   var el=document.createElement('button');
   el.className='hs';
-  el.style.cssText='left:'+puntoPos[i]+'%;top:32%;width:6%;height:38%;';
+  el.style.cssText='left:'+puntoPos[i]+'%;top:37%;width:4.44%;height:44.4%;';
   el.setAttribute('aria-label',p.chip);
   el.onclick=function(){ openPunto(i); };
   scene.appendChild(el);
@@ -408,14 +408,14 @@ PUNTOS.forEach(function(p,i){
 /* Zona D (75%-86.7%) — 7 notitas en el corcho. Se deja 86.7%-100% libre para el arco de salida
    (mismas proporciones 13.3% que usa el vestíbulo). 🔧 ajustar % cuando taller-pinboard.PNG esté listo */
 var faqPos=[
-  [76,10],[79,10],[82,10],[85,10],
-  [77,52],[80,52],[83,52]
+  [73.15,24.07],[76.30,24.07],[79.44,24.07],[82.59,24.07],
+  [74.72,43.5],[77.87,43.5],[81.02,43.5]
 ];
 FAQS.forEach(function(f,i){
   var el=document.createElement('button');
   el.className='hs';
   var pos=faqPos[i];
-  el.style.cssText='left:'+pos[0]+'%;top:'+pos[1]+'%;width:3%;height:30%;';
+  el.style.cssText='left:'+pos[0]+'%;top:'+pos[1]+'%;width:2.59%;height:12.96%;';
   el.setAttribute('aria-label',f.q);
   el.onclick=function(){ openFaqModal(i); };
   scene.appendChild(el);
