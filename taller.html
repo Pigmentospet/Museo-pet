@@ -207,10 +207,10 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
     <div class="modal-body">
       <div class="bubble-wrap">
         <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
-        <div class="bubble-box">¡<b>Guau!</b> 🐾 Aquí es donde toda la magia empieza — Edith con su café, su tableta y muchos bocetos. <em>¡Grrr-eativo, no crees?</em></div>
+        <div class="bubble-box">¡<b>Guau!</b> 🐾 Aquí es donde toda la magia empieza — mi humana Edith con su café, su tableta y muchos bocetos. <em>¡Grrr-eativo, no crees?</em></div>
       </div>
       <div class="punto-info">
-        <div class="punto-info-item"><b>1 a 2 semanas</b> — dependiendo de la agenda del momento.</div>
+        <div class="punto-info-item"><b>Fecha de entrega:</b> 1 a 2 semanas, según la agenda de mi humana Edith.</div>
         <div class="punto-info-item"><b>Envío nacional:</b> 7 a 10 días hábiles adicionales.</div>
       </div>
       <button class="door-cta grn" onclick="window.open('https://wa.me/526241263124?text='+encodeURIComponent('Hola! Quiero preguntar por los tiempos de entrega de mi pedido 🐾'),'_blank')">💬 Preguntar por WhatsApp</button>
@@ -235,12 +235,25 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
         <div class="bubble-box" id="paso-rena"></div>
       </div>
       <p style="font-size:13px;color:var(--ink-lt);line-height:1.6;" id="paso-texto"></p>
+      <button class="door-cta" id="paso-bot" onclick="openBot()" style="margin-top:12px;">🐾 No sé cuál elegir — ayúdame, Rena</button>
       <div class="paso-nav">
         <button class="door-cta sec" id="paso-prev" onclick="pasoIr(-1)">← Anterior</button>
         <button class="door-cta" id="paso-next" onclick="pasoIr(1)">Siguiente →</button>
       </div>
       <button class="door-cta grn" onclick="window.open('https://wa.me/526241263124?text='+encodeURIComponent('Hola! Quiero empezar mi pedido en Pigmentos.pet 🐾'),'_blank')" style="margin-top:12px;">💬 Empezar mi pedido</button>
     </div>
+  </div>
+</div>
+
+<!-- RENA BOT — se abre desde el paso 1; el iframe se carga solo al abrir -->
+<div class="overlay" id="modal-bot" role="dialog" aria-modal="true">
+  <div class="modal" style="height:88vh;display:flex;flex-direction:column;">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div><div class="modal-head-name">Rena Bot</div><div class="modal-head-sub">Te ayudo a elegir 🐾</div></div>
+      <button class="modal-close" onclick="closeBot()">✕</button>
+    </div>
+    <iframe id="bot-frame" title="Rena Bot" style="flex:1;width:100%;border:none;background:var(--cream);" allow="clipboard-write"></iframe>
   </div>
 </div>
 
@@ -255,7 +268,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
     <div class="modal-body">
       <div class="bubble-wrap">
         <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
-        <div class="bubble-box">¡Guau! Elige cómo quieres recibir tu retrato: te espero en cualquiera de mis puntos de entrega en Tijuana o te lo mando a todo México 🐾</div>
+        <div class="bubble-box">¡Guau! Elige cómo quieres recibir tu retrato: mi humana Edith te lo entrega en persona en alguno de sus puntos en Tijuana, o te lo manda a todo México 🐾</div>
       </div>
       <div id="punto-list"></div>
       <div class="punto-nota">También puedes solicitar Uber/Didi desde cualquiera de estos puntos y horarios 🚗</div>
@@ -389,20 +402,20 @@ BOXES.forEach(function(b,i){
 
 /* ── DATOS ───────────────────────────────────────────────────── */
 var PASOS=[
-  {titulo:'Escríbeme', texto:'Menciona qué producto te interesa y con gusto te ayudo a elegir la opción perfecta para tu peludx.', rena:'¡Guau! Cuéntame qué buscas y empezamos 🐾'},
-  {titulo:'Te daré una cotización', texto:'Te doy la cotización de tu pedido junto con las fechas de entrega y de depósito.', rena:'¡Arf! Aquí va todo clarito — precio y fechas 🐾'},
-  {titulo:'Realiza el depósito', texto:'Una vez confirmado el primer depósito, envía la foto de tu mascota para comenzar a trabajar en tu retrato.', rena:'¡Woof! Con tu depósito reservamos tu lugar en la agenda 🐾'},
-  {titulo:'Te mantendré informado', texto:'Te aviso del avance de tu pedido. Siéntete libre de escribirme cualquier duda o comentario en el camino.', rena:'<em>Grrr...</em> ¡nunca te dejo en visto! Te voy contando cómo va tu retrato 🐾'}
+  {titulo:'Escríbele a mi humana', texto:'Cuéntale a mi humana Edith qué producto te interesa y cuántos retratos quieres. ¿No sabes cuál elegir? Pídele ayuda a Rena Bot y te sugiere opciones.', rena:'¡Guau! Dile a mi humana Edith qué producto te interesa y de cuántas mascotas. Si no sabes cuál elegir, ¡yo te ayudo! 🐾'},
+  {titulo:'Recibe tu cotización', texto:'Mi humana Edith te da la cotización de tu pedido junto con las fechas de entrega y de depósito.', rena:'¡Arf! Mi humana te manda todo clarito — precio y fechas 🐾'},
+  {titulo:'Realiza el depósito', texto:'Una vez confirmado el primer depósito, envía la foto de tu mascota para que mi humana Edith comience a trabajar en tu retrato.', rena:'¡Woof! Con tu depósito reservamos tu lugar en la agenda de mi humana 🐾'},
+  {titulo:'Te mantenemos informado', texto:'Mi humana Edith te avisa del avance de tu pedido. Escríbele cualquier duda o comentario en el camino.', rena:'<em>Grrr...</em> ¡mi humana nunca te deja en visto! Te va contando cómo va tu retrato 🐾'}
 ];
 
 var PUNTOS=[
-  {chip:'Plaza Paseo 2000', rena:'¡Guau guau! Este es uno de mis puntos favoritos — ¡nos vemos ahí! 🐾',
+  {chip:'Plaza Paseo 2000',
    info:[['Ubicación','Frente a Little Caesar\'s'],['Horario','Sábado 9:00 a.m.'],['Espera','Máx. 10 min']]},
-  {chip:'Plaza Carrousel', rena:'¡Arf! En la esquina de Sears — ¡fácil de encontrar! 🐾',
+  {chip:'Plaza Carrousel',
    info:[['Ubicación','En la esquina de Sears'],['Horario','Sábado 11:00 a.m.'],['Espera','Máx. 15 min']]},
-  {chip:'Viñas del Mar', rena:'¡Woof! Este punto es cada 15 días — coordinamos el horario contigo 🐾',
+  {chip:'Viñas del Mar',
    info:[['Frecuencia','Cada 15 días, sábado'],['Horario','A definir según las entregas']]},
-  {chip:'Envío Nacional', rena:'<em>Grrr-enial!</em> ¿No estás en Tijuana? ¡Yo también viajo por todo México! 🐾',
+  {chip:'Envío Nacional',
    info:[['Cobertura','Todo México'],['Costo','$290 MXN'],['Tiempo','7 a 10 días hábiles']]}
 ];
 
@@ -470,6 +483,7 @@ function renderPaso(){
   document.getElementById('paso-titulo').textContent=p.titulo;
   document.getElementById('paso-rena').innerHTML=p.rena;
   document.getElementById('paso-texto').textContent=p.texto;
+  document.getElementById('paso-bot').style.display=pasoActual===0?'block':'none';
   document.getElementById('paso-prev').style.visibility=pasoActual===0?'hidden':'visible';
   document.getElementById('paso-next').textContent=pasoActual===PASOS.length-1?'Volver al inicio ↺':'Siguiente →';
 }
@@ -521,6 +535,8 @@ function openFaqModal(i){
 }
 
 /* ── MODALES genérico ────────────────────────────────────────── */
+function openBot(){var f=document.getElementById('bot-frame');if(!f.getAttribute('src'))f.src='https://pigmentospet.github.io/Rena-Bot/';closeModal('paso');openModal('bot');}
+function closeBot(){closeModal('bot');}
 function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
 document.querySelectorAll('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});});
