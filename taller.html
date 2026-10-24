@@ -47,6 +47,9 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 /* HOTSPOTS */
 .hs{position:absolute;background:transparent;border:none;padding:0;cursor:pointer;z-index:20;-webkit-tap-highlight-color:rgba(193,123,74,.15);transition:transform .12s ease;}
 .hs:hover{background:rgba(193,123,74,.08);}
+/* Punto que late = se puede tocar. Lo estático no late. */
+.hs::after{content:'';position:absolute;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:var(--brand);border:2.5px solid var(--cream);box-shadow:0 0 0 0 rgba(193,123,74,.6);animation:hsPulse 1.9s ease-out infinite;pointer-events:none;}
+@keyframes hsPulse{0%{box-shadow:0 0 0 0 rgba(193,123,74,.6);transform:scale(1);}50%{transform:scale(1.12);}100%{box-shadow:0 0 0 18px rgba(193,123,74,0);transform:scale(1);}}
 .hs:active{transform:scale(.93);}
 
 /* Zona labels (temporales, guía visual mientras no hay assets — se pueden quitar cuando estén los PNG) */
@@ -70,8 +73,8 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 @keyframes sUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 .modal-head{background:var(--brand);border-radius:20px 20px 0 0;padding:14px 16px 12px;display:flex;align-items:center;gap:12px;position:relative;}
 .modal-avatar{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.35);object-fit:cover;flex-shrink:0;background:var(--brand-lt);}
-.modal-head-name{font-size:15px;font-weight:800;color:var(--cream);line-height:1.1;}
-.modal-head-sub{font-size:11px;color:rgba(253,246,238,.72);}
+.modal-head-name{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:700;color:var(--cream);line-height:1.1;}
+.modal-head-sub{font-size:11px;font-weight:700;letter-spacing:.06em;color:rgba(253,246,238,.8);margin-top:3px;}
 .modal-close{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.18);border:none;width:28px;height:28px;border-radius:50%;color:var(--cream);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .modal-close:hover{background:rgba(255,255,255,.3);}
 .modal-body{padding:16px 16px 28px;}
@@ -139,16 +142,11 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 
   <!-- CAPAS — mismo patrón que index/galeria: divs con background-image + preloader JS -->
   <div id="layer-bg"      class="layer" style="z-index:1;"></div>
-  <div id="layer-mesa"    class="layer tile" style="z-index:2;left:0%;"></div>
-  <div id="layer-bocetos" class="layer" style="z-index:3;"></div>
   <div id="layer-cortina" class="layer" style="z-index:4;"></div>
-  <div id="layer-planta"  class="layer" style="z-index:5;"></div>
   <div id="layer-paso1"   class="layer" style="z-index:6;"></div>
   <div id="layer-paso2"   class="layer" style="z-index:6;"></div>
   <div id="layer-paso3"   class="layer" style="z-index:6;"></div>
   <div id="layer-paso4"   class="layer" style="z-index:6;"></div>
-  <div id="layer-cajas"   class="layer" style="z-index:7;"></div>
-  <div id="layer-pinboard" class="layer" style="z-index:7;"></div>
   <div id="layer-arco"    class="layer" style="z-index:12;"></div>
 
   <!-- Etiquetas temporales de zona — guía mientras no hay fondo ilustrado. Quitar cuando taller-bg.PNG esté listo -->
@@ -159,7 +157,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div class="zone-tag" style="left:88%;">Salida</div>
 
   <!-- ZONA A — hotspot sobre bocetos/tableta en la mesa -->
-  <button class="hs" style="left:8.33%;top:32.4%;width:9.26%;height:46.3%;" onclick="openModal('tiempos')" aria-label="Tiempos de elaboración"></button>
+  <button class="hs" style="left:1.11%;top:10.37%;width:18.68%;height:63.7%;" onclick="openModal('tiempos')" aria-label="Tiempos de elaboración"></button>
 
   <!-- Hotspots generados por JS: 4 pasos (Zona B), 4 puntos/envío (Zona C), 7 FAQ (Zona D) -->
 
@@ -204,7 +202,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div class="modal">
     <div class="modal-head">
       <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
-      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Tiempos de elaboración 🐾</div></div>
+      <div><div class="modal-head-name">Tiempos de elaboración</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
       <button class="modal-close" onclick="closeModal('tiempos')">✕</button>
     </div>
     <div class="modal-body">
@@ -227,7 +225,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div class="modal">
     <div class="modal-head">
       <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
-      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Proceso de Pedido 🐾</div></div>
+      <div><div class="modal-head-name">Proceso de Pedido</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
       <button class="modal-close" onclick="closeModal('paso')">✕</button>
     </div>
     <div class="modal-body">
@@ -252,7 +250,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div class="modal">
     <div class="modal-head">
       <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
-      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Envíos y Entregas 🐾</div></div>
+      <div><div class="modal-head-name">Envíos y Entregas</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
       <button class="modal-close" onclick="closeModal('punto')">✕</button>
     </div>
     <div class="modal-body">
@@ -274,7 +272,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div class="modal">
     <div class="modal-head">
       <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
-      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">Preguntas Frecuentes 🐾</div></div>
+      <div><div class="modal-head-name">Preguntas Frecuentes</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
       <button class="modal-close" onclick="closeModal('faq')">✕</button>
     </div>
     <div class="modal-body">
@@ -292,7 +290,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div class="modal">
     <div class="modal-head">
       <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
-      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">¿A dónde vamos? 🐾</div></div>
+      <div><div class="modal-head-name">¿A dónde vamos?</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
       <button class="modal-close" onclick="closeModal('menu')">✕</button>
     </div>
     <div class="modal-body">
@@ -343,33 +341,40 @@ function preloadLayer(id, src){
   pre.src=src;
 }
 preloadLayer('layer-bg','taller-bg.PNG');
-preloadLayer('layer-mesa','taller-mesa.PNG');
-/* TILES repetibles — editar solo estas listas para mover o repetir.
-   Cada valor es el % de izquierda de la escena donde empieza la imagen (cada imagen ocupa 31.74% de ancho). */
-var TILES=[
-  {id:'ventana', file:'taller-ventana.PNG', lefts:[0,31.74,63.5], z:1},
-  {id:'tapete',  file:'taller-tapete.PNG',  lefts:[0],            z:1}
-];
-TILES.forEach(function(t){
-  t.lefts.forEach(function(x,i){
-    var d=document.createElement('div');
-    d.id='layer-'+t.id+i; d.className='layer tile';
-    d.style.zIndex=t.z; d.style.left=x+'%';
-    var bg=document.getElementById('layer-bg');
-    bg.parentNode.insertBefore(d,document.getElementById('layer-mesa'));
-    preloadLayer(d.id,t.file);
-  });
+/* ── CAPAS "TILE" ──────────────────────────────────────────────
+   Tus PNG miden 3840×2419 (proporción 1.587). En la escena (5400×1080) cada una ocupa 1714 px de ancho
+   a escala 1 y se coloca con su proporción real (sin estirar). Todo se mueve con los números de abajo.
+   Cada objeto: caja del objeto DENTRO de su PNG (px sobre 1714×1080), dónde ponerlo (X,Y en la escena) y escala. */
+var PX_W=5400, PX_H=1080, TILE_W=1714;
+function placeTile(id,file,left,top,s,z){
+  var d=document.createElement('div'); d.id=id; d.className='layer';
+  d.style.cssText='z-index:'+z+';left:'+(left/PX_W*100)+'%;top:'+(top/PX_H*100)+'%;width:'+(TILE_W*s/PX_W*100)+'%;height:'+(s*100)+'%;';
+  scene.appendChild(d); preloadLayer(id,file);
+}
+/* Mesa + tapete (zona A): más grande y pegados a la izquierda */
+var MESA={x1:436,y1:301,x2:1243,y2:851}, MESA_S=1.25, MESA_X=60, MESA_Y=112;
+var mL=MESA_X-MESA.x1*MESA_S, mT=MESA_Y-MESA.y1*MESA_S;
+placeTile('layer-mesa','taller-mesa.PNG',mL,mT,MESA_S,2);
+placeTile('layer-tapete','taller-tapete.PNG',mL,mT,MESA_S,1);
+/* Ventanas: más arriba (-216 px) y repetidas */
+placeTile('layer-ventana0','taller-ventana.PNG',0,-216,1,1);
+placeTile('layer-ventana1','taller-ventana.PNG',TILE_W,-216,1,1);
+/* Caballete: junto al escritorio */
+var CABALLETE={x1:1366,y1:327};
+placeTile('layer-bocetos','taller-bocetos.PNG',1060-CABALLETE.x1,0,1,3);
+/* Planta: entre zona B y C, en el piso (debajo de los marcos) */
+var PLANTA={x1:59};
+placeTile('layer-planta','taller-planta.PNG',2330-PLANTA.x1,0,1,5);
+/* Corcho (zona D) a escala 2 */
+var CORCHO={x1:46,y1:307,w:297,h:349}, CORCHO_S=2, CORCHO_X=3950, CORCHO_Y=170;
+placeTile('layer-pinboard','taller-pinboard.PNG',CORCHO_X-CORCHO.x1*CORCHO_S,CORCHO_Y-CORCHO.y1*CORCHO_S,CORCHO_S,7);
+/* Cajas (zona C): misma caja de regalo, cada una más grande, apoyadas en el piso (y=960) */
+var BOX={x1:389,y1:432,w:158,h:178}, PISO=960;
+var BOXES=[{s:1,X:2720},{s:1.3,X:2938},{s:1.6,X:3203},{s:2,X:3516}];
+BOXES.forEach(function(b,i){
+  b.Y=PISO-BOX.h*b.s;
+  placeTile('layer-caja'+i,'taller-cajas.PNG',b.X-BOX.x1*b.s,b.Y-BOX.y1*b.s,b.s,7);
 });
-preloadLayer('layer-bocetos','taller-bocetos.PNG');
-preloadLayer('layer-cortina','taller-cortina.PNG');
-preloadLayer('layer-planta','taller-planta.PNG');
-preloadLayer('layer-paso1','taller-paso1.PNG');
-preloadLayer('layer-paso2','taller-paso2.PNG');
-preloadLayer('layer-paso3','taller-paso3.PNG');
-preloadLayer('layer-paso4','taller-paso4.PNG');
-preloadLayer('layer-cajas','taller-cajas.PNG');
-preloadLayer('layer-pinboard','taller-pinboard.PNG');
-preloadLayer('layer-arco','arco-salida.PNG');
 
 /* ── DATOS ───────────────────────────────────────────────────── */
 var PASOS=[
@@ -413,11 +418,10 @@ PASOS.forEach(function(p,i){
 });
 
 /* Zona C (50%-75%) — 3 puntos de entrega + 1 envío nacional. 🔧 ajustar % cuando taller-cajas.PNG esté listo */
-var puntoPos=[50,55.19,60.37,65.56];
 PUNTOS.forEach(function(p,i){
   var el=document.createElement('button');
   el.className='hs';
-  el.style.cssText='left:'+puntoPos[i]+'%;top:37%;width:4.44%;height:44.4%;';
+  var bx=BOXES[i]; el.style.cssText='left:'+(bx.X/PX_W*100)+'%;top:'+(bx.Y/PX_H*100)+'%;width:'+(BOX.w*bx.s/PX_W*100)+'%;height:'+(BOX.h*bx.s/PX_H*100)+'%;';
   el.setAttribute('aria-label',p.chip);
   el.onclick=function(){ openPunto(i); };
   scene.appendChild(el);
@@ -425,15 +429,12 @@ PUNTOS.forEach(function(p,i){
 
 /* Zona D (75%-86.7%) — 7 notitas en el corcho. Se deja 86.7%-100% libre para el arco de salida
    (mismas proporciones 13.3% que usa el vestíbulo). 🔧 ajustar % cuando taller-pinboard.PNG esté listo */
-var faqPos=[
-  [73.15,24.07],[76.30,24.07],[79.44,24.07],[82.59,24.07],
-  [74.72,43.5],[77.87,43.5],[81.02,43.5]
-];
 FAQS.forEach(function(f,i){
   var el=document.createElement('button');
   el.className='hs';
-  var pos=faqPos[i];
-  el.style.cssText='left:'+pos[0]+'%;top:'+pos[1]+'%;width:2.59%;height:12.96%;';
+  var row=i<4?0:1, col=i<4?i:i-4;
+  var fx=(row?0.19:0.08)+col*0.225, fy=row?0.52:0.10;
+  el.style.cssText='left:'+((CORCHO_X+fx*CORCHO.w*CORCHO_S)/PX_W*100)+'%;top:'+((CORCHO_Y+fy*CORCHO.h*CORCHO_S)/PX_H*100)+'%;width:'+(0.2*CORCHO.w*CORCHO_S/PX_W*100)+'%;height:'+(0.38*CORCHO.h*CORCHO_S/PX_H*100)+'%;';
   el.setAttribute('aria-label',f.q);
   el.onclick=function(){ openFaqModal(i); };
   scene.appendChild(el);
