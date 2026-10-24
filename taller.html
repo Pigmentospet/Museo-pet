@@ -41,6 +41,8 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 /* Capas — igual que index/galeria: divs con background-image, NUNCA <img> para assets de escena (regla iOS Safari) */
 .layer{position:absolute;top:0;left:0;width:100%;height:100%;background-repeat:no-repeat;background-size:100% 100%;pointer-events:none;opacity:0;transition:opacity .25s;}
 .layer.loaded{opacity:1;}
+/* Capas "tile": imágenes de 3840×2419 (proporción 1.587). Alto = 100% de la escena, ancho = 31.74% (1080×1.587 / 5400). */
+.layer.tile{width:31.74%;background-size:100% 100%;}
 
 /* HOTSPOTS */
 .hs{position:absolute;background:transparent;border:none;padding:0;cursor:pointer;z-index:20;-webkit-tap-highlight-color:rgba(193,123,74,.15);transition:transform .12s ease;}
@@ -137,7 +139,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 
   <!-- CAPAS — mismo patrón que index/galeria: divs con background-image + preloader JS -->
   <div id="layer-bg"      class="layer" style="z-index:1;"></div>
-  <div id="layer-mesa"    class="layer" style="z-index:2;"></div>
+  <div id="layer-mesa"    class="layer tile" style="z-index:2;left:0%;"></div>
   <div id="layer-bocetos" class="layer" style="z-index:3;"></div>
   <div id="layer-cortina" class="layer" style="z-index:4;"></div>
   <div id="layer-planta"  class="layer" style="z-index:5;"></div>
@@ -342,6 +344,22 @@ function preloadLayer(id, src){
 }
 preloadLayer('layer-bg','taller-bg.PNG');
 preloadLayer('layer-mesa','taller-mesa.PNG');
+/* TILES repetibles — editar solo estas listas para mover o repetir.
+   Cada valor es el % de izquierda de la escena donde empieza la imagen (cada imagen ocupa 31.74% de ancho). */
+var TILES=[
+  {id:'ventana', file:'taller-ventana.PNG', lefts:[0,31.74,63.5], z:1},
+  {id:'tapete',  file:'taller-tapete.PNG',  lefts:[0],            z:1}
+];
+TILES.forEach(function(t){
+  t.lefts.forEach(function(x,i){
+    var d=document.createElement('div');
+    d.id='layer-'+t.id+i; d.className='layer tile';
+    d.style.zIndex=t.z; d.style.left=x+'%';
+    var bg=document.getElementById('layer-bg');
+    bg.parentNode.insertBefore(d,document.getElementById('layer-mesa'));
+    preloadLayer(d.id,t.file);
+  });
+});
 preloadLayer('layer-bocetos','taller-bocetos.PNG');
 preloadLayer('layer-cortina','taller-cortina.PNG');
 preloadLayer('layer-planta','taller-planta.PNG');
