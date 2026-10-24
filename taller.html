@@ -344,10 +344,15 @@ preloadLayer('layer-bg','taller-bg.PNG');
    a escala 1 y se coloca con su proporción real (sin estirar). Todo se mueve con los números de abajo.
    Cada objeto: caja del objeto DENTRO de su PNG (px sobre 1714×1080), dónde ponerlo (X,Y en la escena) y escala. */
 var PX_W=5400, PX_H=1080, TILE_W=1714;
+/* Contenedor recortado: las imágenes pueden salirse de la escena (arriba, abajo, a la derecha) sin alargar el scroll.
+   Mide 3× el alto de la escena (1 arriba, 1 la escena, 1 abajo) y recorta con overflow:hidden. */
+var tilesBox=document.createElement('div');
+tilesBox.style.cssText='position:absolute;left:0;top:-100%;width:100%;height:300%;overflow:hidden;pointer-events:none;z-index:2;';
+scene.appendChild(tilesBox);
 function placeTile(id,file,left,top,s,z){
   var d=document.createElement('div'); d.id=id; d.className='layer';
-  d.style.cssText='z-index:'+z+';left:'+(left/PX_W*100)+'%;top:'+(top/PX_H*100)+'%;width:'+(TILE_W*s/PX_W*100)+'%;height:'+(s*100)+'%;';
-  scene.appendChild(d); preloadLayer(id,file);
+  d.style.cssText='z-index:'+z+';left:'+(left/PX_W*100)+'%;top:'+((top+PX_H)/(PX_H*3)*100)+'%;width:'+(TILE_W*s/PX_W*100)+'%;height:'+(s*PX_H/(PX_H*3)*100)+'%;';
+  tilesBox.appendChild(d); preloadLayer(id,file);
 }
 /* Mesa + tapete (zona A): más grande y pegados a la izquierda */
 var MESA={x1:436,y1:301,x2:1243,y2:851}, MESA_S=1.25, MESA_X=60, MESA_Y=112;
