@@ -388,7 +388,7 @@ var PASO={x1:723,y1:361,w:268,h:357}, PASO_X=[1330,1640,1950,2260], PASO_Y=280;
 for(var pi=0;pi<4;pi++){ placeTile('layer-paso'+(pi+1),'taller-paso'+(pi+1)+'.PNG',PASO_X[pi]-PASO.x1,PASO_Y-PASO.y1,1,6); }
 /* ── LETREROS ── cada PNG (3840×2419, sin importar dónde dibujes el letrero) se recorta solo por su parte visible
    y se coloca centrado en X (cx), con su borde superior en Y=SIGN_TOP y ancho SIGN_W en la escena de 5400×1080. */
-var SIGN_TOP=-110, SIGN_W=560;
+var SIGN_TOP=-275, SIGN_W=380;
 function autoSign(id,file,cx,top,tw,z,onclick,label){
   var hs=document.createElement('button'); hs.className='hs'; hs.setAttribute('aria-label',label); hs.onclick=onclick; scene.appendChild(hs);
   function setHs(h){ hs.style.cssText='left:'+((cx-tw/2)/PX_W*100)+'%;top:'+(top/PX_H*100)+'%;width:'+(tw/PX_W*100)+'%;height:'+(h/PX_H*100)+'%;'; }
