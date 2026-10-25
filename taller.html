@@ -51,6 +51,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 .hs::after{content:'';position:absolute;left:50%;top:50%;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;background:var(--brand);border:2px solid var(--cream);box-shadow:0 0 0 0 rgba(193,123,74,.6);animation:hsPulse 1.9s ease-out infinite;pointer-events:none;}
 /* El arco no lleva punto (igual que en las otras salas) */
 .hs.nodot::after{display:none;}
+.hs.dot-top::after{top:var(--dot-top,50%);}
 .hs.nodot:hover{background:transparent;}
 @keyframes hsPulse{0%{box-shadow:0 0 0 0 rgba(193,123,74,.6);transform:scale(1);}50%{transform:scale(1.12);}100%{box-shadow:0 0 0 11px rgba(193,123,74,0);transform:scale(1);}}
 .hs:active{transform:scale(.93);}
@@ -388,10 +389,10 @@ var PASO={x1:723,y1:361,w:268,h:357}, PASO_X=[1330,1640,1950,2260], PASO_Y=280;
 for(var pi=0;pi<4;pi++){ placeTile('layer-paso'+(pi+1),'taller-paso'+(pi+1)+'.PNG',PASO_X[pi]-PASO.x1,PASO_Y-PASO.y1,1,6); }
 /* ── LETREROS ── cada PNG (3840×2419, sin importar dónde dibujes el letrero) se recorta solo por su parte visible
    y se coloca centrado en X (cx), con su borde superior en Y=SIGN_TOP y ancho SIGN_W en la escena de 5400×1080. */
-var SIGN_TOP=-275, SIGN_W=380;
+var SIGN_TOP=-255, SIGN_W=380, SIGN_EXT=70; /* SIGN_EXT: zona táctil extra arriba del letrero, donde va el punto */
 function autoSign(id,file,cx,top,tw,z,onclick,label){
-  var hs=document.createElement('button'); hs.className='hs'; hs.setAttribute('aria-label',label); hs.onclick=onclick; scene.appendChild(hs);
-  function setHs(h){ hs.style.cssText='left:'+((cx-tw/2)/PX_W*100)+'%;top:'+(top/PX_H*100)+'%;width:'+(tw/PX_W*100)+'%;height:'+(h/PX_H*100)+'%;'; }
+  var hs=document.createElement('button'); hs.className='hs dot-top'; hs.setAttribute('aria-label',label); hs.onclick=onclick; scene.appendChild(hs);
+  function setHs(h){ var H=h+SIGN_EXT; hs.style.cssText='left:'+((cx-tw/2)/PX_W*100)+'%;top:'+((top-SIGN_EXT)/PX_H*100)+'%;width:'+(tw/PX_W*100)+'%;height:'+(H/PX_H*100)+'%;'; hs.style.setProperty('--dot-top',(SIGN_EXT/2/H*100)+'%'); }
   setHs(tw*0.5);
   var d=document.createElement('div'); d.id=id; d.className='layer'; tilesBox.appendChild(d);
   var img=new Image();
@@ -458,7 +459,7 @@ var FAQS=[
 /* Tres letreros (mismo alto). Un solo punto por letrero; la imagen se ajusta sola al recuadro visible del PNG. */
 autoSign('layer-sign-entregas','taller-entregas.PNG',1000,SIGN_TOP,SIGN_W,8,function(){ openModal('tiempos'); },'Tiempos de entregas');
 autoSign('layer-sign-proceso','taller-proceso.PNG',1910,SIGN_TOP,SIGN_W,8,function(){ openPaso(0); },'Proceso de pedido');
-autoSign('layer-sign-envios','taller-envios.PNG',3276,SIGN_TOP,SIGN_W,8,function(){ openPunto(); },'Envíos y entregas');
+autoSign('layer-sign-envios','taller-envios.PNG',3640,SIGN_TOP+120,SIGN_W,8,function(){ openPunto(); },'Envíos y entregas');
 
 
 /* Zona D (75%-86.7%) — 7 notitas en el corcho. Se deja 86.7%-100% libre para el arco de salida
