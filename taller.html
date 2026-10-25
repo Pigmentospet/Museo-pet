@@ -155,8 +155,6 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div class="zone-tag" style="left:73%;">D · FAQ</div>
   <div class="zone-tag" style="left:88%;">Salida</div>
 
-  <!-- ZONA A — hotspot sobre bocetos/tableta en la mesa -->
-  <button class="hs" style="left:1.11%;top:10.37%;width:18.68%;height:63.7%;" onclick="openModal('tiempos')" aria-label="Tiempos de elaboración"></button>
 
   <!-- Hotspots generados por JS: 4 pasos (Zona B), 4 puntos/envío (Zona C), 7 FAQ (Zona D) -->
 
@@ -201,7 +199,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div class="modal">
     <div class="modal-head">
       <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
-      <div><div class="modal-head-name">Tiempos de elaboración</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
+      <div><div class="modal-head-name">Tiempos de entregas</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
       <button class="modal-close" onclick="closeModal('tiempos')">✕</button>
     </div>
     <div class="modal-body">
@@ -224,7 +222,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div class="modal">
     <div class="modal-head">
       <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
-      <div><div class="modal-head-name">Proceso de Pedido</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
+      <div><div class="modal-head-name">Proceso de pedido</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
       <button class="modal-close" onclick="closeModal('paso')">✕</button>
     </div>
     <div class="modal-body">
@@ -263,7 +261,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
   <div class="modal">
     <div class="modal-head">
       <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
-      <div><div class="modal-head-name">Envíos y Entregas</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
+      <div><div class="modal-head-name">Envíos y entregas</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
       <button class="modal-close" onclick="closeModal('punto')">✕</button>
     </div>
     <div class="modal-body">
@@ -385,12 +383,37 @@ placeTile('layer-planta','taller-planta.PNG',2330-PLANTA.x1,0,1,5);
 /* Corcho (zona D) a escala 2 */
 var CORCHO={x1:46,y1:307,w:297,h:349}, CORCHO_S=1.6, CORCHO_X=4030, CORCHO_Y=-30;
 placeTile('layer-pinboard','taller-pinboard.PNG',CORCHO_X-CORCHO.x1*CORCHO_S,CORCHO_Y-CORCHO.y1*CORCHO_S,CORCHO_S,7);
-/* Marcos de pasos (zona B): dibuja cada marco CENTRADO en el lienzo 3840×2419, de ~600×800 px */
+/* Marcos de pasos (zona B, SOLO decoración): dibuja cada marco CENTRADO en el lienzo 3840×2419, de ~600×800 px */
 var PASO={x1:723,y1:361,w:268,h:357}, PASO_X=[1330,1640,1950,2260], PASO_Y=280;
 for(var pi=0;pi<4;pi++){ placeTile('layer-paso'+(pi+1),'taller-paso'+(pi+1)+'.PNG',PASO_X[pi]-PASO.x1,PASO_Y-PASO.y1,1,6); }
-/* Letrero de envíos (zona C): dibújalo CENTRADO en el lienzo, de ~1200×600 px. Un solo punto con toda la info */
-var LETRERO={x1:589,y1:406,w:536,h:268}, LET_S=1.3, LET_X=2928, LET_Y=200;
-placeTile('layer-letrero','taller-letrero.PNG',LET_X-LETRERO.x1*LET_S,LET_Y-LETRERO.y1*LET_S,LET_S,8);
+/* ── LETREROS ── cada PNG (3840×2419, sin importar dónde dibujes el letrero) se recorta solo por su parte visible
+   y se coloca centrado en X (cx), con su borde superior en Y=SIGN_TOP y ancho SIGN_W en la escena de 5400×1080. */
+var SIGN_TOP=-110, SIGN_W=560;
+function autoSign(id,file,cx,top,tw,z,onclick,label){
+  var hs=document.createElement('button'); hs.className='hs'; hs.setAttribute('aria-label',label); hs.onclick=onclick; scene.appendChild(hs);
+  function setHs(h){ hs.style.cssText='left:'+((cx-tw/2)/PX_W*100)+'%;top:'+(top/PX_H*100)+'%;width:'+(tw/PX_W*100)+'%;height:'+(h/PX_H*100)+'%;'; }
+  setHs(tw*0.5);
+  var d=document.createElement('div'); d.id=id; d.className='layer'; tilesBox.appendChild(d);
+  var img=new Image();
+  img.onload=function(){
+    var nw=img.naturalWidth, nh=img.naturalHeight;
+    var fx1=0.06, fx2=0.93, fy1=0.27, fy2=0.93; /* respaldo si el navegador no deja leer los píxeles */
+    try{
+      var cw=480, ch=Math.round(cw*nh/nw), cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+      var c2=cv.getContext('2d'); c2.drawImage(img,0,0,cw,ch);
+      var px=c2.getImageData(0,0,cw,ch).data, x1=cw,y1=ch,x2=-1,y2=-1;
+      for(var y=0;y<ch;y++){for(var x=0;x<cw;x++){ if(px[(y*cw+x)*4+3]>24){ if(x<x1)x1=x; if(x>x2)x2=x; if(y<y1)y1=y; if(y>y2)y2=y; } }}
+      if(x2>=0){ fx1=x1/cw; fx2=(x2+1)/cw; fy1=y1/ch; fy2=(y2+1)/ch; }
+    }catch(e){}
+    var TW=tw/(fx2-fx1), TH=TW*nh/nw;
+    var left=cx-((fx1+fx2)/2)*TW, topPx=top-fy1*TH;
+    d.style.cssText='z-index:'+z+';left:'+(left/PX_W*100)+'%;top:'+((topPx+PX_H)/(PX_H*3)*100)+'%;width:'+(TW/PX_W*100)+'%;height:'+(TH/(PX_H*3)*100)+'%;';
+    d.style.backgroundImage='url("'+file+'")'; d.classList.add('loaded');
+    setHs((fy2-fy1)*TH);
+  };
+  img.onerror=function(){};
+  img.src=file;
+}
 /* Cajas (zona C): misma caja de regalo, cada una más grande, apoyadas en el piso (y=960) */
 preloadLayer('layer-cortina','taller-cortina.PNG');
 preloadLayer('layer-arco','arco-salida.PNG');
@@ -432,22 +455,11 @@ var FAQS=[
 
 /* ── GENERAR HOTSPOTS ────────────────────────────────────────── */
 /* Zona B (25%-50%) — 4 pasos evenly spaced. 🔧 ajustar % cuando taller-paso1-4.PNG estén listos */
-PASOS.forEach(function(p,i){
-  var el=document.createElement('button');
-  el.className='hs';
-  el.style.cssText='left:'+(PASO_X[i]/PX_W*100)+'%;top:'+(PASO_Y/PX_H*100)+'%;width:'+(PASO.w/PX_W*100)+'%;height:'+(PASO.h/PX_H*100)+'%;';
-  el.setAttribute('aria-label',p.titulo);
-  el.onclick=function(){ openPaso(i); };
-  scene.appendChild(el);
-});
+/* Tres letreros (mismo alto). Un solo punto por letrero; la imagen se ajusta sola al recuadro visible del PNG. */
+autoSign('layer-sign-entregas','taller-entregas.PNG',1000,SIGN_TOP,SIGN_W,8,function(){ openModal('tiempos'); },'Tiempos de entregas');
+autoSign('layer-sign-proceso','taller-proceso.PNG',1910,SIGN_TOP,SIGN_W,8,function(){ openPaso(0); },'Proceso de pedido');
+autoSign('layer-sign-envios','taller-envios.PNG',3276,SIGN_TOP,SIGN_W,8,function(){ openPunto(); },'Envíos y entregas');
 
-/* Zona C (50%-75%) — 3 puntos de entrega + 1 envío nacional. 🔧 ajustar % cuando taller-cajas.PNG esté listo */
-var elLet=document.createElement('button');
-elLet.className='hs';
-elLet.style.cssText='left:'+(LET_X/PX_W*100)+'%;top:'+(LET_Y/PX_H*100)+'%;width:'+(LETRERO.w*LET_S/PX_W*100)+'%;height:'+(LETRERO.h*LET_S/PX_H*100)+'%;';
-elLet.setAttribute('aria-label','Envíos y entregas');
-elLet.onclick=function(){ openPunto(); };
-scene.appendChild(elLet);
 
 /* Zona D (75%-86.7%) — 7 notitas en el corcho. Se deja 86.7%-100% libre para el arco de salida
    (mismas proporciones 13.3% que usa el vestíbulo). 🔧 ajustar % cuando taller-pinboard.PNG esté listo */
