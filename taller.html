@@ -382,12 +382,20 @@ var CABALLETE={x1:1366,y1:327};
 placeTile('layer-bocetos','taller-bocetos.PNG',1060-CABALLETE.x1,0,1,3);
 /* Plantas decorativas en el piso, entre las zonas: planta-01 (A|B) y planta-02 (B|C).
    Se recortan solas por su parte visible; cx = centro en X, PLANTA_PISO = línea del piso donde apoya la maceta. */
-var PLANTA_PISO=1080; /* al ras del borde inferior de la escena */
+/* La maceta apoya en el borde inferior VISIBLE de la pantalla (justo arriba del pie de página), no en el de la escena. */
+function floorY(){ var h=scene.offsetHeight||1, mt=parseFloat(scene.style.marginTop)||0; return PX_H+((sw.clientHeight-mt-h)/h)*PX_H-3; }
 function autoPlant(id,file,cx,tw,z){
   var d=document.createElement('div'); d.id=id; d.className='layer'; tilesBox.appendChild(d);
-  var img=new Image();
+  var img=new Image(), fx1=0.1, fx2=0.9, fy2=1, ready=false;
+  function layout(){
+    if(!ready)return;
+    var TW=tw/(fx2-fx1), TH=TW*img.naturalHeight/img.naturalWidth;
+    var left=cx-((fx1+fx2)/2)*TW, topPx=floorY()-fy2*TH;
+    d.style.cssText='z-index:'+z+';left:'+(left/PX_W*100)+'%;top:'+((topPx+PX_H)/(PX_H*3)*100)+'%;width:'+(TW/PX_W*100)+'%;height:'+(TH/(PX_H*3)*100)+'%;background-image:url("'+file+'");';
+    d.classList.add('loaded');
+  }
   img.onload=function(){
-    var nw=img.naturalWidth, nh=img.naturalHeight, fx1=0.1, fx2=0.9, fy2=1;
+    var nw=img.naturalWidth, nh=img.naturalHeight;
     try{
       var cw=480, ch=Math.round(cw*nh/nw), cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
       var c2=cv.getContext('2d'); c2.drawImage(img,0,0,cw,ch);
@@ -395,16 +403,14 @@ function autoPlant(id,file,cx,tw,z){
       for(var y=0;y<ch;y++){for(var x=0;x<cw;x++){ if(px[(y*cw+x)*4+3]>24){ if(x<x1)x1=x; if(x>x2)x2=x; if(y>y2)y2=y; } }}
       if(x2>=0){ fx1=x1/cw; fx2=(x2+1)/cw; fy2=(y2+1)/ch; }
     }catch(e){}
-    var TW=tw/(fx2-fx1), TH=TW*nh/nw;
-    var left=cx-((fx1+fx2)/2)*TW, topPx=PLANTA_PISO-fy2*TH;
-    d.style.cssText='z-index:'+z+';left:'+(left/PX_W*100)+'%;top:'+((topPx+PX_H)/(PX_H*3)*100)+'%;width:'+(TW/PX_W*100)+'%;height:'+(TH/(PX_H*3)*100)+'%;';
-    d.style.backgroundImage='url("'+file+'")'; d.classList.add('loaded');
+    ready=true; layout();
   };
+  window.addEventListener('resize',layout);
   img.onerror=function(){};
   img.src=file;
 }
-autoPlant('layer-planta1','planta-01.PNG',1470,340,5);
-autoPlant('layer-planta2','planta-02.PNG',2540,300,5);
+autoPlant('layer-planta1','planta-01.PNG',1470,540,5);
+autoPlant('layer-planta2','planta-02.PNG',2490,460,5);
 /* Corcho (zona D) a escala 2 */
 var CORCHO={x1:46,y1:307,w:297,h:349}, CORCHO_S=1.6, CORCHO_X=4030, CORCHO_Y=-30;
 placeTile('layer-pinboard','taller-pinboard.PNG',CORCHO_X-CORCHO.x1*CORCHO_S,CORCHO_Y-CORCHO.y1*CORCHO_S,CORCHO_S,7);
