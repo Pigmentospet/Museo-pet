@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Galeria de los Inmortales - Pigmentos.pet</title>
+<link rel="icon" type="image/jpeg" href="rena-avatar.JPG">
+<link rel="apple-touch-icon" href="rena-avatar.JPG">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -44,12 +46,6 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 .fs-cap{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap;pointer-events:none;z-index:4;}
 .c-name{display:block;font-family:var(--font-ttl);font-weight:600;font-size:.6rem;color:#f0d8b0;text-shadow:0 1px 3px rgba(0,0,0,.5);line-height:1.1;}
 .c-info{display:block;font-size:.48rem;font-weight:700;color:rgba(255,210,155,.75);letter-spacing:.06em;text-transform:uppercase;}
-.cta-panel{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;z-index:15;transition:transform .25s;background:none;padding:0;pointer-events:none;}
-.cta-paw,.cta-badge{pointer-events:auto;}
-.cta-panel:hover{transform:scale(1.06);}
-.cta-badge{background:var(--brand);color:var(--cream);font-family:var(--font);font-size:11px;font-weight:800;padding:10px 16px;border-radius:30px;box-shadow:0 6px 20px rgba(193,123,74,.55);text-align:center;line-height:1.4;letter-spacing:.04em;}
-.cta-paw{font-size:1.4rem;animation:bounce 1.8s infinite;}
-@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 .overlay{display:none;position:fixed;inset:0;background:rgba(40,18,6,.7);z-index:400;align-items:flex-end;justify-content:center;}
 .overlay.open{display:flex;}
 @media(min-width:600px){.overlay{align-items:center;}}
@@ -72,14 +68,14 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 .salas-label{font-size:10px;font-weight:700;color:var(--brand-dk);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
 .salas-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
 .sala-btn{display:flex;flex-direction:column;gap:2px;padding:10px 11px;background:white;border:1.5px solid rgba(193,123,74,.22);border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:all .15s;}
-.sala-btn:hover{background:var(--cream-dk);border-color:var(--brand-lt);}
+@media (hover:hover){.sala-btn:hover{background:var(--cream-dk);border-color:var(--brand-lt);}}
 .sala-btn:active{transform:scale(.97);}
 .sb-num{font-size:9px;color:var(--brand);font-weight:700;letter-spacing:.1em;}
 .sb-name{font-size:12px;font-weight:800;color:var(--ink);line-height:1.2;}
 .sb-desc{font-size:10px;color:var(--ink-lt);line-height:1.3;}
 .menu-list{display:flex;flex-direction:column;gap:6px;}
 .menu-item{display:flex;align-items:center;gap:12px;padding:12px 13px;background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:12px;cursor:pointer;font-family:var(--font);width:100%;text-align:left;transition:all .15s;}
-.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt);}
+@media (hover:hover){.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt);}}
 .mi-num{width:30px;height:30px;border-radius:50%;background:var(--cream-dk);border:1.5px solid rgba(193,123,74,.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--brand-dk);flex-shrink:0;}
 .mi-name{font-size:13px;font-weight:800;color:var(--ink);}
 .mi-desc{font-size:11px;color:var(--ink-lt);}
@@ -157,11 +153,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 <button class="fs" id="s41" style="left:60.13%;top:46%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(41)"><div class="fs-empty"></div><div class="fs-ov"></div><div class="fs-cap"><span class="c-name" id="cn-41"></span><span class="c-info" id="ci-41"></span></div></button>
 <button class="fs" id="s42" style="left:60.13%;top:68%;width:3.33%;height:20%;z-index:10;" onclick="openPortrait(42)"><div class="fs-empty"></div><div class="fs-ov"></div><div class="fs-cap"><span class="c-name" id="cn-42"></span><span class="c-info" id="ci-42"></span></div></button>
 
-  <div class="cta-panel" style="left:65%;top:14%;width:8%;" onclick="openModal('quiero')">
-    <div class="cta-paw">&#128062;</div>
-    <div class="cta-badge">&#161;Quiero<br>el m&#237;o!</div>
-  </div>
-  <button class="hs" style="left:74%;top:0;width:5%;height:100%;z-index:20;" onclick="openModal('menu')" aria-label="Ver todas las salas"></button>
+  <div id="arco" style="position:absolute;right:0;bottom:0;pointer-events:none;z-index:12;background-repeat:no-repeat;background-size:100% 100%;opacity:0;transition:opacity .25s;"></div>
+  <button class="hs" id="arco-hs" style="position:absolute;right:0;bottom:0;z-index:20;" onclick="openModal('menu')" aria-label="Ver todas las salas"></button>
 </div></div>
 
 <div id="scroll-hint">&#8592; desliza para explorar &#8594;</div>
@@ -307,10 +300,18 @@ var RETRATOS=[];
 var RATIO=6;
 var SALAS={vestibulo:{url:"index.html"},boutique:{url:"boutique.html"},taller:{url:"taller.html"},biblioteca:{url:"biblioteca.html"},altar:{url:"altar.html"}};
 var RENAS=["<b>&#161;Woof woof!</b> &#128054; Mira qu&#233; belleza... <em>&#161;Grrr-antizadamente adorable!</em> &#10024;","&#128054; <b>&#161;ARF ARF!</b> &#161;Este retrato me hace mover la cola de felicidad! &#128062;","<em>Grrr...</em> &#161;qu&#233; arte tan <b>woof-derful!</b> Edith lo logr&#243; de nuevo &#127912; &#128062;","<b>&#161;Guau guau!</b> &#128054; &#161;Podr&#237;a mirar este retrato todo el d&#237;a! <em>&#161;Grrr-enial!</em> &#10024;","&#128062; &#161;Este retrato me llena el coraz&#243;n! <b>&#161;Woof!</b> <em>Puro amor ilustrado.</em> &#128149;"];
-var RENAS_EMPTY=["&#128054; <b>&#161;Woof!</b> Este marco est&#225; esperando a alguien especial... <em>&#191;podr&#237;a ser tu peludx?</em> &#128062;","<b>&#161;Arf!</b> &#128054; <em>&#191;Te imaginas una foto de tu mascota con su retrato de Pigmentos aqu&#237;?</em> &#161;Participa y qui&#233;n sabe! &#10024;","&#128062; <b>&#161;Guau!</b> Este espacio podr&#237;a tener tu historia. <em>&#161;Etiq&#250;etanos y podr&#237;as ser parte de la galer&#237;a!</em> &#128444;"];
+var RENAS_EMPTY=["&#128054; <b>&#161;Woof!</b> Este marco est&#225; esperando a alguien especial... <em>&#191;podr&#237;a ser tu mascota?</em> &#128062;","<b>&#161;Arf!</b> &#128054; <em>&#191;Te imaginas una foto de tu mascota con su retrato de Pigmentos aqu&#237;?</em> &#161;Participa y qui&#233;n sabe! &#10024;","&#128062; <b>&#161;Guau!</b> Este espacio podr&#237;a tener tu historia. <em>&#161;Etiq&#250;etanos y podr&#237;as ser parte de la galer&#237;a!</em> &#128444;"];
 
-function setSceneSize(){var h=window.innerHeight-50-60;var scene=document.getElementById("scene");scene.style.width=(h*RATIO)+"px";scene.style.height=h+"px";}
+var ARCO_SCALE=0.55; /* mismo factor que el vestíbulo y el taller */
+function layoutArco(h){
+  var ah=h*ARCO_SCALE, aw=ah*5; /* arco-salida.PNG es 5400x1080 (5:1); el arco ocupa el 13.3% derecho */
+  var d=document.getElementById("arco"), hs=document.getElementById("arco-hs");
+  d.style.width=aw+"px"; d.style.height=ah+"px";
+  hs.style.width=(aw*0.133)+"px"; hs.style.height=ah+"px";
+}
+function setSceneSize(){var h=window.innerHeight-50-60;var scene=document.getElementById("scene");scene.style.width=(h*RATIO)+"px";scene.style.height=h+"px";layoutArco(h);}
 setSceneSize();
+(function(){var d=document.getElementById("arco"),p=new Image();p.onload=function(){d.style.backgroundImage='url("arco-salida.PNG")';d.style.opacity=1;};p.onerror=function(){};p.src="arco-salida.PNG";})();
 
 window.addEventListener("resize",setSceneSize);
 
