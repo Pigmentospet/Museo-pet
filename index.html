@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Museo Pigmentos.pet</title>
+<link rel="icon" type="image/jpeg" href="rena-avatar.JPG">
+<link rel="apple-touch-icon" href="rena-avatar.JPG">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -12,7 +14,7 @@
   --font:'Nunito',sans-serif; --font-ttl:'Cormorant Garamond',serif;
   --nav:50px; --footer:60px;
 }
-,::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit-tap-highlight-color:transparent;}
 
 /* NAV — tipografía Nunito igual que el menú hamburguesa */
@@ -59,6 +61,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
   background:linear-gradient(to bottom, #FFFFFF 50%, #8B5236 50%);
   /* scroll suave nativo en iOS */
   scroll-behavior:auto;
+  overscroll-behavior-x:contain;
 }
 #sw:active{cursor:grabbing;}
 #sw::-webkit-scrollbar{display:none;}
@@ -85,7 +88,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
   cursor:pointer;z-index:20;
   -webkit-tap-highlight-color:rgba(193,123,74,.15);
 }
-.hs:hover{background:rgba(193,123,74,.08);}
+@media (hover:hover){.hs:hover{background:rgba(193,123,74,.08);}}
 
 /* DOTS */
 .dots{position:fixed;bottom:calc(var(--footer) + 8px);left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:300;}
@@ -117,7 +120,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 .salas-label{font-size:10px;font-weight:700;color:var(--brand-dk);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;}
 .salas-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
 .sala-btn{display:flex;flex-direction:column;gap:2px;padding:10px 11px;background:white;border:1.5px solid rgba(193,123,74,.22);border-radius:12px;cursor:pointer;text-align:left;font-family:var(--font);transition:all .15s;}
-.sala-btn:hover{background:var(--cream-dk);border-color:var(--brand-lt);}
+@media (hover:hover){.sala-btn:hover{background:var(--cream-dk);border-color:var(--brand-lt);}}
 .sala-btn:active{transform:scale(.97);}
 .sb-num{font-size:9px;color:var(--brand);font-weight:700;letter-spacing:.1em;}
 .sb-name{font-size:12px;font-weight:800;color:var(--ink);line-height:1.2;}
@@ -129,7 +132,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
 .door-cta:hover{background:var(--brand-dk);}
 .menu-list{display:flex;flex-direction:column;gap:6px;}
 .menu-item{display:flex;align-items:center;gap:12px;padding:12px 13px;background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:12px;cursor:pointer;font-family:var(--font);width:100%;text-align:left;transition:all .15s;}
-.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt);}
+@media (hover:hover){.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt);}}
 .mi-num{width:30px;height:30px;border-radius:50%;background:var(--cream-dk);border:1.5px solid rgba(193,123,74,.25);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--brand-dk);flex-shrink:0;}
 .mi-name{font-size:13px;font-weight:800;color:var(--ink);}
 .mi-desc{font-size:11px;color:var(--ink-lt);}
@@ -239,13 +242,13 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit
   <div class="modal">
     <div class="modal-head">
       <div class="modal-avatar"><img src="rena-avatar.JPG" alt="Rena" onerror="this.parentElement.textContent='🐕'"></div>
-      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">edithbojorquez.com</div></div>
+      <div><div class="modal-head-name">Rena</div><div class="modal-head-sub">La mascota de Pigmentos</div></div>
       <button class="modal-close" onclick="closeModal('rena')">✕</button>
     </div>
     <div class="modal-body">
       <div class="bubble-wrap">
         <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
-        <div class="bubble-box">¡<b>Guau!</b> 🐾 Bienvenido al museo. Soy <b>Rena</b>, la musa de Edith. <em>¡Grrr-enial que hayas venido!</em> ¿A qué sala te llevo?</div>
+        <div class="bubble-box">¡<b>Guau!</b> 🐾 Te doy la bienvenida al museo. Soy <b>Rena</b>, la musa de mi humana Edith. <em>¡Grrr-enial que hayas venido!</em> ¿A qué sala te llevo?</div>
       </div>
       <p class="salas-label">¿A dónde vamos?</p>
       <div class="salas-grid">
@@ -325,10 +328,10 @@ window.addEventListener('resize', setSceneSize);
 
 /* SALAS */
 const SALAS={
-  galeria:   {num:'Sala 01',name:'Galería de los Inmortales',icon:'🖼️',url:'galeria.html',   msg:'¡<b>Woof woof!</b> 🐾 Esta es mi sala favorita. Aquí están <b>todos los retratos reales</b> que Edith ha hecho. <em>¡Tu mascota puede estar aquí también!</em> <b>¡Grrr-enial!</b>'},
+  galeria:   {num:'Sala 01',name:'Galería de los Inmortales',icon:'🖼️',url:'galeria.html',   msg:'¡<b>Woof woof!</b> 🐾 Esta es mi sala favorita. Aquí están <b>todos los retratos reales</b> que mi humana Edith ha hecho. <em>¡Tu mascota puede estar aquí también!</em> <b>¡Grrr-enial!</b>'},
   boutique:  {num:'Sala 02',name:'La Boutique',              icon:'🛍️',url:'boutique.html',  msg:'¡<b>Guau</b>, esta sala me encanta! 🐾 Aquí encuentras <b>todos los productos</b> y el <b>Probador Mágico</b>. <em>¡Yo te ayudo a elegir el perfecto!</em> 🐕'},
-  taller:    {num:'Sala 03',name:'El Taller de Edith',        icon:'🎨',url:'taller.html',    msg:'<em>Grrr</em>... ¿curiosos? 👀 Aquí encuentras <b>el proceso de pedido</b>, tiempos de entrega, opciones de envío y todo lo que necesitas saber antes de pedir. <b>¡Woof-derful info!</b> 🎨'},
-  biblioteca:{num:'Sala 05',name:'Biblioteca de Cuidados',    icon:'📚',url:'biblioteca.html',msg:'¡<b>Arf!</b> ¿Ya tienes tu producto? 📚 Esta sala te dice <b>cómo cuidarlo</b>. <em>¡Grrr-antizado!</em> 🐾'},
+  taller:    {num:'Sala 03',name:'El Taller de Edith',        icon:'🎨',url:'taller.html',    msg:'<em>Grrr</em>... ¿curiosos? 👀 Aquí mi humana Edith te cuenta <b>el proceso de pedido</b>, los tiempos de entrega, las opciones de envío y todo lo que necesitas saber antes de pedir. <b>¡Woof-derful info!</b> 🎨'},
+  biblioteca:{num:'Sala 05',name:'Biblioteca de Cuidados',    icon:'📚',url:'biblioteca.html',msg:'¡<b>Arf!</b> ¿Ya tienes tu producto? 📚 Esta sala te dice <b>cómo cuidarlo</b> para que dure mucho. <em>¡Grrr-antizado!</em> 🐾'},
   altar:     {num:'Sala 04',name:'Altar de los Recuerdos',    icon:'🕯️',url:'altar.html',     msg:'🕯️ Esta sala es muy especial. <b>Las mascotas que ya no están siguen presentes</b>. <em>Se entra despacio y con el corazón abierto.</em> 🌸'}
 };
 let doorTarget=null;
@@ -348,37 +351,11 @@ sw.addEventListener('mousedown', e=>{isDrag=true; sX=e.pageX; sL=sw.scrollLeft; 
 window.addEventListener('mousemove', e=>{if(!isDrag)return; sw.scrollLeft=sL-(e.pageX-sX);});
 window.addEventListener('mouseup', ()=>{isDrag=false; sw.style.cursor='grab';});
 
-/* Touch — momentum nativo de iOS con inercia */
-let tStartX=0, tStartL=0, tLastX=0, tVel=0, tTime=0, tRaf=null;
-
-sw.addEventListener('touchstart', e=>{
-  if(tRaf){cancelAnimationFrame(tRaf); tRaf=null;}
-  tStartX = tLastX = e.touches[0].clientX;
-  tStartL = sw.scrollLeft;
-  tVel = 0;
-  tTime = Date.now();
-},{passive:true});
-
-sw.addEventListener('touchmove', e=>{
-  const x = e.touches[0].clientX;
-  const dx = tLastX - x;
-  tVel = dx / (Date.now() - tTime + 1);
-  tTime = Date.now();
-  tLastX = x;
-  sw.scrollLeft = tStartL + (tStartX - x);
-},{passive:true});
-
-sw.addEventListener('touchend', ()=>{
-  /* inercia al soltar */
-  let vel = tVel * 16;
-  function step(){
-    if(Math.abs(vel) < 0.5) return;
-    sw.scrollLeft += vel;
-    vel = 0.96; / fricción */
-    tRaf = requestAnimationFrame(step);
-  }
-  tRaf = requestAnimationFrame(step);
-},{passive:true});
+/* Touch — misma inercia que el taller */
+let tSX=0,tSL=0,tLX=0,tV=0,tT=0,tR=null;
+sw.addEventListener('touchstart',e=>{if(tR){cancelAnimationFrame(tR);tR=null;}tSX=tLX=e.touches[0].clientX;tSL=sw.scrollLeft;tV=0;tT=Date.now();},{passive:true});
+sw.addEventListener('touchmove',e=>{const x=e.touches[0].clientX;tV=(tLX-x)/(Date.now()-tT+1);tT=Date.now();tLX=x;sw.scrollLeft=tSL+(tSX-x);},{passive:true});
+sw.addEventListener('touchend',()=>{let v=tV*16;(function step(){if(Math.abs(v)<.5)return;sw.scrollLeft+=v;v*=.96;tR=requestAnimationFrame(step);})();},{passive:true});
 
 /* DOTS */
 const ZONES=['Rena · Bienvenida','Galería · Boutique · Taller','Biblioteca · Altar · Salida'];
