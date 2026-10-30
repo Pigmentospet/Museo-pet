@@ -219,7 +219,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 
 <script>
 var sw=document.getElementById('sw'), scene=document.getElementById('scene');
-var PX_W=2620, PX_H=1080, TILE_W=1714;     /* escena en "unidades": 1080 de alto; los PNG de 3840×2419 miden 1714×1080 */
+var PX_W=3120, PX_H=1080, TILE_W=1714;     /* escena en "unidades": 1080 de alto; los PNG de 3840×2419 miden 1714×1080 */
 var RATIO=PX_W/PX_H;
 var SCALE=0.55; /* mismo factor que el vestíbulo y el taller */
 
@@ -249,12 +249,13 @@ function box(id,z,left,top,w,h,file){
 }
 
 /* ── ESTANTE ── Biblioteca-Fondo.PNG (3840×2419): alto completo de la escena, pegado a la izquierda */
-var BG_X=40, K=TILE_W/2000; /* K: de px de la imagen (vista a 2000 de ancho) a unidades de escena */
-box('layer-bg',2,BG_X,0,TILE_W,PX_H,'Biblioteca-Fondo.PNG');
+var BG_X=40, BG_S=1.35; /* BG_S: tamaño del estante (1 = alto de la escena). Sube el número para hacerlo más grande */
+var BG_Y=PX_H*(1-BG_S), K=TILE_W*BG_S/2000; /* K: de px de la imagen (vista a 2000 de ancho) a unidades de escena; el estante apoya en el piso */
+box('layer-bg',2,BG_X,BG_Y,TILE_W*BG_S,PX_H*BG_S,'Biblioteca-Fondo.PNG');
 
 /* ── VENTANA a la derecha del estante (mismo PNG que el taller). Se coloca por su parte visible:
    cx = centro en X, tw = ancho de la ventana, bottom = dónde apoya su borde de abajo (todo en unidades de escena) */
-var VENTANA={cx:1560, tw:420, bottom:560};
+var VENTANA={cx:2030, tw:460, bottom:540};
 (function(){
   var d=document.createElement('div'); d.className='layer'; d.style.zIndex=1; tilesBox.appendChild(d);
   var img=new Image();
@@ -295,7 +296,7 @@ var LIBROS=[
   {k:'cuadros',    box:[500,965,650,1150], dot:[615,995], label:'Cuadros'}
 ];
 LIBROS.forEach(function(L){
-  var b=L.box, x1=BG_X+b[0]*K, y1=b[1]*K, w=(b[2]-b[0])*K, h=(b[3]-b[1])*K;
+  var b=L.box, x1=BG_X+b[0]*K, y1=BG_Y+b[1]*K, w=(b[2]-b[0])*K, h=(b[3]-b[1])*K;
   var el=document.createElement('button'); el.className='hs';
   el.style.cssText='left:'+(x1/PX_W*100)+'%;top:'+(y1/PX_H*100)+'%;width:'+(w/PX_W*100)+'%;height:'+(h/PX_H*100)+'%;'+
     '--dot-left:'+((L.dot[0]-b[0])/(b[2]-b[0])*100)+'%;--dot-top:'+((L.dot[1]-b[1])/(b[3]-b[1])*100)+'%;';
