@@ -36,7 +36,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 .ft-icon svg{width:18px;height:18px;fill:var(--cream);}
 
 /* SCENE */
-#sw{position:fixed;top:var(--nav);left:0;right:0;bottom:var(--footer);overflow-x:scroll;overflow-y:hidden;cursor:grab;-webkit-overflow-scrolling:touch;user-select:none;scroll-behavior:auto;background:linear-gradient(to bottom,#FFFFFF 50%,#8B5236 50%);}
+#sw{position:fixed;top:var(--nav);left:0;right:0;bottom:var(--footer);overflow-x:scroll;overflow-y:hidden;cursor:grab;-webkit-overflow-scrolling:touch;user-select:none;scroll-behavior:auto;background:linear-gradient(to bottom,#FFFFFF 58%,#8B5236 58%);}
 #sw:active{cursor:grabbing;}
 #sw::-webkit-scrollbar{display:none;}
 #scene{position:relative;}
@@ -219,14 +219,14 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 
 <script>
 var sw=document.getElementById('sw'), scene=document.getElementById('scene');
-var PX_W=3120, PX_H=1080, TILE_W=1714;     /* escena en "unidades": 1080 de alto; los PNG de 3840×2419 miden 1714×1080 */
+var PX_W=3420, PX_H=1080, TILE_W=1714;     /* escena en "unidades": 1080 de alto; los PNG de 3840×2419 miden 1714×1080 */
 var RATIO=PX_W/PX_H;
 var SCALE=0.55; /* mismo factor que el vestíbulo y el taller */
 
 function setSceneSize(){
   var avail=window.innerHeight-50-60, h=avail*SCALE;
   scene.style.width=(h*RATIO)+'px'; scene.style.height=h+'px';
-  scene.style.marginTop=((avail-h)/2)+'px';
+  scene.style.marginTop=(avail-h-24)+'px'; /* la escena apoya abajo (el estante es más alto que el resto de salas) */
 }
 setSceneSize();
 window.addEventListener('resize',setSceneSize);
@@ -249,13 +249,13 @@ function box(id,z,left,top,w,h,file){
 }
 
 /* ── ESTANTE ── Biblioteca-Fondo.PNG (3840×2419): alto completo de la escena, pegado a la izquierda */
-var BG_X=40, BG_S=1.35; /* BG_S: tamaño del estante (1 = alto de la escena). Sube el número para hacerlo más grande */
+var BG_X=40, BG_S=1.55; /* BG_S: tamaño del estante (1 = alto de la escena). Sube el número para hacerlo más grande */
 var BG_Y=PX_H*(1-BG_S), K=TILE_W*BG_S/2000; /* K: de px de la imagen (vista a 2000 de ancho) a unidades de escena; el estante apoya en el piso */
 box('layer-bg',2,BG_X,BG_Y,TILE_W*BG_S,PX_H*BG_S,'Biblioteca-Fondo.PNG');
 
 /* ── VENTANA a la derecha del estante (mismo PNG que el taller). Se coloca por su parte visible:
    cx = centro en X, tw = ancho de la ventana, bottom = dónde apoya su borde de abajo (todo en unidades de escena) */
-var VENTANA={cx:2030, tw:460, bottom:540};
+var VENTANA={cx:2300, tw:460, bottom:-70};
 (function(){
   var d=document.createElement('div'); d.className='layer'; d.style.zIndex=1; tilesBox.appendChild(d);
   var img=new Image();
