@@ -248,9 +248,9 @@ function box(id,z,left,top,w,h,file){
   tilesBox.appendChild(d); preloadLayer(d,file); return d;
 }
 
-/* ── ESTANTE ── biblioteca-bg.PNG (3840×2419): alto completo de la escena, pegado a la izquierda */
+/* ── ESTANTE ── Biblioteca-Fondo.PNG (3840×2419): alto completo de la escena, pegado a la izquierda */
 var BG_X=40, K=TILE_W/2000; /* K: de px de la imagen (vista a 2000 de ancho) a unidades de escena */
-box('layer-bg',2,BG_X,0,TILE_W,PX_H,'biblioteca-bg.PNG');
+box('layer-bg',2,BG_X,0,TILE_W,PX_H,'Biblioteca-Fondo.PNG');
 
 /* ── VENTANA a la derecha del estante (mismo PNG que el taller). Se coloca por su parte visible:
    cx = centro en X, tw = ancho de la ventana, bottom = dónde apoya su borde de abajo (todo en unidades de escena) */
@@ -384,7 +384,7 @@ var LIB={
 /* ── MODAL LIBRO ── */
 var libroKey=null, libroPag=0, libroDir=1;
 var bookEl=document.getElementById('book');
-(function(){ var im=new Image(); im.onload=function(){ bookEl.style.backgroundImage='url("libro-abierto.PNG")'; }; im.onerror=function(){}; im.src='libro-abierto.PNG'; })();
+(function(){ var im=new Image(); im.onload=function(){ bookEl.style.backgroundImage='url("Biblioteca-libro.PNG")'; }; im.onerror=function(){}; im.src='Biblioteca-libro.PNG'; })();
 function chipHTML(k){
   var p=PRODS[k], th=p.f?'<img src="'+p.f+'" alt="" loading="lazy" onerror="this.parentNode.textContent=\'🐾\'">':(p.e||'🐾');
   return '<div class="chip"><div class="th">'+th+'</div><span class="n">'+p.n+'</span></div>';
