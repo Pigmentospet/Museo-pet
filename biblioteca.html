@@ -104,8 +104,8 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 .book{pointer-events:none;position:relative;width:min(92vw,380px,calc((100vh - 150px)*.611));aspect-ratio:1400/2290;background-repeat:no-repeat;background-size:274.2857% auto;background-position:73.77% 100%;container-type:inline-size;filter:drop-shadow(0 10px 22px rgba(0,0,0,.35));}
 /* Zona segura de texto: dentro de la hoja (la hoja se curva arriba a la derecha) */
 .book.izq{background-position:18.4% 100%;}
-.book.izq .pg{left:32.5%;top:22%;width:58%;height:62%;}
-.izq .prods{margin-bottom:2cqw;}.izq .prod,.izq .prod .th{width:12.5cqw;}.izq .th{height:12.5cqw;}.izq .tip{margin-bottom:1.5cqw;gap:2cqw;}.izq .tip .ic{width:6.6cqw;height:6.6cqw;font-size:3.3cqw;}.izq .tip .tx{font-size:3cqw;line-height:1.25;}
+.book.izq .pg{left:32.5%;top:22%;width:58%;height:57%;}
+.izq .prods{margin-bottom:2cqw;}.izq .prod,.izq .prod .th{width:12.5cqw;}.izq .th{height:12.5cqw;}.izq .tip{margin-bottom:1.1cqw;gap:2cqw;}.izq .tip .ic{width:6.6cqw;height:6.6cqw;font-size:3.3cqw;}.izq .tip .tx{font-size:3cqw;line-height:1.25;}
 .pg{pointer-events:auto;position:absolute;left:9%;top:14.5%;width:68%;height:65.5%;display:flex;flex-direction:column;color:var(--ink);animation:pgIn .25s ease;}
 @keyframes pgIn{from{opacity:0;transform:translateX(var(--dir,12px));}to{opacity:1;transform:none;}}
 .pg-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;}
@@ -123,7 +123,12 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 .tip .tx{font-size:3.3cqw;font-weight:700;line-height:1.3;color:var(--ink);padding-top:.6cqw;}
 .pg-foot{flex:none;display:flex;align-items:center;justify-content:space-between;gap:2cqw;padding-top:1.5cqw;}
 .pg-rena{font-size:2.8cqw;line-height:1.3;font-style:italic;color:var(--brand-dk);}
-.pg-next{flex:none;background:none;border:none;font-family:var(--font);font-size:3.2cqw;font-weight:800;color:var(--brand);cursor:pointer;padding:1.5cqw 0 1.5cqw 1cqw;white-space:nowrap;}
+.pg-next{flex:none;background:var(--brand);color:var(--cream);border:none;border-radius:99px;font-family:var(--font);font-size:3cqw;font-weight:800;cursor:pointer;padding:1.8cqw 3.2cqw;white-space:nowrap;position:relative;animation:nxBeat 1.8s ease-in-out infinite;}
+.pg-next::after{content:'';position:absolute;inset:0;border-radius:99px;border:2px solid var(--brand);pointer-events:none;animation:nxRing 1.8s ease-out infinite;}
+.pg-next .ar{display:inline-block;margin-left:1cqw;animation:nxNudge 1.1s ease-in-out infinite;}
+@keyframes nxNudge{0%,100%{transform:translateX(0);}50%{transform:translateX(1.6cqw);}}
+@keyframes nxBeat{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+@keyframes nxRing{0%{transform:scale(1);opacity:.7;}100%{transform:scale(1.35,1.6);opacity:0;}}
 .libro-nav{display:flex;align-items:center;gap:14px;}
 .libro-nav button{background:var(--brand);color:var(--cream);border:none;border-radius:20px;font-family:var(--font);font-size:12px;font-weight:800;letter-spacing:.06em;padding:9px 16px;cursor:pointer;min-width:94px;}
 .libro-nav button:disabled{opacity:.35;cursor:default;}
@@ -254,7 +259,7 @@ box('layer-bg',2,BG_X,BG_Y,TILE_W*BG_S,PX_H*BG_S,'Biblioteca-Fondo.PNG');
 
 /* ── VENTANA a la derecha del estante (mismo PNG que el taller). Se coloca por su parte visible:
    cx = centro en X, tw = ancho de la ventana, bottom = dónde apoya su borde de abajo (todo en unidades de escena) */
-var VENTANA={cx:2300, tw:460, bottom:-70};
+var VENTANA={cx:1850, tw:460, bottom:-70};
 (function(){
   var d=document.createElement('div'); d.className='layer'; d.style.zIndex=1; tilesBox.appendChild(d);
   var img=new Image();
@@ -278,10 +283,12 @@ var VENTANA={cx:2300, tw:460, bottom:-70};
 })();
 
 /* ── ARCO DE SALIDA: capa de 5400×1080 pegada al borde derecho (su arco ocupa el 13.3% de la derecha, igual que en las otras salas) */
-box('layer-arco',12,PX_W-5400,0,5400,PX_H,'arco-salida.PNG');
+var ARCO_S=1.4, ARCO_BASE=68; /* ARCO_S: tamaño del arco (1 = original). ARCO_BASE: unidades entre la base del arco y el borde de abajo del PNG; se conserva para que siga apoyado en el piso */
+var ARCO_TOP=(PX_H-ARCO_BASE)-(PX_H-ARCO_BASE)*ARCO_S;
+box('layer-arco',12,PX_W-5400*ARCO_S,ARCO_TOP,5400*ARCO_S,PX_H*ARCO_S,'arco-salida.PNG');
 var elArco=document.createElement('button');
 elArco.className='hs nodot';
-elArco.style.cssText='left:'+((PX_W-5400*0.133)/PX_W*100)+'%;top:0;width:'+(5400*0.133/PX_W*100)+'%;height:100%;z-index:20;';
+elArco.style.cssText='left:'+((PX_W-5400*0.133*ARCO_S)/PX_W*100)+'%;top:0;width:'+(5400*0.133*ARCO_S/PX_W*100)+'%;height:100%;z-index:20;';
 elArco.setAttribute('aria-label','Ver todas las salas');
 elArco.onclick=function(){ openModal('menu'); };
 scene.appendChild(elArco);
@@ -387,7 +394,7 @@ function renderLibro(){
   document.getElementById('lb-title').innerHTML='Cuidados · '+L.titulo+(total>1?'<small>Página '+(libroPag+1)+' de '+total+'</small>':'');
   var h='<div class="pg-body"><div class="prods'+(S.prods.length>3?' cuatro':'')+'">'+S.prods.map(prodHTML).join('')+'</div>';
   S.tips.forEach(function(tp){ h+='<div class="tip"><div class="ic">'+tp.i+'</div><div class="tx">'+tp.t+'</div></div>'; });
-  h+='</div><div class="pg-foot"><div class="pg-rena">'+S.rena+'</div><button class="pg-next" onclick="'+(last?"closeModal('libro')":'libroIr(1)')+'">'+(last?'Volver al estante':'Pasa la página →')+'</button></div>';
+  h+='</div><div class="pg-foot"><div class="pg-rena">'+S.rena+'</div><button class="pg-next" onclick="'+(last?"closeModal('libro')":'libroIr(1)')+'">'+(last?'Volver al estante':'Pasa la página <span class="ar">→</span>')+'</button></div>';
   bookEl.className='book '+(libroPag%2===0?'izq':'der');
   bookEl.innerHTML='<div class="pg" style="--dir:'+(libroDir*14)+'px">'+h+'</div>';
   document.getElementById('lb-prev').disabled=libroPag===0;
