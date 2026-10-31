@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>El Altar de los Recuerdos — Museo Pigmentos.pet</title>
+<link rel="icon" type="image/jpeg" href="rena-avatar.JPG">
+<link rel="apple-touch-icon" href="rena-avatar.JPG">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#C17B4A;--brand-dk:#9A5E33;--brand-lt:#D9A07A;
+  --cream:#FDF6EE;--cream-dk:#F5E9D8;--ink:#3D2010;--ink-lt:#7A4820;
+  --font:'Nunito',sans-serif;--font-ttl:'Cormorant Garamond',serif;
+  --nav:50px;--footer:60px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--font);-webkit-tap-highlight-color:transparent;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;height:var(--nav);background:var(--brand);display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.2);gap:10px;}
+.nav-left{display:flex;align-items:center;gap:8px;min-width:0;}
+.btn-back{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:8px;color:var(--cream);font-family:var(--font);font-size:11px;font-weight:800;padding:5px 9px;cursor:pointer;white-space:nowrap;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0;}
+.btn-back:hover{background:rgba(255,255,255,.28);}
+.nav-titles{min-width:0;}
+.nav-brand{font-size:13px;font-weight:800;color:var(--cream);text-transform:uppercase;letter-spacing:.08em;line-height:1.15;white-space:nowrap;}
+.nav-sub{font-size:10px;color:rgba(253,246,238,.7);font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+.btn-menu{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.28);border-radius:8px;width:36px;height:36px;cursor:pointer;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.btn-menu span{display:block;width:16px;height:2px;background:var(--cream);border-radius:2px;}
+
+/* FOOTER */
+footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:var(--brand);display:flex;align-items:center;justify-content:center;gap:10px;z-index:300;}
+.ft-icon{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.16);transition:background .15s;flex-shrink:0;text-decoration:none;}
+.ft-icon:hover,.ft-icon:active{background:rgba(255,255,255,.28);}
+.ft-icon svg{width:18px;height:18px;fill:var(--cream);}
+
+/* SCENE */
+#sw{position:fixed;top:var(--nav);left:0;right:0;bottom:var(--footer);overflow-x:scroll;overflow-y:hidden;cursor:grab;-webkit-overflow-scrolling:touch;user-select:none;scroll-behavior:auto;background:linear-gradient(to bottom,#FFFFFF 58%,#8B5236 58%);}
+#sw:active{cursor:grabbing;}
+#sw::-webkit-scrollbar{display:none;}
+#scene{position:relative;}
+/* Capas — igual que index/galeria: divs con background-image, NUNCA <img> para assets de escena (regla iOS Safari) */
+.layer{position:absolute;top:0;left:0;width:100%;height:100%;background-repeat:no-repeat;background-size:100% 100%;pointer-events:none;opacity:0;transition:opacity .25s;}
+.layer.loaded{opacity:1;}
+/* Capas "tile": imágenes de 3840×2419 (proporción 1.587). Alto = 100% de la escena, ancho = 31.74% (1080×1.587 / 5400). */
+
+/* HOTSPOTS */
+.hs{position:absolute;background:transparent;border:none;padding:0;cursor:pointer;z-index:20;-webkit-tap-highlight-color:rgba(193,123,74,.15);transition:transform .12s ease;}
+.hs:hover{background:rgba(193,123,74,.08);}
+/* Punto que late = se puede tocar. Lo estático no late. */
+.hs::after{content:'';position:absolute;left:var(--dot-left,50%);top:var(--dot-top,50%);width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;background:var(--brand);border:2px solid var(--cream);box-shadow:0 0 0 0 rgba(193,123,74,.6);animation:hsPulse 1.9s ease-out infinite;pointer-events:none;}
+/* El arco no lleva punto (igual que en las otras salas) */
+.hs.nodot::after{display:none;}
+.hs.nodot:hover{background:transparent;}
+@keyframes hsPulse{0%{box-shadow:0 0 0 0 rgba(193,123,74,.6);transform:scale(1);}50%{transform:scale(1.12);}100%{box-shadow:0 0 0 11px rgba(193,123,74,0);transform:scale(1);}}
+
+/* SCROLL HINT */
+#hint{position:fixed;bottom:calc(var(--footer) + 10px);right:14px;background:rgba(154,94,51,.88);color:var(--cream);border-radius:20px;padding:5px 13px;font-size:10px;font-weight:800;letter-spacing:.06em;pointer-events:none;opacity:1;transition:opacity 1s;z-index:290;}
+#hint.hidden{opacity:0;}
+
+/* MODALES */
+.overlay{display:none;position:fixed;inset:0;background:rgba(40,18,6,.72);z-index:400;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+@media(min-width:600px){.overlay{align-items:center;}}
+.modal{background:var(--cream);border-radius:20px 20px 0 0;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;animation:sUp .22s ease;}
+@media(min-width:600px){.modal{border-radius:20px;width:90%;}}
+@keyframes sUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.modal-head{background:var(--brand);border-radius:20px 20px 0 0;padding:14px 16px 12px;display:flex;align-items:center;gap:12px;position:relative;}
+.modal-avatar{width:50px;height:50px;border-radius:50%;border:2px solid rgba(255,255,255,.35);object-fit:cover;flex-shrink:0;background:var(--brand-lt);}
+.modal-head-name{font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:700;color:var(--cream);line-height:1.1;}
+.modal-head-sub{font-size:11px;font-weight:700;letter-spacing:.06em;color:rgba(253,246,238,.8);margin-top:3px;}
+.modal-close{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.18);border:none;width:28px;height:28px;border-radius:50%;color:var(--cream);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{background:rgba(255,255,255,.3);}
+.modal-body{padding:16px 16px 28px;}
+.bubble-wrap{margin-bottom:14px;}
+.bubble-tail{display:block;margin-left:18px;margin-top:-1px;}
+.bubble-box{background:var(--cream-dk);border:1.5px solid rgba(193,123,74,.2);border-radius:4px 16px 16px 16px;padding:12px 14px;font-size:14px;line-height:1.65;color:var(--ink);}
+.bubble-box b{font-weight:800;color:var(--brand-dk);}
+.bubble-box em{font-style:italic;color:var(--brand);}
+.door-cta{display:block;width:100%;padding:13px;background:var(--brand);color:var(--cream);font-family:var(--font);font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;margin-top:8px;transition:background .15s;}
+.door-cta:hover{background:var(--brand-dk);}
+.door-cta.sec{background:var(--cream-dk);color:var(--brand-dk);}
+.door-cta.sec:hover{background:#e0cdb5;}
+.door-cta.grn{background:#3D8B3D;color:#fff;}
+
+/* Menú / salas */
+.menu-item{display:flex;align-items:center;gap:12px;padding:12px 13px;background:white;border:1.5px solid rgba(193,123,74,.2);border-radius:12px;cursor:pointer;font-family:var(--font);width:100%;text-align:left;transition:all .15s;margin-bottom:8px;}
+@media (hover:hover){.menu-item:hover{background:var(--cream-dk);border-color:var(--brand-lt);}}
+.mi-num{width:30px;height:30px;border-radius:50%;background:var(--cream-dk);font-size:11px;font-weight:800;color:var(--brand-dk);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.mi-num.active{background:var(--brand);color:var(--cream);}
+.mi-name{font-size:13px;font-weight:800;color:var(--ink);}
+.mi-desc{font-size:11px;color:var(--ink-lt);}
+.mi-arrow{font-size:14px;color:rgba(193,123,74,.5);margin-left:auto;}
+
+/* ══ ALTAR DE LOS RECUERDOS ══ */
+#sw{background:#3A271C;}
+#clip{position:absolute;inset:0;overflow:hidden;}
+.wall{position:absolute;inset:0;background:#3A271C;z-index:0;}
+.floor{position:absolute;left:0;right:0;bottom:0;z-index:1;background:linear-gradient(#2E1D13,#1B100A);}
+.spr{position:absolute;background-repeat:no-repeat;opacity:0;transition:opacity .5s;pointer-events:none;}
+.spr.loaded{opacity:1;}
+.z2{z-index:2;}.z3{z-index:3;}.z4{z-index:4;}.z5{z-index:5;}.z10{z-index:10;}
+.spr.sign{z-index:12;filter:brightness(.8);}
+.spr.cOn.loaded{opacity:0;transition:opacity .8s;}
+.spr.cOn.loaded.lit{opacity:1;}
+.spr.cOff.loaded.lit{opacity:0;}
+.photo{position:absolute;z-index:3;background:rgba(255,235,200,.07) center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:calc(var(--u) * 90);pointer-events:none;}
+.photo span{opacity:.16;}
+#shade{position:absolute;inset:0;z-index:8;background:#060301;opacity:.5;pointer-events:none;transition:opacity 1s;}
+body.moment #shade{opacity:.7;}
+.glow{position:absolute;z-index:9;pointer-events:none;opacity:0;mix-blend-mode:screen;transition:opacity 1.1s,transform 1s;}
+.glow.lit{opacity:1;}
+.glow i{display:block;width:100%;height:100%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,196,110,.62),rgba(255,150,60,.26) 48%,rgba(255,120,40,0) 100%);animation:flick 2.8s ease-in-out infinite;}
+.glow.rena-glow i{background:radial-gradient(closest-side,rgba(255,190,120,.2),rgba(255,150,70,.08) 55%,rgba(255,120,40,0) 100%);}
+.glow.ig i{animation:ignite .9s ease-out 1,flick 2.8s ease-in-out .9s infinite;}
+body.moment .glow{transform:scale(1.35);}
+@keyframes flick{0%,100%{opacity:.88;transform:scale(1);}35%{opacity:1;transform:scale(1.05);}70%{opacity:.78;transform:scale(.97);}}
+@keyframes ignite{0%{opacity:.2;transform:scale(.6);}45%{opacity:1;transform:scale(1.35);}100%{opacity:.95;transform:scale(1);}}
+.ff{position:absolute;z-index:11;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:#FFE08A;box-shadow:0 0 8px 3px rgba(255,210,110,.7);pointer-events:none;opacity:0;animation:ffMove var(--dur,8s) ease-in-out infinite alternate,ffBlink var(--bl,3s) ease-in-out infinite;}
+@keyframes ffMove{from{transform:translate(0,0);}to{transform:translate(var(--dx),var(--dy));}}
+@keyframes ffBlink{0%,100%{opacity:0;}50%{opacity:.95;}}
+.hs.nodot{z-index:20;}
+/* Punto que late (igual que en el vestíbulo) */
+.pt{position:absolute;z-index:21;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;background:var(--brand);border:2px solid var(--cream);pointer-events:none;animation:ptBeat 1.9s ease-out infinite;}
+.pt::before{content:'';position:absolute;left:-2px;top:-2px;width:13px;height:13px;border-radius:50%;background:rgba(193,123,74,.6);z-index:-1;animation:ptRing 1.9s ease-out infinite;}
+@keyframes ptBeat{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+@keyframes ptRing{0%{transform:scale(1);opacity:.6;}100%{transform:scale(2.7);opacity:0;}}
+/* viñeta: los bordes de la pantalla se oscurecen */
+#vig{position:fixed;top:var(--nav);left:0;right:0;bottom:var(--footer);z-index:100;pointer-events:none;background:radial-gradient(ellipse at center,rgba(0,0,0,0) 52%,rgba(0,0,0,.5) 100%);}
+/* frase de Rena al entrar */
+#frase{position:fixed;top:calc(var(--nav) + 12px);left:50%;transform:translate(-50%,-10px);width:min(88vw,380px);z-index:290;display:flex;gap:10px;align-items:center;background:rgba(253,246,238,.96);border:1.5px solid rgba(193,123,74,.3);border-radius:18px;padding:9px 12px;box-shadow:0 6px 18px rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .6s,transform .6s;}
+#frase.show{opacity:1;transform:translate(-50%,0);}
+#frase img{width:34px;height:34px;border-radius:50%;object-fit:cover;flex-shrink:0;background:var(--brand-lt);border:2px solid rgba(193,123,74,.4);}
+#frase p{font-size:13px;font-weight:700;line-height:1.4;color:var(--ink);}
+a.door-cta{text-decoration:none;text-align:center;}
+.overlay.soft{background:rgba(6,3,1,.3);}
+.btns2{display:flex;gap:8px;margin-top:12px;}
+.btns2 .door-cta{margin-top:0;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <button class="btn-back" onclick="window.location.href='index.html'">← Vestíbulo</button>
+    <div class="nav-titles">
+      <div class="nav-brand">Museo Pigmentos.pet</div>
+      <div class="nav-sub">Sala 04 · Altar de los Recuerdos</div>
+    </div>
+  </div>
+  <button class="btn-menu" onclick="openModal('menu')" aria-label="Menú"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- SCROLL WRAPPER -->
+<div id="sw"><div id="scene"><div id="clip"></div></div></div>
+<div id="vig"></div>
+
+<div id="frase"><img src="rena-avatar.JPG" alt="" onerror="this.removeAttribute('src')"><p id="frase-tx"></p></div>
+<div id="hint">← desliza para explorar →</div>
+
+<!-- FOOTER -->
+<footer>
+  <a class="ft-icon" href="https://instagram.com/pigmentos.pet" target="_blank" aria-label="Instagram">
+    <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://youtube.com/@pigmentosedithbojorquez" target="_blank" aria-label="YouTube">
+    <svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://tiktok.com/@pigmentosedithbojorquez" target="_blank" aria-label="TikTok">
+    <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://facebook.com/pigmentos.pet" target="_blank" aria-label="Facebook">
+    <svg viewBox="0 0 24 24"><path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://ko-fi.com/pigmentosedithbojorquez/commissions" target="_blank" aria-label="Ko-fi">
+    <svg viewBox="0 0 24 24"><path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/></svg>
+  </a>
+  <a class="ft-icon" href="https://wa.me/526241263124" target="_blank" aria-label="WhatsApp">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+</footer>
+
+<!-- UN LUGAR PARA RECORDAR (cómo participar) -->
+<div class="overlay" id="modal-participar" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div><div class="modal-head-name">Un lugar para recordar</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
+      <button class="modal-close" onclick="closeModal('participar')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box"><b>¡Guau!</b> 🐾 Este altar guarda con mucho cariño el recuerdo de mascotas que ya partieron.<br><br>Si quieres que la tuya tenga aquí un lugar, mi humana Edith abre una convocatoria de vez en cuando en nuestras redes y ahí explica con calma cómo participar.<br><br>Y si solo vienes a acompañarnos, también eres bienvenido: puedes encender una vela cuando quieras.</div>
+      </div>
+      <div class="btns2">
+        <a class="door-cta" href="https://instagram.com/pigmentos.pet" target="_blank" rel="noopener">Instagram</a>
+        <a class="door-cta" href="https://facebook.com/pigmentos.pet" target="_blank" rel="noopener">Facebook</a>
+      </div>
+      <button class="door-cta sec" style="margin-top:8px;" onclick="closeModal('participar')">Seguir recorriendo</button>
+    </div>
+  </div>
+</div>
+
+<!-- UN MOMENTO CON RENA -->
+<div class="overlay soft" id="modal-momento" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div><div class="modal-head-name">Un momento con Rena</div><div class="modal-head-sub">Sin prisa 🐾</div></div>
+      <button class="modal-close" onclick="closeModal('momento')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box" id="momento-tx"></div>
+      </div>
+      <button class="door-cta sec" onclick="closeModal('momento')">Seguir recorriendo</button>
+    </div>
+  </div>
+</div>
+
+<!-- MENÚ -->
+<div class="overlay" id="modal-menu" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div><div class="modal-head-name">¿A dónde vamos?</div><div class="modal-head-sub">Rena te cuenta 🐾</div></div>
+      <button class="modal-close" onclick="closeModal('menu')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap" style="margin-bottom:16px;">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box"><b>¡Arf!</b> El museo tiene muchas salas — ¿quieres explorar otra? 🐾</div>
+      </div>
+      <button class="menu-item" onclick="irA('vestibulo')"><div class="mi-num">00</div><div><div class="mi-name">Vestíbulo de Rena</div><div class="mi-desc">Entrada principal</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('galeria')"><div class="mi-num">01</div><div><div class="mi-name">Galería de los Inmortales</div><div class="mi-desc">Retratos de mascotas</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('boutique')"><div class="mi-num">02</div><div><div class="mi-name">La Boutique</div><div class="mi-desc">Productos personalizados</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('taller')"><div class="mi-num">03</div><div><div class="mi-name">El Taller de Edith</div><div class="mi-desc">Proceso, envíos e info de valor</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('biblioteca')"><div class="mi-num">05</div><div><div class="mi-name">Biblioteca de Cuidados</div><div class="mi-desc">Cómo cuidar tus productos</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('altar')"><div class="mi-num active">04</div><div><div class="mi-name">Altar de los Recuerdos</div><div class="mi-desc">Para mascotas que ya partieron · estás aquí</div></div><div class="mi-arrow">›</div></button>
+    </div>
+  </div>
+</div>
+
+<script>
+var sw=document.getElementById('sw'), scene=document.getElementById('scene'), clip=document.getElementById('clip');
+
+/* ══ ARCHIVOS (nombres en GitHub) ══ cámbialos aquí si tus PNG se llaman distinto */
+var FILES={
+  estructura:'altar-estructura.PNG',   /* el altar con sus 4 escalones */
+  rincon:'altar-rincon.PNG',           /* Rena sobre su tapete */
+  cartel:'altar-cartel.PNG',           /* letrero "Un lugar para recordar" */
+  marco:'altar-marco.PNG',             /* marco vacío */
+  velaOn:'altar-vela-encendida.PNG',   /* vela con llama */
+  velaOff:'altar-vela-apagada.PNG',    /* vela sin llama */
+  arco:'arco-salida.PNG'
+};
+
+/* ══ RETRATOS DEL ALTAR ══
+   slot = número de marco (1 al 15, de arriba a abajo y de izquierda a derecha)
+   img  = foto de la mascota   ·  nombre = opcional
+   vela = fecha (AAAA-MM-DD) desde la que su vela está encendida
+   Ejemplo: {slot:1, img:'altar/luna.jpg', nombre:'Luna', vela:'2026-11-01'}            */
+var RETRATOS=[];
+var DIAS_VELA=15;   /* días que dura encendida una vela antes de apagarse */
+
+/* ══ MEDIDAS (unidades = píxeles de tus PNG de 3840×2419) ══ */
+var CW=3840, CH=2419, WORLD_H=2419, SCENE_W=8650;
+var SCALE=0.92;           /* alto de la sala respecto al área visible */
+var ALTAR_X=1889;         /* dónde empieza el PNG del altar (el altar dibujado arranca 265 más a la derecha) */
+var FLOOR_Y=1850;         /* altura donde empieza el piso */
+var SIGN={cx:6150, cy:960, w:1000};          /* letrero: centro y ancho visible */
+var ARCO_S=0.9;           /* tamaño del arco (1 = estándar) */
+
+/* ── tamaño de la escena ── */
+var U=1;
+function setSceneSize(){
+  var avail=window.innerHeight-50-60, h=avail*SCALE;
+  U=h/WORLD_H;
+  scene.style.setProperty('--u',U+'px');
+  scene.style.setProperty('--oy',(avail-h)+'px');
+  scene.style.width=(SCENE_W*U)+'px'; scene.style.height=avail+'px';
+}
+setSceneSize();
+window.addEventListener('resize',setSceneSize);
+
+/* ── helpers de posición (todo en unidades) ── */
+function put(el,x,y,w,h){
+  var s=el.style;
+  if(x!=null) s.left='calc(var(--u) * '+x+')';
+  if(y!=null) s.top='calc(var(--oy) + var(--u) * '+y+')';
+  if(w!=null) s.width='calc(var(--u) * '+w+')';
+  if(h!=null) s.height='calc(var(--u) * '+h+')';
+  return el;
+}
+function div(cls,parent){ var d=document.createElement('div'); if(cls)d.className=cls; (parent||clip).appendChild(d); return d; }
+/* Imagen de un recorte (bbox) de un PNG de 3840×2419 -> div con background-image (regla iOS: nada de <img> en la escena) */
+function sprite(file,bbox,cls){
+  var d=div('spr '+(cls||''));
+  var bw=bbox[2]-bbox[0]+1, bh=bbox[3]-bbox[1]+1;
+  d.style.backgroundSize=(CW/bw*100)+'% '+(CH/bh*100)+'%';
+  d.style.backgroundPosition=(bbox[0]/(CW-bw)*100)+'% '+(bbox[1]/(CH-bh)*100)+'%';
+  var pre=new Image(); pre.onload=function(){ d.style.backgroundImage='url("'+file+'")'; d.classList.add('loaded'); }; pre.onerror=function(){}; pre.src=file;
+  return d;
+}
+/* PNG completo de 3840×2419 colocado con su esquina en (x,0) */
+function tile(file,x,cls){
+  var d=div('spr '+(cls||'')); put(d,x,0,CW,CH); d.style.backgroundSize='100% 100%';
+  var pre=new Image(); pre.onload=function(){ d.style.backgroundImage='url("'+file+'")'; d.classList.add('loaded'); }; pre.onerror=function(){}; pre.src=file;
+  return d;
+}
+
+/* ── PARED, PISO Y PENUMBRA (código, no dibujo) ── */
+div('wall');
+var floor=div('floor'); put(floor,null,FLOOR_Y);
+
+/* ── RENA (rincón) y ALTAR ── */
+tile(FILES.rincon,0,'z2');
+tile(FILES.estructura,ALTAR_X,'z2');
+
+/* ── LETRERO ── (bbox visible del PNG: 828..3186 × 468..1602) */
+(function(){
+  var bb=[828,468,3186,1602], k=SIGN.w/(bb[2]-bb[0]+1), h=(bb[3]-bb[1]+1)*k;
+  var d=sprite(FILES.cartel,bb,'sign'); put(d,SIGN.cx-SIGN.w/2,SIGN.cy-h/2,SIGN.w,h);
+  var sg=div('glow lit rena-glow'); put(sg,SIGN.cx-SIGN.w*0.95,SIGN.cy-h*1.5,SIGN.w*1.9,h*3); sg.innerHTML='<i></i>';
+  var hs=document.createElement('button'); hs.className='hs nodot'; hs.setAttribute('aria-label','Un lugar para recordar');
+  put(hs,SIGN.cx-SIGN.w/2,SIGN.cy-h/2,SIGN.w,h); hs.onclick=function(){ openModal('participar'); }; clip.appendChild(hs);
+  var pt=document.createElement('span'); pt.className='pt'; put(pt,SIGN.cx,SIGN.cy-h/2-110); clip.appendChild(pt);
+})();
+
+/* ── RENA: punto táctil ── */
+(function(){
+  var hs=document.createElement('button'); hs.className='hs nodot'; hs.setAttribute('aria-label','Un momento con Rena');
+  put(hs,430,1230,880,900); hs.onclick=openMomento; clip.appendChild(hs);
+  var pt=document.createElement('span'); pt.className='pt'; put(pt,770,1130); clip.appendChild(pt);
+  /* un resplandor tenue para que Rena no se pierda en la penumbra */
+  var g=div('glow lit rena-glow'); put(g,0,1000,1900,1700); g.innerHTML='<i></i>';
+})();
+
+/* ── MARCOS Y VELAS ── */
+var FR={bbox:[1738,1329,2076,1721], w:339, h:393, ix:52, iy:58, iw:232, ih:274};
+var ON={bbox:[2119,395,2183,663], w:65, h:269};
+var OFF={bbox:[2549,479,2619,662], w:71, h:184};
+/* escalones: n marcos, escala, y de apoyo, y rango en x (en el PNG del altar) */
+var TIERS=[
+  {n:3,s:.60,base:665, L:1214,R:2596},
+  {n:4,s:.67,base:926, L:964, R:2845},
+  {n:4,s:.90,base:1295,L:761, R:3049},
+  {n:4,s:1.0,base:1721,L:560, R:3280}
+];
+var state={};
+try{ state=JSON.parse(localStorage.getItem('altar_velas_v1')||'{}'); }catch(e){}
+function saveState(){ try{ localStorage.setItem('altar_velas_v1',JSON.stringify(state)); }catch(e){} }
+var RET={}; RETRATOS.forEach(function(r){ RET[r.slot]=r; });
+function isLit(n){
+  var r=RET[n], base=(r&&r.vela)?Date.parse(r.vela):0, t=Math.max(base||0,state[n]||0);
+  return !!t && (Date.now()-t)<DIAS_VELA*864e5;
+}
+var SLOTS={}, slotN=0;
+TIERS.forEach(function(T){
+  for(var k=0;k<T.n;k++){
+    var n=++slotN, s=T.s, cx=ALTAR_X+T.L+(T.R-T.L)*(k+.5)/T.n, base=T.base;
+    var fw=FR.w*s, fh=FR.h*s, gap=14*s, cwOn=ON.w*s;
+    var items=[];
+    /* foto detrás del marco */
+    var ph=div('photo'); put(ph,cx-fw/2+FR.ix*s, base-fh+FR.iy*s, FR.iw*s, FR.ih*s);
+    var r=RET[n];
+    if(r&&r.img){ ph.style.backgroundImage='url("'+r.img+'")'; ph.classList.add('has'); }
+    else { ph.innerHTML='<span>🐾</span>'; }
+    var fr=sprite(FILES.marco,FR.bbox,'z4'); put(fr,cx-fw/2,base-fh,fw,fh);
+    /* resplandor (uno por marco) */
+    var gw=1150*s, gh=1050*s, gl=div('glow'); put(gl,cx-gw/2,base-185*s-gh/2,gw,gh); gl.innerHTML='<i></i>'; gl.firstChild.style.animationDelay=(-(n*0.7)%3)+'s';
+    items.push(gl);
+    /* dos velas, una a cada lado */
+    [-1,1].forEach(function(side){
+      var ccx=cx+side*(fw/2+gap+cwOn/2);
+      var off=sprite(FILES.velaOff,OFF.bbox,'z5 cOff'); put(off,ccx-OFF.w*s/2,base-OFF.h*s,OFF.w*s,OFF.h*s);
+      var on =sprite(FILES.velaOn ,ON.bbox ,'z10 cOn');  put(on ,ccx-ON.w*s/2 ,base-ON.h*s ,ON.w*s ,ON.h*s);
+      items.push(off,on);
+    });
+    /* zona táctil */
+    var unitW=fw+2*(gap+cwOn)+10*s;
+    var hs=document.createElement('button'); hs.className='hs nodot';
+    hs.setAttribute('aria-label','Encender la vela'+(r&&r.nombre?' de '+r.nombre:' del marco '+n));
+    put(hs,cx-unitW/2,base-fh-10,unitW,fh+10); clip.appendChild(hs);
+    (function(n){ hs.onclick=function(){ encender(n); }; })(n);
+    SLOTS[n]={items:items,glow:gl};
+    refresh(n,false);
+  }
+});
+function refresh(n,anim){
+  var S=SLOTS[n], lit=isLit(n);
+  S.items.forEach(function(el){ el.classList.toggle('lit',lit); });
+  if(lit&&anim){ S.glow.classList.remove('ig'); void S.glow.offsetWidth; S.glow.classList.add('ig'); }
+}
+function encender(n){
+  hideFrase();
+  state[n]=Date.now(); saveState(); refresh(n,true);
+}
+
+/* ── ARCO DE SALIDA ── (capa 5400×1080; el arco ocupa el 13.3% derecho) */
+(function(){
+  var AH=2233*ARCO_S, AWL=5400*AH/1080, AWV=AWL*0.133, BASE=68*AH/1080, baseY=2330, top=baseY+BASE-AH;
+  var d=div('spr z3'); put(d,SCENE_W-AWL,top,AWL,AH); d.style.backgroundSize='100% 100%';
+  var pre=new Image(); pre.onload=function(){ d.style.backgroundImage='url("'+FILES.arco+'")'; d.classList.add('loaded'); }; pre.onerror=function(){}; pre.src=FILES.arco;
+  var hs=document.createElement('button'); hs.className='hs nodot'; hs.setAttribute('aria-label','Ver todas las salas');
+  put(hs,SCENE_W-AWV,top,AWV,AH); hs.onclick=function(){ openModal('menu'); }; clip.appendChild(hs);
+})();
+
+/* ── PENUMBRA: todo lo anterior queda en sombra; solo las velas dan luz ── */
+var shade=div('shade'); shade.id='shade';
+
+/* ── LUCIÉRNAGAS ── */
+(function(){
+  for(var i=0;i<18;i++){
+    var f=div('ff'), x=300+Math.random()*(SCENE_W-600), y=500+Math.random()*1600;
+    put(f,x,y);
+    f.style.setProperty('--dx',(Math.random()*160-80).toFixed(0)+'px');
+    f.style.setProperty('--dy',(Math.random()*120-60).toFixed(0)+'px');
+    f.style.setProperty('--dur',(6+Math.random()*7).toFixed(1)+'s');
+    f.style.setProperty('--bl',(2.5+Math.random()*3).toFixed(1)+'s');
+    f.style.animationDelay='0s,'+(-Math.random()*5).toFixed(1)+'s';
+  }
+})();
+
+/* ── FRASES DE RENA ── */
+var FRASES=[
+  '¡Arf! Aquí cada vela dice «te sigo recordando». 🐾',
+  'Las patitas dejan huellas que el tiempo no borra. 🐾',
+  '¡Woof! Respira hondo, aquí puedes quedarte el tiempo que necesites.',
+  'Mi humana Edith dibuja cada recuerdo con muchísimo cariño. 🐾',
+  'Quien amó a una mascota la lleva siempre en el corazón.',
+  '¡Guau! Una vela encendida es un abrazo que no se ve.',
+  'Grrr-acias por venir. Se siente bonito que alguien se detenga aquí.',
+  'Cada marco guarda una historia de mucho amor. ¡Arf!',
+  'Si hoy es un día difícil, quédate un ratito. Yo te acompaño. 🐾',
+  'El amor de una mascota no se apaga, solo cambia de lugar.',
+  '¡Woof! Los mejores recuerdos son los que mueven la colita.',
+  'Aquí nadie se va del todo: se quedan en nuestros recuerdos.'
+];
+var MOMENTOS=[
+  '¡Guau! Quédate conmigo un momento. Cierra los ojos, respira hondo y piensa en esa carita que tanto quieres. Aquí no hay prisa. 🐾',
+  'A veces el corazón necesita un ratito de silencio. Aquí lo tienes: las velas te hacen compañía y yo también. 🐾',
+  'Woof… gracias por quedarte. Las mascotas que amamos nunca se van del todo: viven en cada recuerdo bonito, en cada foto, en cada vela.',
+  'Arf, estoy aquí. Quédate el tiempo que quieras; cuando estés listo, el museo sigue esperándote. 🐾'
+];
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+var fraseEl=document.getElementById('frase'), fraseT=null;
+function hideFrase(){ fraseEl.classList.remove('show'); clearTimeout(fraseT); }
+function showFrase(){
+  var first=true; try{ first=!localStorage.getItem('altar_visto_v1'); localStorage.setItem('altar_visto_v1','1'); }catch(e){}
+  document.getElementById('frase-tx').textContent= first ? '¡Guau! Toca un marco para encender la vela de esa mascota. 🐾' : pick(FRASES);
+  fraseEl.classList.add('show'); fraseT=setTimeout(hideFrase,7000);
+}
+function openMomento(){ hideFrase(); document.getElementById('momento-tx').textContent=pick(MOMENTOS); openModal('momento'); }
+var mm=document.getElementById('modal-momento');
+new MutationObserver(function(){ document.body.classList.toggle('moment',mm.classList.contains('open')); }).observe(mm,{attributes:true,attributeFilter:['class']});
+
+/* ── MODALES / NAVEGACIÓN ── */
+function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+document.querySelectorAll('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});});
+var SALAS={vestibulo:{url:'index.html'},galeria:{url:'galeria.html'},boutique:{url:'boutique.html'},taller:{url:'taller.html'},biblioteca:{url:'biblioteca.html'},altar:{url:'altar.html'}};
+function irA(key){document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});var s=SALAS[key];if(s&&s.url)setTimeout(function(){window.location.href=s.url;},150);}
+
+/* ── SCROLL — mismo patrón que el taller ── */
+var hint=document.getElementById('hint');var hintHidden=false;
+function hideHint(){if(hintHidden)return;hintHidden=true;hint.classList.add('hidden');}
+setTimeout(hideHint,3500);
+sw.addEventListener('wheel',function(e){e.preventDefault();sw.scrollLeft+=e.deltaY*1.3;},{passive:false});
+var isDrag=false,sX=0,sL=0;
+sw.addEventListener('mousedown',function(e){isDrag=true;sX=e.pageX;sL=sw.scrollLeft;sw.style.cursor='grabbing';});
+window.addEventListener('mousemove',function(e){if(!isDrag)return;sw.scrollLeft=sL-(e.pageX-sX);});
+window.addEventListener('mouseup',function(){isDrag=false;sw.style.cursor='grab';});
+var tSX=0,tSL=0,tLX=0,tV=0,tT=0,tR=null;
+sw.addEventListener('touchstart',function(e){if(tR){cancelAnimationFrame(tR);tR=null;}tSX=tLX=e.touches[0].clientX;tSL=sw.scrollLeft;tV=0;tT=Date.now();},{passive:true});
+sw.addEventListener('touchmove',function(e){var x=e.touches[0].clientX;tV=(tLX-x)/(Date.now()-tT+1);tT=Date.now();tLX=x;sw.scrollLeft=tSL+(tSX-x);},{passive:true});
+sw.addEventListener('touchend',function(){var v=tV*16;(function step(){if(Math.abs(v)<.5)return;sw.scrollLeft+=v;v*=.96;tR=requestAnimationFrame(step);})();},{passive:true});
+sw.addEventListener('scroll',hideHint,{passive:true});
+window.addEventListener('load',function(){sw.scrollLeft=0; setTimeout(showFrase,900);});
+
+</script>
+</body>
+</html>
