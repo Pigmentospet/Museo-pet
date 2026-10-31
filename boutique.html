@@ -84,7 +84,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 @keyframes pulseFab{0%,100%{box-shadow:0 4px 14px rgba(193,123,74,.5)}50%{box-shadow:0 4px 24px rgba(193,123,74,.8),0 0 0 5px rgba(193,123,74,.14)}}
 
 /* HINT & DOTS */
-#hint{position:fixed;bottom:calc(var(--footer)+10px);right:14px;z-index:999;background:rgba(154,94,51,.88);color:var(--cream);font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 13px;border-radius:20px;pointer-events:none;opacity:1;transition:opacity 1s;}
+#hint{position:fixed;bottom:calc(var(--footer) + 10px);right:14px;z-index:999;background:rgba(154,94,51,.88);color:var(--cream);font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 13px;border-radius:20px;pointer-events:none;opacity:1;transition:opacity 1s;}
 #hint.hidden{opacity:0;}
 @keyframes fadeHint{0%{opacity:0}15%{opacity:1}75%{opacity:1}100%{opacity:0}}
 #dots{position:fixed;bottom:calc(var(--footer)+12px);left:50%;transform:translateX(-50%);display:flex;gap:7px;z-index:249;pointer-events:none}
@@ -382,8 +382,8 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       <button class="menu-item" onclick="irA('galeria')"><div class="mi-num">01</div><div><div class="mi-name">Galería de los Inmortales</div><div class="mi-desc">Retratos de mascotas</div></div><div class="mi-arrow">›</div></button>
       <button class="menu-item" onclick="irA('boutique')"><div class="mi-num active">02</div><div><div class="mi-name">La Boutique</div><div class="mi-desc">Productos personalizados · estás aquí</div></div><div class="mi-arrow">›</div></button>
       <button class="menu-item" onclick="irA('taller')"><div class="mi-num">03</div><div><div class="mi-name">El Taller de Edith</div><div class="mi-desc">Proceso, tiempos, envíos</div></div><div class="mi-arrow">›</div></button>
-      <button class="menu-item" onclick="irA('biblioteca')"><div class="mi-num">04</div><div><div class="mi-name">Biblioteca de Cuidados</div><div class="mi-desc">Cómo cuidar tus productos</div></div><div class="mi-arrow">›</div></button>
-      <button class="menu-item" onclick="irA('altar')"><div class="mi-num">05</div><div><div class="mi-name">Altar de los Recuerdos</div><div class="mi-desc">Para mascotas que ya partieron</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('biblioteca')"><div class="mi-num">05</div><div><div class="mi-name">Biblioteca de Cuidados</div><div class="mi-desc">Cómo cuidar tus productos</div></div><div class="mi-arrow">›</div></button>
+      <button class="menu-item" onclick="irA('altar')"><div class="mi-num">04</div><div><div class="mi-name">Altar de los Recuerdos</div><div class="mi-desc">Para mascotas que ya partieron</div></div><div class="mi-arrow">›</div></button>
     </div>
   </div>
 </div>
