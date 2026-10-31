@@ -94,37 +94,33 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 .mi-arrow{font-size:14px;color:rgba(193,123,74,.5);margin-left:auto;}
 
 /* ── LIBRO ABIERTO ── */
-.libro-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;animation:sUp .22s ease;max-height:100%;}
+.libro-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;animation:sUp .22s ease;max-height:100%;touch-action:pan-y;}
 .libro-top{display:flex;align-items:center;gap:10px;background:var(--brand);border-radius:30px;padding:6px 8px 6px 6px;color:var(--cream);max-width:92vw;}
 .libro-top img{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.4);object-fit:cover;background:var(--brand-lt);}
 .libro-top .lt{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;line-height:1.2;}
 .libro-top .lt small{display:block;font-size:10px;font-weight:700;opacity:.8;letter-spacing:.05em;}
 .libro-top button{background:rgba(255,255,255,.2);border:none;color:var(--cream);width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;}
-.book{position:relative;width:min(92vw,380px,calc((100vh - 150px)*.611));aspect-ratio:1400/2290;background-repeat:no-repeat;background-size:274.2857% auto;background-position:18.85% 100%;container-type:inline-size;filter:drop-shadow(0 10px 22px rgba(0,0,0,.35));touch-action:pan-y;}
-.book.der{background-position:73.77% 100%;}
-.pg{position:absolute;top:12.5%;height:74%;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;color:var(--ink);animation:pgIn .25s ease;}
-.pg::-webkit-scrollbar{display:none;}
-.book.izq .pg{left:31%;width:61%;}
-.book.der .pg{left:8.6%;width:70%;}
+/* El libro: se ve la página derecha ampliada (recorte de Biblioteca-libro.PNG) */
+.book{position:relative;width:min(92vw,380px,calc((100vh - 150px)*.611));aspect-ratio:1400/2290;background-repeat:no-repeat;background-size:274.2857% auto;background-position:73.77% 100%;container-type:inline-size;filter:drop-shadow(0 10px 22px rgba(0,0,0,.35));}
+/* Zona segura de texto: dentro de la hoja (la hoja se curva arriba a la derecha) */
+.pg{position:absolute;left:9%;top:14.5%;width:68%;height:65.5%;display:flex;flex-direction:column;color:var(--ink);animation:pgIn .25s ease;}
 @keyframes pgIn{from{opacity:0;transform:translateX(var(--dir,12px));}to{opacity:1;transform:none;}}
-.pg-kick{font-size:3cqw;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);}
-.pg-title{font-family:var(--font-ttl);font-size:10cqw;font-weight:700;color:var(--brand-dk);line-height:1;margin:1cqw 0 2.5cqw;}
-.pg-rena{font-size:3.5cqw;line-height:1.5;background:rgba(193,123,74,.12);border-radius:3px 3cqw 3cqw 3cqw;padding:2.2cqw 2.8cqw;margin-bottom:3cqw;}
-.pg-rena b{color:var(--brand-dk);}
-.pg-rena em{color:var(--brand);}
-.pg-sec{font-size:2.8cqw;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-dk);margin-bottom:1.8cqw;}
-.chips{display:grid;grid-template-columns:1fr 1fr;gap:1.8cqw;}
-.chip{display:flex;align-items:center;gap:1.6cqw;background:rgba(255,255,255,.7);border:1px solid rgba(193,123,74,.25);border-radius:2.4cqw;padding:1cqw 1.4cqw 1cqw 1cqw;min-width:0;}
-.chip .th{width:8.4cqw;height:8.4cqw;flex-shrink:0;border-radius:1.6cqw;background:var(--cream-dk);display:flex;align-items:center;justify-content:center;font-size:4.4cqw;overflow:hidden;}
-.chip .th img{width:100%;height:100%;object-fit:cover;display:block;}
-.chip span.n{font-size:2.9cqw;font-weight:800;line-height:1.15;color:var(--ink);}
-.pg-next{margin-top:3cqw;font-size:3cqw;font-weight:800;color:var(--brand);text-align:right;animation:nudge 1.6s ease-in-out infinite;}
-@keyframes nudge{0%,100%{transform:translateX(0);}50%{transform:translateX(1.2cqw);}}
-.tip{display:flex;gap:2.4cqw;align-items:flex-start;margin-bottom:3.1cqw;}
-.tip .ic{width:8.6cqw;height:8.6cqw;flex-shrink:0;border-radius:50%;background:rgba(193,123,74,.16);border:1px solid rgba(193,123,74,.35);display:flex;align-items:center;justify-content:center;font-size:4.4cqw;line-height:1;}
-.tip .tx{font-size:3.5cqw;font-weight:700;line-height:1.35;color:var(--ink);}
-.tags{display:flex;flex-wrap:wrap;gap:1cqw;margin-top:1cqw;}
-.tag{font-size:2.5cqw;font-weight:800;background:var(--brand);color:var(--cream);border-radius:20px;padding:.5cqw 2cqw;letter-spacing:.02em;}
+.pg-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;}
+.pg-body::-webkit-scrollbar{display:none;}
+.prods{display:flex;justify-content:center;gap:2.6cqw;margin-bottom:3.2cqw;}
+.prod{display:flex;flex-direction:column;align-items:center;gap:.8cqw;width:15.5cqw;}
+.prod .th{width:15.5cqw;height:15.5cqw;border-radius:2.6cqw;background:rgba(255,255,255,.75);border:1px solid rgba(193,123,74,.3);display:flex;align-items:center;justify-content:center;font-size:7cqw;overflow:hidden;}
+.prod .th img{width:100%;height:100%;object-fit:cover;display:block;}
+.prod span{font-size:2.7cqw;font-weight:800;color:var(--brand-dk);text-align:center;line-height:1.1;}
+.prods.cuatro{gap:1.4cqw;}
+.prods.cuatro .prod,.prods.cuatro .prod .th{width:13.2cqw;}
+.prods.cuatro .th{height:13.2cqw;}
+.tip{display:flex;gap:2.2cqw;align-items:flex-start;margin-bottom:2.4cqw;}
+.tip .ic{width:7.8cqw;height:7.8cqw;flex-shrink:0;border-radius:50%;background:rgba(193,123,74,.16);border:1px solid rgba(193,123,74,.35);display:flex;align-items:center;justify-content:center;font-size:4cqw;line-height:1;}
+.tip .tx{font-size:3.3cqw;font-weight:700;line-height:1.3;color:var(--ink);padding-top:.6cqw;}
+.pg-foot{flex:none;display:flex;align-items:center;justify-content:space-between;gap:2cqw;padding-top:1.5cqw;}
+.pg-rena{font-size:2.8cqw;line-height:1.3;font-style:italic;color:var(--brand-dk);}
+.pg-next{flex:none;background:none;border:none;font-family:var(--font);font-size:3.2cqw;font-weight:800;color:var(--brand);cursor:pointer;padding:1.5cqw 0 1.5cqw 1cqw;white-space:nowrap;}
 .libro-nav{display:flex;align-items:center;gap:14px;}
 .libro-nav button{background:var(--brand);color:var(--cream);border:none;border-radius:20px;font-family:var(--font);font-size:12px;font-weight:800;letter-spacing:.06em;padding:9px 16px;cursor:pointer;min-width:94px;}
 .libro-nav button:disabled{opacity:.35;cursor:default;}
@@ -305,17 +301,15 @@ LIBROS.forEach(function(L){
   scene.appendChild(el);
 });
 
-/* ── CONTENIDO DE LOS LIBROS ── */
+/* ── CONTENIDO DE LOS LIBROS ──
+   Cada "set" = una página: los iconos de los productos que comparten ese cuidado + su lista. */
 var PRODS={
-  'taza-clasica':{n:'Taza clásica',f:'prod-taza-clasica.png'},
-  'taza-jumbo':{n:'Taza jumbo',f:'prod-taza-jumbo.png'},
-  'vaso-bambu':{n:'Vaso de bambú',f:'prod-vaso-bambu.png'},
-  'termo-12':{n:'Termo 12',f:'prod-termo-12.png'},
-  'termo-887':{n:'Termo 887',f:'prod-termo-887.png'},
-  'termo-tumbler':{n:'Termo tumbler',f:'prod-termo-tumbler.png'},
-  'funda':{n:'Funda de celular',f:'prod-funda-celular.png'},
+  'taza':{n:'Taza',f:'prod-taza-clasica.png'},
+  'termo':{n:'Termo',f:'prod-termo-12.png'},
+  'vaso':{n:'Vaso de vidrio',f:'prod-vaso-bambu.png'},
+  'funda':{n:'Funda',f:'prod-funda-celular.png'},
   'llavero':{n:'Llavero',f:'prod-llavero.png'},
-  'esfera':{n:'Esfera navideña',e:'🎄'},
+  'esfera':{n:'Esfera',e:'🎄'},
   'pelota':{n:'Pelota',e:'⚾'},
   'playera':{n:'Playera',f:'prod-playera.png'},
   'hoodie':{n:'Hoodie',f:'prod-hoodie.png'},
@@ -323,102 +317,93 @@ var PRODS={
   'gorra':{n:'Gorra',f:'prod-gorra.png'},
   'lienzo':{n:'Lienzo',f:'prod-lienzo.png'},
   'acuarela':{n:'Acuarela',f:'prod-acuarela.png'},
-  'cuadro-escritorio':{n:'Cuadro de escritorio',f:'prod-cuadro-escritorio.png'},
-  'cuadro-mini':{n:'Cuadro mini',f:'prod-cuadro-mini.png'},
-  'kit-caricatura':{n:'Kit caricatura',f:'prod-kit-caricatura.png'},
-  'kit-detallado':{n:'Kit detallado',f:'prod-kit-detallado.png'}
+  'cuadro':{n:'Cuadro',f:'prod-cuadro-escritorio.png'},
+  'kit':{n:'Kit digital',f:'prod-kit-detallado.png'}
 };
-/* tip: i = icono, t = texto, p = productos a los que aplica (sin p = aplica a todos los del libro) */
 var LIB={
-  bebidas:{titulo:'Bebidas',kick:'Para tu bebida',
-    rena:'<b>¡Arf!</b> 🐾 Para que tu taza, vaso o termo dure muchísimo, mi humana Edith te deja aquí sus cuidados. <em>¡Grrr-enial!</em>',
-    prods:['taza-clasica','taza-jumbo','vaso-bambu','termo-12','termo-887','termo-tumbler'],
-    pags:[[
-      {i:'☕',t:'Apta para bebidas frías y calientes.',p:['taza-clasica','taza-jumbo']},
-      {i:'🥤',t:'Solo para bebidas frías o a temperatura ambiente.',p:['vaso-bambu','termo-12','termo-887','termo-tumbler']},
+  bebidas:{titulo:'Bebidas', sets:[
+    {rena:'¡Arf! Que tu taza y tu termo duren mucho 🐾', prods:['taza','termo'], tips:[
+      {i:'☕',t:'Aptos para bebidas frías y calientes.'},
       {i:'🧼',t:'Lava a mano con jabón suave.'},
       {i:'🚫',t:'No lo metas al lavavajillas, horno ni microondas.'},
-      {i:'☀️',t:'Evita el calor extremo y la luz solar directa por mucho tiempo.'}
-    ]]},
-  accesorios:{titulo:'Accesorios',kick:'Para tus accesorios',
-    rena:'<b>¡Woof!</b> 🐾 Fundas, llaveros y adornos también piden mimos. Mi humana Edith te cuenta cómo cuidarlos. <em>¡Ya casi, ya casi!</em>',
-    prods:['funda','llavero','esfera','pelota'],
-    pags:[[
-      {i:'🧽',t:'Limpia con un paño suave y húmedo.',p:['funda']},
-      {i:'🧽',t:'Limpia con un paño suave y seco.',p:['llavero','esfera','pelota']},
-      {i:'🧪',t:'Evita químicos agresivos y productos abrasivos.',p:['funda','llavero']},
-      {i:'☀️',t:'No lo expongas a calor extremo ni a luz solar directa prolongada.'}
-    ],[
-      {i:'💥',t:'Manéjalo con cuidado: los golpes pueden dañar la resina.',p:['llavero']},
-      {i:'💥',t:'Evita golpes o caídas para proteger la pintura.',p:['esfera','pelota']},
-      {i:'⚠️',t:'No dejes la funda sobre superficies rugosas: pueden rayarla.',p:['funda']},
-      {i:'📦',t:'Guárdala en un lugar seco y fresco.',p:['esfera','pelota']}
-    ]]},
-  prendas:{titulo:'Prendas',kick:'Para tu prenda',
-    rena:'<b>¡Guau!</b> 🐾 Tus prendas con ilustración merecen lavados suaves. Mi humana Edith te enseña cómo. <em>¡Grrr-antizado!</em>',
-    prods:['playera','hoodie','tote','gorra'],
-    pags:[[
-      {i:'🧼',t:'Lava a mano con agua fría y detergente suave.'},
-      {i:'🧺',t:'También puedes usar ciclo delicado con agua fría.',p:['playera','hoodie','tote']},
-      {i:'🚫',t:'Evita la lavadora y la secadora.',p:['gorra']},
+      {i:'☀️',t:'Evita el calor extremo y la luz solar directa por mucho tiempo.'}]},
+    {rena:'¡Woof! Tu vaso también merece mimos 🐾', prods:['vaso'], tips:[
+      {i:'🥤',t:'Apto solo para bebidas frías o a temperatura ambiente.'},
+      {i:'🧼',t:'Lava a mano con jabón suave.'},
+      {i:'🚫',t:'No lo metas al lavavajillas, horno ni microondas.'},
+      {i:'☀️',t:'Evita el calor extremo y la luz solar directa por mucho tiempo.'}]}
+  ]},
+  accesorios:{titulo:'Accesorios', sets:[
+    {rena:'¡Guau! Cuídalos con cariño 🐾', prods:['funda','llavero'], tips:[
+      {i:'🧽',t:'Limpia con un paño suave y seco.'},
+      {i:'🧪',t:'Evita químicos agresivos y productos abrasivos.'},
+      {i:'☀️',t:'No lo expongas a calor extremo ni a luz solar directa prolongada.'},
+      {i:'💥',t:'Manéjalo con cuidado: los golpes pueden dañar la pintura o la resina.'},
+      {i:'⚠️',t:'No dejes la funda sobre superficies rugosas: pueden rayarla.'}]},
+    {rena:'¡Arf! Que brillen en tu árbol 🐾', prods:['esfera','pelota'], tips:[
+      {i:'🧽',t:'Limpia con un paño suave y seco.'},
+      {i:'☀️',t:'No la expongas a calor extremo ni a luz solar directa prolongada.'},
+      {i:'💥',t:'Evita golpes o caídas para proteger la pintura.'},
+      {i:'📦',t:'Guárdala en un lugar seco y fresco.'}]}
+  ]},
+  prendas:{titulo:'Prendas', sets:[
+    {rena:'¡Woof! Lavados suaves, colores felices 🐾', prods:['playera','hoodie','tote'], tips:[
+      {i:'🧼',t:'Lava a mano con agua fría y detergente suave, o en ciclo delicado con agua fría.'},
       {i:'🚫',t:'No uses blanqueador.'},
       {i:'✋',t:'No frotes directamente sobre la pintura.'},
-      {i:'🌬️',t:'Seca al aire, sin secadora.'}
-    ],[
-      {i:'♨️',t:'Si planchas, hazlo del revés, a baja temperatura y evitando la zona pintada.',p:['playera','hoodie','tote']},
-      {i:'🚫',t:'No planches ni dobles la zona pintada.',p:['gorra']},
-      {i:'👕',t:'Evita arrugar el área de pintura.',p:['playera','hoodie','tote']},
-      {i:'🧢',t:'Sécala manteniéndola en su forma.',p:['gorra']}
-    ]]},
-  cuadros:{titulo:'Cuadros',kick:'Para tu cuadro',
-    rena:'<b>¡Woof woof!</b> 🐾 Los cuadros y lienzos de mi humana Edith se cuidan con cariño. <em>¡Mira cómo!</em>',
-    prods:['lienzo','acuarela','cuadro-escritorio','cuadro-mini','kit-caricatura','kit-detallado'],
-    pags:[[
+      {i:'🌬️',t:'Seca al aire, sin secadora.'},
+      {i:'♨️',t:'Si planchas, hazlo del revés, a baja temperatura y evitando la zona pintada.'},
+      {i:'👕',t:'Evita arrugar el área de pintura.'}]},
+    {rena:'¡Arf! La gorra también se mima 🐾', prods:['gorra'], tips:[
+      {i:'🧼',t:'Lava a mano con agua fría y detergente suave.'},
+      {i:'✋',t:'No frotes directamente sobre la pintura.'},
+      {i:'🚫',t:'Evita lavadora, secadora y blanqueadores.'},
+      {i:'🧢',t:'Seca al aire, manteniéndola en su forma.'}]}
+  ]},
+  cuadros:{titulo:'Cuadros', sets:[
+    {rena:'¡Guau! Arte para lucir mucho tiempo 🐾', prods:['lienzo','acuarela','cuadro','kit'], tips:[
       {i:'🧽',t:'Sécalo con una toalla seca.'},
       {i:'🖼️',t:'Ponlo en un lugar donde no lo muevan constantemente.'},
       {i:'☀️',t:'Evita la luz solar directa y la humedad.'},
       {i:'🧪',t:'No uses productos químicos.'},
-      {i:'✋',t:'Manéjalo con cuidado para evitar daños en la pintura.'}
-    ]]}
+      {i:'✋',t:'Manéjalo con cuidado para evitar daños en la pintura.'}]}
+  ]}
 };
 
 /* ── MODAL LIBRO ── */
 var libroKey=null, libroPag=0, libroDir=1;
 var bookEl=document.getElementById('book');
 (function(){ var im=new Image(); im.onload=function(){ bookEl.style.backgroundImage='url("Biblioteca-libro.PNG")'; }; im.onerror=function(){}; im.src='Biblioteca-libro.PNG'; })();
-function chipHTML(k){
+function prodHTML(k){
   var p=PRODS[k], th=p.f?'<img src="'+p.f+'" alt="" loading="lazy" onerror="this.parentNode.textContent=\'🐾\'">':(p.e||'🐾');
-  return '<div class="chip"><div class="th">'+th+'</div><span class="n">'+p.n+'</span></div>';
+  return '<div class="prod"><div class="th">'+th+'</div><span>'+p.n+'</span></div>';
 }
 function openLibro(k){ libroKey=k; libroPag=0; libroDir=1; renderLibro(); openModal('libro'); }
 function renderLibro(){
-  var L=LIB[libroKey], total=1+L.pags.length, h='';
-  bookEl.className='book '+(libroPag===0?'izq':'der');
-  document.getElementById('lb-title').innerHTML='Cuidados · '+L.titulo+'<small>'+(libroPag===0?'Portada':'Página '+libroPag+' de '+L.pags.length)+'</small>';
-  if(libroPag===0){
-    h='<div class="pg-kick">Biblioteca de cuidados</div><div class="pg-title">'+L.titulo+'</div>'+
-      '<div class="pg-rena">'+L.rena+'</div><div class="pg-sec">Aplica a</div><div class="chips">'+L.prods.map(chipHTML).join('')+'</div>'+
-      '<div class="pg-next">Pasa la página →</div>';
-  }else{
-    h='<div class="pg-kick">'+L.kick+'</div><div class="pg-title" style="font-size:7.5cqw;margin-bottom:3.5cqw;">Cuidados</div>';
-    L.pags[libroPag-1].forEach(function(tp){
-      h+='<div class="tip"><div class="ic">'+tp.i+'</div><div><div class="tx">'+tp.t+'</div>'+
-        (tp.p?'<div class="tags">'+tp.p.map(function(k){return '<span class="tag">'+PRODS[k].n+'</span>';}).join('')+'</div>':'')+'</div></div>';
-    });
-  }
+  var L=LIB[libroKey], total=L.sets.length, S=L.sets[libroPag], last=libroPag===total-1;
+  document.getElementById('lb-title').innerHTML='Cuidados · '+L.titulo+(total>1?'<small>Página '+(libroPag+1)+' de '+total+'</small>':'');
+  var h='<div class="pg-body"><div class="prods'+(S.prods.length>3?' cuatro':'')+'">'+S.prods.map(prodHTML).join('')+'</div>';
+  S.tips.forEach(function(tp){ h+='<div class="tip"><div class="ic">'+tp.i+'</div><div class="tx">'+tp.t+'</div></div>'; });
+  h+='</div><div class="pg-foot"><div class="pg-rena">'+S.rena+'</div><button class="pg-next" onclick="'+(last?"closeModal('libro')":'libroIr(1)')+'">'+(last?'Volver al estante':'Pasa la página →')+'</button></div>';
   bookEl.innerHTML='<div class="pg" style="--dir:'+(libroDir*14)+'px">'+h+'</div>';
   document.getElementById('lb-prev').disabled=libroPag===0;
-  document.getElementById('lb-next').disabled=libroPag===total-1;
+  document.getElementById('lb-next').disabled=last;
+  var nav=document.querySelector('.libro-nav'); nav.style.display=total>1?'flex':'none';
   var d=''; for(var i=0;i<total;i++) d+='<i'+(i===libroPag?' class="on"':'')+'></i>';
   document.getElementById('lb-dots').innerHTML=d;
 }
 function libroIr(dir){
-  var total=1+LIB[libroKey].pags.length, n=libroPag+dir;
+  var total=LIB[libroKey].sets.length, n=libroPag+dir;
   if(n<0||n>=total)return; libroDir=dir; libroPag=n; renderLibro();
 }
-(function(){ var x0=null;
-  bookEl.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;},{passive:true});
-  bookEl.addEventListener('touchend',function(e){ if(x0===null)return; var dx=e.changedTouches[0].clientX-x0; x0=null; if(Math.abs(dx)>50) libroIr(dx<0?1:-1); },{passive:true});
+/* Deslizar el dedo (o el mouse) a izquierda/derecha cambia de página */
+(function(){
+  var wrap=document.querySelector('.libro-wrap'), x0=null, y0=null;
+  wrap.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;y0=e.touches[0].clientY;},{passive:true});
+  wrap.addEventListener('touchend',function(e){
+    if(x0===null)return; var dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null;
+    if(Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)*1.2) libroIr(dx<0?1:-1);
+  },{passive:true});
 })();
 document.addEventListener('keydown',function(e){ if(!document.getElementById('modal-libro').classList.contains('open'))return; if(e.key==='ArrowRight')libroIr(1); if(e.key==='ArrowLeft')libroIr(-1); });
 
