@@ -101,9 +101,12 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 .libro-top .lt small{display:block;font-size:10px;font-weight:700;opacity:.8;letter-spacing:.05em;}
 .libro-top button{background:rgba(255,255,255,.2);border:none;color:var(--cream);width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;}
 /* El libro: se ve la página derecha ampliada (recorte de Biblioteca-libro.PNG) */
-.book{position:relative;width:min(92vw,380px,calc((100vh - 150px)*.611));aspect-ratio:1400/2290;background-repeat:no-repeat;background-size:274.2857% auto;background-position:73.77% 100%;container-type:inline-size;filter:drop-shadow(0 10px 22px rgba(0,0,0,.35));}
+.book{pointer-events:none;position:relative;width:min(92vw,380px,calc((100vh - 150px)*.611));aspect-ratio:1400/2290;background-repeat:no-repeat;background-size:274.2857% auto;background-position:73.77% 100%;container-type:inline-size;filter:drop-shadow(0 10px 22px rgba(0,0,0,.35));}
 /* Zona segura de texto: dentro de la hoja (la hoja se curva arriba a la derecha) */
-.pg{position:absolute;left:9%;top:14.5%;width:68%;height:65.5%;display:flex;flex-direction:column;color:var(--ink);animation:pgIn .25s ease;}
+.book.izq{background-position:18.4% 100%;}
+.book.izq .pg{left:32.5%;top:22%;width:58%;height:62%;}
+.izq .prods{margin-bottom:2cqw;}.izq .prod,.izq .prod .th{width:12.5cqw;}.izq .th{height:12.5cqw;}.izq .tip{margin-bottom:1.5cqw;gap:2cqw;}.izq .tip .ic{width:6.6cqw;height:6.6cqw;font-size:3.3cqw;}.izq .tip .tx{font-size:3cqw;line-height:1.25;}
+.pg{pointer-events:auto;position:absolute;left:9%;top:14.5%;width:68%;height:65.5%;display:flex;flex-direction:column;color:var(--ink);animation:pgIn .25s ease;}
 @keyframes pgIn{from{opacity:0;transform:translateX(var(--dir,12px));}to{opacity:1;transform:none;}}
 .pg-body{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;}
 .pg-body::-webkit-scrollbar{display:none;}
@@ -317,8 +320,8 @@ var PRODS={
   'gorra':{n:'Gorra',f:'prod-gorra.png'},
   'lienzo':{n:'Lienzo',f:'prod-lienzo.png'},
   'acuarela':{n:'Acuarela',f:'prod-acuarela.png'},
-  'cuadro':{n:'Cuadro',f:'prod-cuadro-escritorio.png'},
-  'kit':{n:'Kit digital',f:'prod-kit-detallado.png'}
+  'cuadro':{n:'Cuadro',e:'🖼️'},
+  'kit':{n:'Kit digital',e:'💻'}
 };
 var LIB={
   bebidas:{titulo:'Bebidas', sets:[
@@ -375,7 +378,7 @@ var libroKey=null, libroPag=0, libroDir=1;
 var bookEl=document.getElementById('book');
 (function(){ var im=new Image(); im.onload=function(){ bookEl.style.backgroundImage='url("Biblioteca-libro.PNG")'; }; im.onerror=function(){}; im.src='Biblioteca-libro.PNG'; })();
 function prodHTML(k){
-  var p=PRODS[k], th=p.f?'<img src="'+p.f+'" alt="" loading="lazy" onerror="this.parentNode.textContent=\'🐾\'">':(p.e||'🐾');
+  var p=PRODS[k], th=p.f?'<img src="'+p.f+'" alt="" onerror="this.parentNode.textContent=\'🐾\'">':(p.e||'🐾');
   return '<div class="prod"><div class="th">'+th+'</div><span>'+p.n+'</span></div>';
 }
 function openLibro(k){ libroKey=k; libroPag=0; libroDir=1; renderLibro(); openModal('libro'); }
@@ -385,6 +388,7 @@ function renderLibro(){
   var h='<div class="pg-body"><div class="prods'+(S.prods.length>3?' cuatro':'')+'">'+S.prods.map(prodHTML).join('')+'</div>';
   S.tips.forEach(function(tp){ h+='<div class="tip"><div class="ic">'+tp.i+'</div><div class="tx">'+tp.t+'</div></div>'; });
   h+='</div><div class="pg-foot"><div class="pg-rena">'+S.rena+'</div><button class="pg-next" onclick="'+(last?"closeModal('libro')":'libroIr(1)')+'">'+(last?'Volver al estante':'Pasa la página →')+'</button></div>';
+  bookEl.className='book '+(libroPag%2===0?'izq':'der');
   bookEl.innerHTML='<div class="pg" style="--dir:'+(libroDir*14)+'px">'+h+'</div>';
   document.getElementById('lb-prev').disabled=libroPag===0;
   document.getElementById('lb-next').disabled=last;
@@ -411,6 +415,8 @@ document.addEventListener('keydown',function(e){ if(!document.getElementById('mo
 function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
 document.querySelectorAll('.overlay').forEach(function(o){o.addEventListener('click',function(e){if(e.target===o)o.classList.remove('open');});});
+/* Tocar el fondo (fuera de la hoja) cierra el libro */
+(function(){var m=document.getElementById('modal-libro');m.addEventListener('click',function(e){var t=e.target;if(t.closest('.pg')||t.closest('.libro-top')||t.closest('.libro-nav'))return;closeModal('libro');});})();
 document.addEventListener('keydown',function(e){if(e.key==='Escape')document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});});
 var SALAS={vestibulo:{url:'index.html'},galeria:{url:'galeria.html'},boutique:{url:'boutique.html'},taller:{url:'taller.html'},biblioteca:{url:'biblioteca.html'},altar:{url:'altar.html'}};
 function irA(key){document.querySelectorAll('.overlay.open').forEach(function(o){o.classList.remove('open');});var s=SALAS[key];if(s&&s.url)setTimeout(function(){window.location.href=s.url;},150);}
