@@ -105,6 +105,10 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);background:va
 .spr.cOn.loaded{opacity:0;transition:opacity .8s;}
 .spr.cOn.loaded.lit{opacity:1;}
 .spr.cOff.loaded.lit{opacity:0;}
+body.nolit .spr.cOff.loaded.lit{opacity:1;}
+.spr.cOff::after{content:'';position:absolute;left:50%;bottom:97%;width:52%;height:36%;margin-left:-26%;border-radius:50% 50% 50% 50%/62% 62% 38% 38%;background:radial-gradient(ellipse at 50% 70%,#fff3c4 0,#ffc65a 45%,rgba(255,140,40,.9) 80%,rgba(255,120,30,0) 100%);opacity:0;transform-origin:50% 100%;}
+body.nolit .spr.cOff.lit::after{opacity:1;animation:flame 1.6s ease-in-out infinite;}
+@keyframes flame{0%,100%{transform:scale(1,1) rotate(-2deg)}50%{transform:scale(.92,1.12) rotate(2deg)}}
 .photo{position:absolute;z-index:3;background:rgba(255,235,200,.07) center/cover no-repeat;display:flex;align-items:center;justify-content:center;font-size:calc(var(--u) * 90);pointer-events:none;}
 .photo span{opacity:.16;}
 #shade{position:absolute;inset:0;z-index:8;background:#060301;opacity:.5;pointer-events:none;transition:opacity 1s;}
@@ -285,9 +289,9 @@ var FILES={
   arco:nm(['arco-sin-fondo','altar-arco','arco-altar','arco-salida'])
 };
 /* Prueba los nombres de una lista hasta que uno cargue */
-function loadFirst(list,cb){
+function loadFirst(list,cb,fail){
   var arr=[].concat(list), k=0;
-  (function next(){ if(k>=arr.length)return; var im=new Image(), u=arr[k++]; im.onload=function(){cb(im,u);}; im.onerror=next; im.src=u; })();
+  (function next(){ if(k>=arr.length){ if(fail)fail(); return; } var im=new Image(), u=arr[k++]; im.onload=function(){cb(im,u);}; im.onerror=next; im.src=u; })();
 }
 
 /* ══ RETRATOS DEL ALTAR ══
@@ -346,6 +350,9 @@ function tile(files,x,cls){
   loadFirst(files,function(im,u){ d.style.backgroundImage='url("'+u+'")'; d.classList.add('loaded'); });
   return d;
 }
+
+/* si la vela encendida (altar-vela-encendida.PNG) aún no está subida, la apagada se enciende con una flamita de respaldo */
+loadFirst(FILES.velaOn,function(){},function(){ document.body.classList.add('nolit'); });
 
 /* ── PARED, PISO Y PENUMBRA (código, no dibujo) ── */
 div('wall');
@@ -464,7 +471,11 @@ function encender(n){
 /* ── FLORES REGADAS EN EL PISO ── (cempasúchil: [tipo, x, y, escala, giro]) */
 var FLOR_BB=[3363,1609,3535,1776], RAMO_BB=[2284,715,2548,911];
 [
- ['f',1830,2230,.80,-20],['r',2010,2330,.65,6],['f',1760,2370,.55,30],['f',2420,2385,.55,15],['f',3060,2395,.5,-12],
+ ['f',1830,2230,.80,-20],['r',2010,2330,.65,6],['f',1760,2370,.55,30],
+ /* frente a Rena */
+ ['f',90,2290,.70,-15],['r',260,2395,.60,8],['f',420,2360,.55,25],['f',560,2405,.65,-30],['r',720,2380,.70,-6],['f',880,2400,.55,40],
+ ['f',1030,2360,.75,12],['r',1180,2400,.60,0],['f',1330,2385,.60,-22],['f',1480,2350,.70,18],['r',1610,2405,.55,5],['f',1700,2300,.55,-35],
+ ['f',40,2400,.50,20],['f',150,2410,.45,-10],['f',640,2330,.40,50],['f',960,2335,.40,-45],['f',1260,2330,.40,15],['f',2420,2385,.55,15],['f',3060,2395,.5,-12],
  ['r',3720,2370,.5,0],['f',4290,2390,.55,25],['f',4850,2392,.5,-30],['r',5260,2360,.55,10],
  ['f',5640,2190,.80,-15],['r',5900,2310,.7,0],['f',6200,2250,.70,35],['f',6460,2380,.60,-25],['r',6560,2200,.6,12],
  ['f',8230,2395,.60,0],['r',8480,2330,.6,-10]
@@ -484,8 +495,9 @@ var FLOR_BB=[3363,1609,3535,1776], RAMO_BB=[2284,715,2548,911];
   DX.forEach(function(dx,j){
     var cx=TCX+dx, base=1190+.55*RY*Math.sqrt(1-Math.pow(dx/RX,2))+15;
     var gw=900*SM, gh=800*SM, gl=div('glow'); put(gl,cx-gw/2,base-185*SM-gh/2,gw,gh); gl.innerHTML='<i></i>'; gl.firstChild.style.animationDelay=(-(j*0.9))+'s';
+    var off=sprite(FILES.velaOff,OFF.bbox,'z5 cOff'); put(off,cx-OFF.w*SM/2,base-OFF.h*SM,OFF.w*SM,OFF.h*SM);
     var on=sprite(FILES.velaOn,ON.bbox,'z10 cOn'); put(on,cx-ON.w*SM/2,base-ON.h*SM,ON.w*SM,ON.h*SM);
-    cs.push({els:[gl,on],gl:gl});
+    cs.push({els:[gl,off,on],gl:gl});
   });
   function active(e){ return e && (Date.now()-e.t)<HORAS*36e5; }
   function paint(anim,which){
@@ -583,7 +595,15 @@ sw.addEventListener('touchstart',function(e){if(tR){cancelAnimationFrame(tR);tR=
 sw.addEventListener('touchmove',function(e){var x=e.touches[0].clientX;tV=(tLX-x)/(Date.now()-tT+1);tT=Date.now();tLX=x;sw.scrollLeft=tSL+(tSX-x);},{passive:true});
 sw.addEventListener('touchend',function(){var v=tV*16;(function step(){if(Math.abs(v)<.5)return;sw.scrollLeft+=v;v*=.96;tR=requestAnimationFrame(step);})();},{passive:true});
 sw.addEventListener('scroll',hideHint,{passive:true});
-window.addEventListener('load',function(){sw.scrollLeft=0; setTimeout(showFrase,900);});
+window.addEventListener('load',function(){sw.scrollLeft=0;});
+/* el mensaje de Rena aparece cuando la persona llega al centro del altar */
+var ALTAR_CX=ALTAR_X+1920, fraseDada=false;
+function checkAltar(){
+  if(fraseDada||!U)return;
+  var c=(sw.scrollLeft+sw.clientWidth/2)/U;
+  if(Math.abs(c-ALTAR_CX)<700){ fraseDada=true; showFrase(); }
+}
+sw.addEventListener('scroll',checkAltar,{passive:true});
 
 </script>
 </body>
