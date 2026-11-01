@@ -135,6 +135,8 @@ body.moment .glow{transform:scale(1.35);}
 #frase p{font-size:13px;font-weight:700;line-height:1.4;color:var(--ink);}
 a.door-cta{text-decoration:none;text-align:center;}
 .overlay.soft{background:rgba(6,3,1,.3);}
+.vela-in{display:block;width:100%;padding:12px 14px;margin-bottom:10px;border:1.5px solid rgba(193,123,74,.35);border-radius:12px;font-family:var(--font);font-size:15px;color:var(--ink);background:#fff;outline:none;}
+.vela-in:focus{border-color:var(--brand);}
 .btns2{display:flex;gap:8px;margin-top:12px;}
 .btns2 .door-cta{margin-top:0;}
 </style>
@@ -204,6 +206,25 @@ a.door-cta{text-decoration:none;text-align:center;}
   </div>
 </div>
 
+<!-- ENCENDER UNA VELA (mesa) -->
+<div class="overlay" id="modal-vela" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="modal-head">
+      <img src="rena-avatar.JPG" class="modal-avatar" alt="" onerror="this.style.background='var(--brand-lt)';this.removeAttribute('src')">
+      <div><div class="modal-head-name">Una vela para recordar</div><div class="modal-head-sub">Rena te acompaña 🐾</div></div>
+      <button class="modal-close" onclick="closeModal('vela')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="bubble-wrap">
+        <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
+        <div class="bubble-box"><b>¡Arf!</b> Si recuerdas a una mascota que ya no está, enciende una vela por ella. Puedes escribir su nombre, si quieres. La vela te acompañará unas horas. 🕯️</div>
+      </div>
+      <input id="vela-nombre" class="vela-in" type="text" maxlength="24" placeholder="Nombre de tu mascota (opcional)" autocomplete="off">
+      <button class="door-cta" onclick="encenderMesa()">Encender mi vela 🕯️</button>
+    </div>
+  </div>
+</div>
+
 <!-- UN MOMENTO CON RENA -->
 <div class="overlay soft" id="modal-momento" role="dialog" aria-modal="true">
   <div class="modal">
@@ -248,16 +269,26 @@ a.door-cta{text-decoration:none;text-align:center;}
 <script>
 var sw=document.getElementById('sw'), scene=document.getElementById('scene'), clip=document.getElementById('clip');
 
-/* ══ ARCHIVOS (nombres en GitHub) ══ cámbialos aquí si tus PNG se llaman distinto */
+/* ══ ARCHIVOS (nombres en GitHub) ══ Para cada pieza se prueban estos nombres, en este orden (con .PNG y .png).
+   Si tus PNG se llaman distinto, pon el nombre real al principio de su lista. */
+function nm(base){ var out=[]; base.forEach(function(b){ out.push(b+'.PNG',b+'.png'); }); return out; }
 var FILES={
-  estructura:'altar-estructura.PNG',   /* el altar con sus 4 escalones */
-  rincon:'altar-rincon.PNG',           /* Rena sobre su tapete */
-  cartel:'altar-cartel.PNG',           /* letrero "Un lugar para recordar" */
-  marco:'altar-marco.PNG',             /* marco vacío */
-  velaOn:'altar-vela-encendida.PNG',   /* vela con llama */
-  velaOff:'altar-vela-apagada.PNG',    /* vela sin llama */
-  arco:'arco-salida.PNG'
+  estructura:nm(['altar-estructura','altar','Altar','altar-escalones']),
+  rincon:nm(['altar-rincon','altar-rena','rincon-rena','rincon']),
+  cartel:nm(['altar-cartel','altar-letrero','cartel','letrero']),
+  marco:nm(['altar-marco','marco-altar','marco']),
+  velaOn:nm(['altar-vela-encendida','vela-encendida','altar-vela-on']),
+  velaOff:nm(['altar-vela','altar-vela-apagada','vela-apagada','altar-vela-off']),
+  mesa:nm(['altar-mesa','mesa-altar','mesa']),
+  flor:nm(['altar-flor','flor','altar-cempasuchil','cempasuchil']),
+  flores:nm(['altar-flores','flores','altar-ramo','ramo']),
+  arco:nm(['arco-sin-fondo','altar-arco','arco-altar','arco-salida'])
 };
+/* Prueba los nombres de una lista hasta que uno cargue */
+function loadFirst(list,cb){
+  var arr=[].concat(list), k=0;
+  (function next(){ if(k>=arr.length)return; var im=new Image(), u=arr[k++]; im.onload=function(){cb(im,u);}; im.onerror=next; im.src=u; })();
+}
 
 /* ══ RETRATOS DEL ALTAR ══
    slot = número de marco (1 al 15, de arriba a abajo y de izquierda a derecha)
@@ -268,12 +299,15 @@ var RETRATOS=[];
 var DIAS_VELA=15;   /* días que dura encendida una vela antes de apagarse */
 
 /* ══ MEDIDAS (unidades = píxeles de tus PNG de 3840×2419) ══ */
-var CW=3840, CH=2419, WORLD_H=2419, SCENE_W=8650;
+var CW=3840, CH=2419, WORLD_H=2419;
+var MESA_X=6750;       /* dónde empieza la mesa dibujada */
+var ARCO_X=8650;       /* dónde empieza el arco */
+var SCENE_W=ARCO_X+1346+90;
 var SCALE=0.92;           /* alto de la sala respecto al área visible */
 var ALTAR_X=1889;         /* dónde empieza el PNG del altar (el altar dibujado arranca 265 más a la derecha) */
 var FLOOR_Y=1850;         /* altura donde empieza el piso */
-var SIGN={cx:6150, cy:960, w:1000};          /* letrero: centro y ancho visible */
-var ARCO_S=0.9;           /* tamaño del arco (1 = estándar) */
+var SIGN={cx:5950, cy:960, w:1000};          /* letrero: centro y ancho visible */
+var ARCO_S=1.15;          /* tamaño del arco (1 = como lo dibujaste) */
 
 /* ── tamaño de la escena ── */
 var U=1;
@@ -298,18 +332,18 @@ function put(el,x,y,w,h){
 }
 function div(cls,parent){ var d=document.createElement('div'); if(cls)d.className=cls; (parent||clip).appendChild(d); return d; }
 /* Imagen de un recorte (bbox) de un PNG de 3840×2419 -> div con background-image (regla iOS: nada de <img> en la escena) */
-function sprite(file,bbox,cls){
+function sprite(files,bbox,cls){
   var d=div('spr '+(cls||''));
   var bw=bbox[2]-bbox[0]+1, bh=bbox[3]-bbox[1]+1;
   d.style.backgroundSize=(CW/bw*100)+'% '+(CH/bh*100)+'%';
   d.style.backgroundPosition=(bbox[0]/(CW-bw)*100)+'% '+(bbox[1]/(CH-bh)*100)+'%';
-  var pre=new Image(); pre.onload=function(){ d.style.backgroundImage='url("'+file+'")'; d.classList.add('loaded'); }; pre.onerror=function(){}; pre.src=file;
+  loadFirst(files,function(im,u){ d.style.backgroundImage='url("'+u+'")'; d.classList.add('loaded'); });
   return d;
 }
 /* PNG completo de 3840×2419 colocado con su esquina en (x,0) */
-function tile(file,x,cls){
+function tile(files,x,cls){
   var d=div('spr '+(cls||'')); put(d,x,0,CW,CH); d.style.backgroundSize='100% 100%';
-  var pre=new Image(); pre.onload=function(){ d.style.backgroundImage='url("'+file+'")'; d.classList.add('loaded'); }; pre.onerror=function(){}; pre.src=file;
+  loadFirst(files,function(im,u){ d.style.backgroundImage='url("'+u+'")'; d.classList.add('loaded'); });
   return d;
 }
 
@@ -401,13 +435,80 @@ function encender(n){
   state[n]=Date.now(); saveState(); refresh(n,true);
 }
 
-/* ── ARCO DE SALIDA ── (capa 5400×1080; el arco ocupa el 13.3% derecho) */
+/* ── ARCO DE SALIDA ── (el PNG nuevo, sin piso, en lienzo de 3840×2419; si el archivo es el viejo de 5:1 también lo entiende) */
 (function(){
-  var AH=2233*ARCO_S, AWL=5400*AH/1080, AWV=AWL*0.133, BASE=68*AH/1080, baseY=2330, top=baseY+BASE-AH;
-  var d=div('spr z3'); put(d,SCENE_W-AWL,top,AWL,AH); d.style.backgroundSize='100% 100%';
-  var pre=new Image(); pre.onload=function(){ d.style.backgroundImage='url("'+FILES.arco+'")'; d.classList.add('loaded'); }; pre.onerror=function(){}; pre.src=FILES.arco;
-  var hs=document.createElement('button'); hs.className='hs nodot'; hs.setAttribute('aria-label','Ver todas las salas');
-  put(hs,SCENE_W-AWV,top,AWV,AH); hs.onclick=function(){ openModal('menu'); }; clip.appendChild(hs);
+  var hs=document.createElement('button'); hs.className='hs nodot'; hs.setAttribute('aria-label','Ver todas las salas'); hs.onclick=function(){ openModal('menu'); }; clip.appendChild(hs);
+  var d=div('spr z3');
+  loadFirst(FILES.arco,function(im,u){
+    var nw=im.naturalWidth, nh=im.naturalHeight, baseY=2230;
+    if(nw/nh>3){            /* arco viejo (5400×1080): el arco ocupa el 13.3% derecho */
+      var AH=1850, AWL=nw*AH/nh, AWV=AWL*0.133, top=baseY+68*AH/nh-AH;
+      put(d,SCENE_W-AWL,top,AWL,AH); d.style.backgroundSize='100% 100%';
+      put(hs,SCENE_W-AWV,top,AWV,AH);
+    } else {                /* arco nuevo: se recorta a su parte visible */
+      var cw=480, ch=Math.round(cw*nh/nw), cv=document.createElement('canvas'); cv.width=cw; cv.height=ch;
+      var c2=cv.getContext('2d'); c2.drawImage(im,0,0,cw,ch);
+      var px=c2.getImageData(0,0,cw,ch).data, x1=cw,x2=-1,y1=ch,y2=-1;
+      for(var y=0;y<ch;y++)for(var x=0;x<cw;x++){ if(px[(y*cw+x)*4+3]>24){ if(x<x1)x1=x; if(x>x2)x2=x; if(y<y1)y1=y; if(y>y2)y2=y; } }
+      var k=nw/cw, bx=x1*k, by=y1*k, bw=(x2+1-x1)*k, bh=(y2+1-y1)*k;   /* en px del PNG */
+      var w=bw*ARCO_S*(CW/nw), h=bh*ARCO_S*(CH/nh);                     /* en unidades de escena */
+      d.style.backgroundSize=(nw/bw*100)+'% '+(nh/bh*100)+'%';
+      d.style.backgroundPosition=(bx/(nw-bw)*100)+'% '+(by/(nh-bh)*100)+'%';
+      put(d,ARCO_X,baseY-h,w,h); put(hs,ARCO_X,baseY-h,w,h);
+      SCENE_W=ARCO_X+w+20; setSceneSize();   /* la sala termina justo en el arco */
+    }
+    d.style.backgroundImage='url("'+u+'")'; d.classList.add('loaded');
+  });
+})();
+
+/* ── FLORES REGADAS EN EL PISO ── (cempasúchil: [tipo, x, y, escala, giro]) */
+var FLOR_BB=[3363,1609,3535,1776], RAMO_BB=[2284,715,2548,911];
+[
+ ['f',1830,2230,.80,-20],['r',2010,2330,.65,6],['f',1760,2370,.55,30],['f',2420,2385,.55,15],['f',3060,2395,.5,-12],
+ ['r',3720,2370,.5,0],['f',4290,2390,.55,25],['f',4850,2392,.5,-30],['r',5260,2360,.55,10],
+ ['f',5640,2190,.80,-15],['r',5900,2310,.7,0],['f',6200,2250,.70,35],['f',6460,2380,.60,-25],['r',6560,2200,.6,12],
+ ['f',8230,2395,.60,0],['r',8480,2330,.6,-10]
+].forEach(function(p){
+  var bb=p[0]=='f'?FLOR_BB:RAMO_BB, w=(bb[2]-bb[0]+1)*p[3], h=(bb[3]-bb[1]+1)*p[3];
+  var d=sprite(p[0]=='f'?FILES.flor:FILES.flores,bb,'z3'); put(d,p[1]-w/2,p[2]-h,w,h); d.style.transform='rotate('+p[4]+'deg)';
+});
+
+/* ── MESA DE VELAS SUELTAS ── (mesa dibujada en 2147..3627 × 581..2265; superficie centrada en x=2886) */
+(function(){
+  var MX=MESA_X-2147, TCX=2886+MX;
+  tile(FILES.mesa,MX,'z2');
+  var g=div('glow lit rena-glow'); put(g,TCX-1100,700,2200,1400); g.innerHTML='<i></i>';
+  var DX=[-600,-470,-340,-210,210,340,470,600], SM=.7, HORAS=12, KEYM='altar_mesa_v1', RX=735, RY=110;
+  var list=[]; try{ list=JSON.parse(localStorage.getItem(KEYM)||'[]'); }catch(e){}
+  var cs=[];
+  DX.forEach(function(dx,j){
+    var cx=TCX+dx, base=1190+.55*RY*Math.sqrt(1-Math.pow(dx/RX,2))+15;
+    var gw=900*SM, gh=800*SM, gl=div('glow'); put(gl,cx-gw/2,base-185*SM-gh/2,gw,gh); gl.innerHTML='<i></i>'; gl.firstChild.style.animationDelay=(-(j*0.9))+'s';
+    var on=sprite(FILES.velaOn,ON.bbox,'z10 cOn'); put(on,cx-ON.w*SM/2,base-ON.h*SM,ON.w*SM,ON.h*SM);
+    cs.push({els:[gl,on],gl:gl});
+  });
+  function active(e){ return e && (Date.now()-e.t)<HORAS*36e5; }
+  function paint(anim,which){
+    cs.forEach(function(c,j){
+      var e=null; list.forEach(function(x){ if(x.j===j) e=x; });
+      var lit=active(e); c.els.forEach(function(el){ el.classList.toggle('lit',lit); });
+      if(lit&&anim&&which===j){ c.gl.classList.remove('ig'); void c.gl.offsetWidth; c.gl.classList.add('ig'); }
+    });
+  }
+  window.encenderMesa=function(){
+    var inp=document.getElementById('vela-nombre'), nombre=(inp.value||'').trim().slice(0,24);
+    var free=-1; for(var j=0;j<cs.length&&free<0;j++){ var e=null; list.forEach(function(x){ if(x.j===j) e=x; }); if(!active(e)) free=j; }
+    if(free<0){ var old=list.slice().sort(function(a,b){return a.t-b.t;})[0]; free=old.j; }
+    list=list.filter(function(x){ return x.j!==free; }); list.push({j:free,t:Date.now(),n:nombre});
+    try{ localStorage.setItem(KEYM,JSON.stringify(list)); }catch(e){}
+    inp.value=''; closeModal('vela'); paint(true,free);
+    showMsg(nombre ? '¡Guau! Tu vela para '+nombre+' ya está encendida. Gracias por recordarle. 🐾' : '¡Guau! Tu vela ya está encendida. Gracias por recordar. 🐾', 5500);
+  };
+  paint(false);
+  /* zona táctil y punto sobre el florero */
+  var hs=document.createElement('button'); hs.className='hs nodot'; hs.setAttribute('aria-label','Encender una vela');
+  put(hs,TCX-760,980,1520,420); hs.onclick=function(){ hideFrase(); openModal('vela'); }; clip.appendChild(hs);
+  var pt=document.createElement('span'); pt.className='pt'; put(pt,TCX,500); clip.appendChild(pt);
 })();
 
 /* ── PENUMBRA: todo lo anterior queda en sombra; solo las velas dan luz ── */
@@ -455,6 +556,7 @@ function showFrase(){
   document.getElementById('frase-tx').textContent= first ? '¡Guau! Toca un marco para encender la vela de esa mascota. 🐾' : pick(FRASES);
   fraseEl.classList.add('show'); fraseT=setTimeout(hideFrase,7000);
 }
+function showMsg(t,ms){ document.getElementById('frase-tx').textContent=t; fraseEl.classList.add('show'); clearTimeout(fraseT); fraseT=setTimeout(hideFrase,ms||5000); }
 function openMomento(){ hideFrase(); document.getElementById('momento-tx').textContent=pick(MOMENTOS); openModal('momento'); }
 var mm=document.getElementById('modal-momento');
 new MutationObserver(function(){ document.body.classList.toggle('moment',mm.classList.contains('open')); }).observe(mm,{attributes:true,attributeFilter:['class']});
