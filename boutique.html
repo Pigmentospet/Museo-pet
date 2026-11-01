@@ -274,7 +274,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       <div class="nfc-templates">
         <div class="nfc-template">
           <div class="nfc-template-icon">⭐</div>
-          <div><div class="nfc-template-name">Pet Influencer</div><div class="nfc-template-desc">Perfil con redes sociales de tu mascota — Instagram, TikTok, fotos y más. Para los peludos que ya son celebridades.</div></div>
+          <div><div class="nfc-template-name">Pet Influencer</div><div class="nfc-template-desc">Perfil con redes sociales de tu mascota — Instagram, TikTok, fotos y más. Para las mascotas que ya son celebridades.</div></div>
         </div>
         <div class="nfc-template">
           <div class="nfc-template-icon">🏥</div>
@@ -287,7 +287,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       </div>
       <div class="bubble-wrap">
         <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
-        <div class="bubble-box">¡Woof! La placa NFC es de mis favoritas — es como darle un <b>superpoder digital</b> a tu peludo. ¡Solo acerca el celular y magia! 🐾</div>
+        <div class="bubble-box">¡Woof! La placa NFC es de mis favoritas — es como darle un <b>superpoder digital</b> a tu mascota. ¡Solo acerca el celular y magia! 🐾</div>
       </div>
       <button class="door-cta grn" onclick="window.open('https://wa.me/526241263124?text='+encodeURIComponent('Hola! Me interesa cotizar una Placa NFC 🐾 ¿Qué plantilla me recomiendas?'),'_blank')">💬 Cotizar por WhatsApp</button>
       <button class="door-cta sec" onclick="closeModal('nfc');openModal('rena-bot')">🐾 Que Rena me ayude</button>
@@ -312,7 +312,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       <div id="prob-step-1">
         <div class="bubble-wrap" style="margin-bottom:12px">
           <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
-          <div class="bubble-box">¡Arf! Elige el producto que quieres ver con el retrato de tu peludo 🐾</div>
+          <div class="bubble-box">¡Arf! Elige el producto que quieres ver con el retrato de tu mascota 🐾</div>
         </div>
         <div class="prob-prod-grid" id="prob-prod-grid"></div>
         <button class="door-cta" onclick="prob_irStep2()">Siguiente →</button>
@@ -320,7 +320,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
       <div id="prob-step-2" style="display:none">
         <div class="bubble-wrap" style="margin-bottom:12px">
           <svg class="bubble-tail" width="22" height="10" viewBox="0 0 22 10"><path d="M0,10 L10,0 L22,10 Z" fill="#F5E9D8" stroke="rgba(193,123,74,.2)" stroke-width="1.5"/></svg>
-          <div class="bubble-box">¡Woof! Sube una foto de tu mascota — <b>cuanto más clara, mejor</b> 🐾</div>
+          <div class="bubble-box">¡Woof! Sube una foto donde se vea <b>solo su carita</b>, bien clara 🐾<br><span style="font-size:12.5px;opacity:.85">Es solo para confirmar cómo se acomodaría el retrato en el producto; no significa que quede exactamente igual.</span></div>
         </div>
         <div class="dropzone" id="prob-dropzone" onclick="document.getElementById('prob-file').click()">
           <span style="font-size:36px">📸</span><p>Toca para subir foto</p><small>o arrastra y suelta · JPG, PNG, WEBP</small>
@@ -335,7 +335,7 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
           <div class="bubble-box" id="prob-frase">¡Grrr-enial! 🐾</div>
         </div>
         <canvas id="prob-canvas" width="320" height="320"></canvas>
-        <div class="prob-disclaimer">* Preview aproximado. El retrato final es ilustrado por Edith a mano 🎨</div>
+        <div class="prob-disclaimer">* Esta vista es solo para confirmar la posición del retrato en el producto; no quedará exactamente igual. El retrato final lo ilustra Edith a mano 🎨</div>
         <button class="door-cta grn" onclick="prob_irWA()">💬 ¡Lo quiero! Cotizar por WhatsApp</button>
         <div style="display:flex;gap:8px;margin-top:8px">
           <button class="door-cta sec" style="flex:1" onclick="prob_irStep2()">📸 Cambiar foto</button>
@@ -393,30 +393,30 @@ footer{position:fixed;bottom:0;left:0;right:0;height:var(--footer);z-index:300;b
 var PRODUCTOS = {
   /* BEBER */
   'taza-clasica':      {nombre:'Taza Clásica',          emoji:'☕',cat:'Para Beber',   precio:'$550 MXN',      shape:'mug',    probador:true,  nfc:false,desc:'Taza de cerámica de 325ml con el retrato personalizado de tu mascota. Perfecta para el café de cada mañana.',                                                                                                               wa:'Hola! Me interesa cotizar una Taza Clásica personalizada 🐾'},
-  'taza-jumbo':        {nombre:'Taza Jumbo',             emoji:'🫖',cat:'Para Beber',   precio:'$600 MXN',      shape:'mug',    probador:true,  nfc:false,desc:'Taza de cerámica de 530ml con el retrato ilustrado de tu peludo — ideal para quien necesita más café.',                                                                                                                              wa:'Hola! Me interesa cotizar una Taza Jumbo personalizada 🐾'},
+  'taza-jumbo':        {nombre:'Taza Jumbo',             emoji:'🫖',cat:'Para Beber',   precio:'$600 MXN',      shape:'mug',    probador:false,  nfc:false,desc:'Taza de cerámica de 530ml con el retrato ilustrado de tu mascota — ideal para quien necesita más café.',                                                                                                                              wa:'Hola! Me interesa cotizar una Taza Jumbo personalizada 🐾'},
   'termo-887':         {nombre:'Termo Acero 887ml',      emoji:'🥃',cat:'Para Beber',   precio:'$850 MXN',      shape:'tumbler',probador:true,  nfc:false,desc:'Termo de acero inoxidable de 887ml. Mantiene caliente o frío por horas. Con el retrato de tu mascota siempre contigo.',                                                                                                    wa:'Hola! Me interesa cotizar un Termo 887ml personalizado 🐾'},
   'termo-12':          {nombre:'Termo Acero 1.2L',       emoji:'🧃',cat:'Para Beber',   precio:'$950 MXN',      shape:'tumbler',probador:true,  nfc:false,desc:'Termo de acero inoxidable de 1.2 litros — el más grande de la colección. Ideal para días largos y aventuras.',                                                                                                            wa:'Hola! Me interesa cotizar un Termo 1.2L personalizado 🐾'},
   'termo-tumbler':     {nombre:'Termo Tumbler',          emoji:'🥤',cat:'Para Beber',   precio:'$750 MXN',      shape:'tumbler',probador:true,  nfc:false,desc:'Tumbler acrílico de 710ml con tapa y popote. Funciona para bebidas frías y calientes (menor retención que los termos de acero). Con el retrato de tu mascota.',                                                           wa:'Hola! Me interesa cotizar un Termo Tumbler personalizado 🐾'},
   'vaso-bambu':        {nombre:'Vaso con Tapa Bambú',    emoji:'🎋',cat:'Para Beber',   precio:'$650 MXN',      shape:'tumbler',probador:true,  nfc:false,desc:'Vaso de vidrio transparente de 500ml con tapa de bambú. Ideal para bebidas frías o al tiempo. Con retrato personalizado de tu mascota.',                                                                                  wa:'Hola! Me interesa cotizar un Vaso con Tapa Bambú personalizado 🐾'},
   /* VESTIR */
   'playera':           {nombre:'Playera',                emoji:'👕',cat:'Para Vestir',  precio:'$650 MXN',      shape:'shirt',  probador:true,  nfc:false,desc:'Color: negro. Mujer: XS–L (silueta). Hombre: S–XL. Retrato de tu mascota personalizado aprox. 10×10cm.',                                                                                                                         wa:'Hola! Me interesa cotizar una Playera personalizada 🐾'},
-  'hoodie':            {nombre:'Hoodie',                 emoji:'🧥',cat:'Para Vestir',  precio:'$950 MXN',      shape:'shirt',  probador:true,  nfc:false,desc:'Hoodie unisex en negro, rosa y lavanda. Retrato de tu peludo aprox. 20×20cm.',                                                                                                                                             wa:'Hola! Me interesa cotizar un Hoodie personalizado 🐾'},
+  'hoodie':            {nombre:'Hoodie',                 emoji:'🧥',cat:'Para Vestir',  precio:'$950 MXN',      shape:'shirt',  probador:true,  nfc:false,desc:'Hoodie unisex en negro, rosa y lavanda. Retrato de tu mascota aprox. 20×20cm.',                                                                                                                                             wa:'Hola! Me interesa cotizar un Hoodie personalizado 🐾'},
   'gorra':             {nombre:'Gorra',                  emoji:'🧢',cat:'Para Vestir',  precio:'$650 MXN',      shape:'cap',    probador:true,  nfc:false,desc:'Gorra en color negro con el retrato de tu mascota.',                                                                                                                                                                       wa:'Hola! Me interesa cotizar una Gorra personalizada 🐾'},
   'tote-bag':          {nombre:'Tote Bag',               emoji:'👜',cat:'Para Vestir',  precio:'$650 MXN',      shape:'bag',    probador:true,  nfc:false,desc:'Bolsa de tela reutilizable con el retrato de tu mascota. Práctica, bonita y ecológica.',                                                                                                                                   wa:'Hola! Me interesa cotizar una Tote Bag personalizada 🐾'},
   /* LLEVAR */
   'llavero':           {nombre:'Llavero Acrílico',       emoji:'🔑',cat:'Para Llevar',  precio:'$300 MXN',      shape:'charm',  probador:true,  nfc:false,desc:'Llavero de acrílico de 8cm de diámetro con el retrato personalizado de tu mascota.',                                                                                                                                      wa:'Hola! Me interesa cotizar un Llavero personalizado 🐾'},
-  'funda-celular':     {nombre:'Funda de Celular',       emoji:'📱',cat:'Para Llevar',  precio:'$600 MXN',      shape:'charm',  probador:true,  nfc:false,desc:'Funda personalizada para celular con el retrato ilustrado de tu mascota. Tu peludo siempre en la mano.',                                                                                                                  wa:'Hola! Me interesa cotizar una Funda de Celular personalizada 🐾'},
+  'funda-celular':     {nombre:'Funda de Celular',       emoji:'📱',cat:'Para Llevar',  precio:'$600 MXN',      shape:'charm',  probador:true,  nfc:false,desc:'Funda personalizada para celular con el retrato ilustrado de tu mascota. Tu mascota siempre en la mano.',                                                                                                                  wa:'Hola! Me interesa cotizar una Funda de Celular personalizada 🐾'},
   'placa':             {nombre:'Placa Personalizada',    emoji:'🏷️',cat:'Para Llevar',  precio:'$130 MXN',      shape:'charm',  probador:false, nfc:false,desc:'Placa de identificación para collar grabada con el nombre de tu mascota. Algunos modelos incluyen número de celular adicional.',                                                                                           wa:'Hola! Me interesa cotizar una Placa Personalizada 🐾'},
   'collar-placa':      {nombre:'Collar + Placa',         tag:'Collar + Placa',          emoji:'🦮',cat:'Para Llevar', precio:'$230 MXN', shape:'charm', probador:false, nfc:false, nota:true,
                         desc:'Collar artesanal con placa de identificación incluida. Personalizado con el nombre de tu mascota ✨ Depósito 50% ($115 MXN) para apartar. Se lanzan colecciones por temporada y drops especiales — piezas únicas.',
                         wa:'Hola! Me interesa cotizar un Collar con Placa personalizado 🐾'},
   'placa-nfc':         {nombre:'Placa NFC',              emoji:'📡',cat:'Para Llevar',  precio:'$250 MXN',      shape:'charm',  probador:false, nfc:true,  desc:'',                                                                                                                                                                                                                       wa:'Hola! Me interesa cotizar una Placa NFC 🐾'},
-  'libreta':           {nombre:'Libreta Caricatura',     emoji:'📓',cat:'Para Llevar',  precio:'$450 MXN',      shape:'canvas', probador:true,  nfc:false,desc:'Libreta de 15×22cm con 90 hojas blancas. Incluye 1 set de stickers y 1 separador de huellita. Portada con retrato caricatura personalizado.',                                                                            wa:'Hola! Me interesa cotizar una Libreta personalizada 🐾'},
+  'libreta':           {nombre:'Libreta Caricatura',     emoji:'📓',cat:'Para Llevar',  precio:'$450 MXN',      shape:'canvas', probador:false,  nfc:false,desc:'Libreta de 15×22cm con 90 hojas blancas. Incluye 1 set de stickers y 1 separador de huellita. Portada con retrato caricatura personalizado.',                                                                            wa:'Hola! Me interesa cotizar una Libreta personalizada 🐾'},
   /* DECORAR */
   'lienzo':            {nombre:'Lienzo Pintado',         emoji:'🖼️',cat:'Para Decorar', precio:'$450–$950 MXN', shape:'canvas', probador:false, nfc:false,desc:'Pintado a mano por Edith. Tamaños: 20×20, 20×25, 20×30, 30×30cm. Tamaños mayores: cotizar por mensaje.',                                                                                                               wa:'Hola! Me interesa cotizar un Lienzo Pintado personalizado 🐾'},
   'cuadro-mini':       {nombre:'Cuadro Mini',            emoji:'🏠',cat:'Para Decorar', precio:'$480 MXN',      shape:'canvas', probador:false, nfc:false,desc:'Cuadro mini de 9.5×9.5cm, encapsulado y con base. Ideal para escritorio, oficina o buró.',                                                                                                                               wa:'Hola! Me interesa cotizar un Cuadro Mini personalizado 🐾'},
   'cuadro-escritorio': {nombre:'Cuadro de Escritorio',   emoji:'📐',cat:'Para Decorar', precio:'$560 MXN',      shape:'canvas', probador:false, nfc:false,desc:'Cuadro de 14.5×14.5cm, encapsulado y con base para escritorio. El retrato de tu mascota siempre a la vista.',                                                                                                           wa:'Hola! Me interesa cotizar un Cuadro de Escritorio personalizado 🐾'},
-  'portavasos':        {nombre:'Portavasos',             emoji:'🫗',cat:'Para Decorar', precio:'$390 MXN',      shape:'charm',  probador:true,  nfc:false,desc:'Set de 3 portavasos con 1 diseño fijo cada uno. Posibilidad de modificar el diseño con costo adicional.',                                                                                                                 wa:'Hola! Me interesa cotizar Portavasos personalizados 🐾'},
+  'portavasos':        {nombre:'Portavasos',             emoji:'🫗',cat:'Para Decorar', precio:'$390 MXN',      shape:'charm',  probador:false,  nfc:false,desc:'Set de 3 portavasos con 1 diseño fijo cada uno. Posibilidad de modificar el diseño con costo adicional.',                                                                                                                 wa:'Hola! Me interesa cotizar Portavasos personalizados 🐾'},
   'acuarela':          {nombre:'Acuarela Original',      emoji:'🎨',cat:'Para Decorar', precio:'$350–$500 MXN', shape:'canvas', probador:false, nfc:false,desc:'Retrato en acuarela original pintado a mano por Edith. Sin marco: $350 MXN. Con marco: $500 MXN. Pieza única e irrepetible.',                                                                                           wa:'Hola! Me interesa cotizar una Acuarela Original 🐾'},
   'kit-caricatura':    {nombre:'Kit Caricatura',         tag:'Kit Caricatura',           emoji:'🎭',cat:'Para Decorar', precio:'$530 MXN', shape:'canvas', probador:false, nfc:false,desc:'Kit digital con retrato caricatura en alta resolución. Archivo PNG listo para usar donde quieras.',                                                                                            wa:'Hola! Me interesa cotizar un Kit Digital Caricatura 🐾'},
   'kit-detallado':     {nombre:'Kit Detallado',          tag:'Kit Detallado',            emoji:'✨',cat:'Para Decorar', precio:'$640 MXN', shape:'canvas', probador:false, nfc:false,desc:'Ilustración detallada de alta calidad con fondo personalizado y múltiples formatos de archivo.',                                                                                               wa:'Hola! Me interesa cotizar un Kit Digital Detallado 🐾'},
@@ -425,8 +425,8 @@ var PRODUCTOS = {
   'tarjeta-regalo':    {nombre:'Tarjeta de Regalo',      emoji:'🎁',cat:'Para Regalar', precio:'$400/$650/$850/$1,000', shape:'canvas', probador:false, nfc:false,desc:'Tarjeta de regalo Pigmentos.pet — el regalo perfecto para quien amas (y para su mascota).',                                                                                                                    wa:'Hola! Me interesa una Tarjeta de Regalo de Pigmentos.pet 🐾'},
 };
 
-var RENA_FRASES=['¡Guau! ¿Ya te imaginas a tu peludo en este producto? 🐾','¡Woof! Esto se ve <em>increíble</em> — ¡te lo <b>grrr-antizo</b>! 🐾','¡Arf! Cada producto es único, igual que tu mascota 🐾','¡<b>Grrr-enial</b> elección! Edith lo ilustrará con todo el amor 🐾'];
-var PROB_FRASES=['¡Guau! El resultado final podría ser aún más <b>woof-derful</b> 🐾','¡Arf! Este preview es solo una probadita — Edith le pondrá su magia 🐾','¡<b>Grrr-enial</b>! Tu peludo <em>podría</em> lucir espectacular aquí 🐾'];
+var RENA_FRASES=['¡Guau! ¿Ya te imaginas a tu mascota en este producto? 🐾','¡Woof! Esto se ve <em>increíble</em> — ¡te lo <b>grrr-antizo</b>! 🐾','¡Arf! Cada producto es único, igual que tu mascota 🐾','¡<b>Grrr-enial</b> elección! Edith lo ilustrará con todo el amor 🐾'];
+var PROB_FRASES=['¡Guau! El resultado final podría ser aún más <b>woof-derful</b> 🐾','¡Arf! Este preview es solo una probadita — Edith le pondrá su magia 🐾','¡<b>Grrr-enial</b>! Tu mascota <em>podría</em> lucir espectacular aquí 🐾'];
 
 /* PANELES — pirámide 3-2-1 */
 var PANELS_DEF = [
@@ -769,10 +769,11 @@ function overlayMascota(ctx,shape,W,H){
   var zx=z[0],zy=z[1],zw=z[2],zh=z[3];
   var img=new Image();
   img.onload=function(){
-    var s=Math.min(img.width,img.height),sx=(img.width-s)/2,sy=(img.height-s)/2;
+    /* la foto conserva sus proporciones (no se estira ni se recorta): se ajusta dentro de la zona, un poco más chica para que quepa bien */
+    var k=Math.min(zw/img.width,zh/img.height)*.86, w=img.width*k, h=img.height*k, x=zx+(zw-w)/2, y=zy+(zh-h)/2, r=Math.min(6,w/2,h/2);
     ctx.save();
-    var r=6;ctx.beginPath();ctx.moveTo(zx+r,zy);ctx.lineTo(zx+zw-r,zy);ctx.quadraticCurveTo(zx+zw,zy,zx+zw,zy+r);ctx.lineTo(zx+zw,zy+zh-r);ctx.quadraticCurveTo(zx+zw,zy+zh,zx+zw-r,zy+zh);ctx.lineTo(zx+r,zy+zh);ctx.quadraticCurveTo(zx,zy+zh,zx,zy+zh-r);ctx.lineTo(zx,zy+r);ctx.quadraticCurveTo(zx,zy,zx+r,zy);ctx.closePath();ctx.clip();
-    ctx.drawImage(img,sx,sy,s,s,zx,zy,zw,zh);
+    ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();ctx.clip();
+    ctx.drawImage(img,x,y,w,h);
     ctx.restore();
   };
   img.src=_probImgSrc;
